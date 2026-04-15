@@ -1,0 +1,228 @@
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\appsettings.Development.json
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\appsettings.json
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\data_registry_local.staticwebassets.runtime.json
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\data_registry_local.staticwebassets.endpoints.json
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\data_registry_local.exe
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\data_registry_local.deps.json
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\data_registry_local.runtimeconfig.json
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\data_registry_local.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\data_registry_local.pdb
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\obj\Debug\net8.0\rpswa.dswa.cache.json
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\obj\Debug\net8.0\data_registry_local.GeneratedMSBuildEditorConfig.editorconfig
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\obj\Debug\net8.0\data_registry_local.AssemblyInfoInputs.cache
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\obj\Debug\net8.0\data_registry_local.AssemblyInfo.cs
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\obj\Debug\net8.0\data_registry_local.csproj.CoreCompileInputs.cache
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\obj\Debug\net8.0\data_registry_local.MvcApplicationPartsAssemblyInfo.cache
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\obj\Debug\net8.0\data_registry_local.RazorAssemblyInfo.cache
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\obj\Debug\net8.0\data_registry_local.RazorAssemblyInfo.cs
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\obj\Debug\net8.0\rjimswa.dswa.cache.json
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\obj\Debug\net8.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\obj\Debug\net8.0\scopedcss\bundle\data_registry_local.styles.css
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\obj\Debug\net8.0\scopedcss\projectbundle\data_registry_local.bundle.scp.css
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\obj\Debug\net8.0\staticwebassets.build.json
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\obj\Debug\net8.0\staticwebassets.build.json.cache
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\obj\Debug\net8.0\staticwebassets.development.json
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\obj\Debug\net8.0\data_registry_local.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\obj\Debug\net8.0\refint\data_registry_local.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\obj\Debug\net8.0\data_registry_local.pdb
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\obj\Debug\net8.0\data_registry_local.genruntimeconfig.cache
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\obj\Debug\net8.0\ref\data_registry_local.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\Humanizer.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\Microsoft.CodeAnalysis.Workspaces.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\Microsoft.Extensions.Caching.Memory.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\Microsoft.Extensions.Logging.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\Mono.TextTemplating.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\Npgsql.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\System.CodeDom.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\System.Composition.AttributedModel.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\System.Composition.Convention.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\System.Composition.Hosting.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\System.Composition.Runtime.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\System.Composition.TypedParts.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\obj\Debug\net8.0\data_registry_local.csproj.AssemblyReference.cache
+C:\disk\sanjar\AB\monitoring agent\data_registry_local\obj\Debug\net8.0\data_reg.9228E216.Up2Date
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\appsettings.Development.json
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\appsettings.json
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\data_registry_local.staticwebassets.endpoints.json
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\data_registry_local.staticwebassets.runtime.json
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\data_registry_local.exe
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\data_registry_local.deps.json
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\data_registry_local.runtimeconfig.json
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\data_registry_local.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\data_registry_local.pdb
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\Humanizer.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.Workspaces.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\Microsoft.CodeAnalysis.Workspaces.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\Microsoft.Extensions.Caching.Memory.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\Microsoft.Extensions.Logging.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\Mono.TextTemplating.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\Npgsql.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\System.CodeDom.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\System.Composition.AttributedModel.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\System.Composition.Convention.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\System.Composition.Hosting.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\System.Composition.Runtime.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\System.Composition.TypedParts.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.Workspaces.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\cs\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\de\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\es\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\fr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\it\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\ja\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\ko\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\pl\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\ru\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\tr\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\obj\Debug\net8.0\data_registry_local.csproj.AssemblyReference.cache
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\obj\Debug\net8.0\rpswa.dswa.cache.json
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\obj\Debug\net8.0\data_registry_local.GeneratedMSBuildEditorConfig.editorconfig
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\obj\Debug\net8.0\data_registry_local.AssemblyInfoInputs.cache
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\obj\Debug\net8.0\data_registry_local.AssemblyInfo.cs
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\obj\Debug\net8.0\data_registry_local.csproj.CoreCompileInputs.cache
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\obj\Debug\net8.0\data_registry_local.MvcApplicationPartsAssemblyInfo.cache
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\obj\Debug\net8.0\data_registry_local.RazorAssemblyInfo.cache
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\obj\Debug\net8.0\data_registry_local.RazorAssemblyInfo.cs
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\obj\Debug\net8.0\data_registry_local.sourcelink.json
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\obj\Debug\net8.0\rjimswa.dswa.cache.json
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\obj\Debug\net8.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\obj\Debug\net8.0\scopedcss\bundle\data_registry_local.styles.css
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\obj\Debug\net8.0\scopedcss\projectbundle\data_registry_local.bundle.scp.css
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\obj\Debug\net8.0\staticwebassets.build.json
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\obj\Debug\net8.0\staticwebassets.build.json.cache
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\obj\Debug\net8.0\staticwebassets.development.json
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\obj\Debug\net8.0\data_reg.9228E216.Up2Date
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\obj\Debug\net8.0\data_registry_local.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\obj\Debug\net8.0\refint\data_registry_local.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\obj\Debug\net8.0\data_registry_local.pdb
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\obj\Debug\net8.0\data_registry_local.genruntimeconfig.cache
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\obj\Debug\net8.0\ref\data_registry_local.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\package-lock.json
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\bin\Debug\net8.0\package.json
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\02 локальная часть\data_registry_local\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

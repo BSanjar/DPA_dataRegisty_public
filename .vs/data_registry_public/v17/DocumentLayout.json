@@ -1,0 +1,307 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\disk\\sanjar\\DPA\\dpa_estonia\\06 \u0420\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{8EBCABD7-5C04-4E58-BDC3-1BBCC8966B4D}|data_registry_public.csproj|c:\\disk\\sanjar\\dpa\\dpa_estonia\\06 \u0440\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\controllers\\esicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8EBCABD7-5C04-4E58-BDC3-1BBCC8966B4D}|data_registry_public.csproj|solutionrelative:controllers\\esicontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8EBCABD7-5C04-4E58-BDC3-1BBCC8966B4D}|data_registry_local.csproj|c:\\disk\\sanjar\\dpa\\dpa_estonia\\06 \u0440\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{8EBCABD7-5C04-4E58-BDC3-1BBCC8966B4D}|data_registry_local.csproj|solutionrelative:views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8EBCABD7-5C04-4E58-BDC3-1BBCC8966B4D}|data_registry_public.csproj|c:\\disk\\sanjar\\dpa\\dpa_estonia\\06 \u0440\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8EBCABD7-5C04-4E58-BDC3-1BBCC8966B4D}|data_registry_public.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8EBCABD7-5C04-4E58-BDC3-1BBCC8966B4D}|data_registry_public.csproj|c:\\disk\\sanjar\\dpa\\dpa_estonia\\06 \u0440\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\models\\local_models\\appsettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8EBCABD7-5C04-4E58-BDC3-1BBCC8966B4D}|data_registry_public.csproj|solutionrelative:models\\local_models\\appsettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8EBCABD7-5C04-4E58-BDC3-1BBCC8966B4D}|data_registry_public.csproj|c:\\disk\\sanjar\\dpa\\dpa_estonia\\06 \u0440\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{8EBCABD7-5C04-4E58-BDC3-1BBCC8966B4D}|data_registry_public.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8EBCABD7-5C04-4E58-BDC3-1BBCC8966B4D}|data_registry_public.csproj|c:\\disk\\sanjar\\dpa\\dpa_estonia\\06 \u0440\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\models\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8EBCABD7-5C04-4E58-BDC3-1BBCC8966B4D}|data_registry_public.csproj|solutionrelative:models\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8EBCABD7-5C04-4E58-BDC3-1BBCC8966B4D}|data_registry_public.csproj|c:\\disk\\sanjar\\dpa\\dpa_estonia\\06 \u0440\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\models\\publicuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8EBCABD7-5C04-4E58-BDC3-1BBCC8966B4D}|data_registry_public.csproj|solutionrelative:models\\publicuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8EBCABD7-5C04-4E58-BDC3-1BBCC8966B4D}|data_registry_local.csproj|c:\\disk\\sanjar\\dpa\\dpa_estonia\\06 \u0440\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\models\\inspectionact.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8EBCABD7-5C04-4E58-BDC3-1BBCC8966B4D}|data_registry_local.csproj|solutionrelative:models\\inspectionact.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8EBCABD7-5C04-4E58-BDC3-1BBCC8966B4D}|data_registry_local.csproj|c:\\disk\\sanjar\\dpa\\dpa_estonia\\06 \u0440\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\integrations\\esi.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8EBCABD7-5C04-4E58-BDC3-1BBCC8966B4D}|data_registry_local.csproj|solutionrelative:integrations\\esi.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8EBCABD7-5C04-4E58-BDC3-1BBCC8966B4D}|data_registry_local.csproj|c:\\disk\\sanjar\\dpa\\dpa_estonia\\06 \u0440\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\controllers\\inspectionscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8EBCABD7-5C04-4E58-BDC3-1BBCC8966B4D}|data_registry_local.csproj|solutionrelative:controllers\\inspectionscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8EBCABD7-5C04-4E58-BDC3-1BBCC8966B4D}|data_registry_local.csproj|c:\\disk\\sanjar\\dpa\\dpa_estonia\\06 \u0440\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\controllers\\sanctionscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8EBCABD7-5C04-4E58-BDC3-1BBCC8966B4D}|data_registry_local.csproj|solutionrelative:controllers\\sanctionscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8EBCABD7-5C04-4E58-BDC3-1BBCC8966B4D}|data_registry_local.csproj|c:\\disk\\sanjar\\dpa\\dpa_estonia\\06 \u0440\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\controllers\\logincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8EBCABD7-5C04-4E58-BDC3-1BBCC8966B4D}|data_registry_local.csproj|solutionrelative:controllers\\logincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8EBCABD7-5C04-4E58-BDC3-1BBCC8966B4D}|data_registry_local.csproj|c:\\disk\\sanjar\\dpa\\dpa_estonia\\06 \u0440\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\controllers\\incedentscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8EBCABD7-5C04-4E58-BDC3-1BBCC8966B4D}|data_registry_local.csproj|solutionrelative:controllers\\incedentscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8EBCABD7-5C04-4E58-BDC3-1BBCC8966B4D}|data_registry_local.csproj|c:\\disk\\sanjar\\dpa\\dpa_estonia\\06 \u0440\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\integrations\\activedirectory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8EBCABD7-5C04-4E58-BDC3-1BBCC8966B4D}|data_registry_local.csproj|solutionrelative:integrations\\activedirectory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8EBCABD7-5C04-4E58-BDC3-1BBCC8966B4D}|data_registry_local.csproj|c:\\disk\\sanjar\\dpa\\dpa_estonia\\06 \u0440\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\integrations\\minjust.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8EBCABD7-5C04-4E58-BDC3-1BBCC8966B4D}|data_registry_local.csproj|solutionrelative:integrations\\minjust.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 9,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{56df62a4-05a3-4e5b-aa1a-99371ccfb997}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "AppDbContext.cs",
+              "DocumentMoniker": "C:\\disk\\sanjar\\DPA\\dpa_estonia\\06 \u0420\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\Models\\AppDbContext.cs",
+              "RelativeDocumentMoniker": "Models\\AppDbContext.cs",
+              "ToolTip": "C:\\disk\\sanjar\\DPA\\dpa_estonia\\06 \u0420\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\Models\\AppDbContext.cs",
+              "RelativeToolTip": "Models\\AppDbContext.cs",
+              "ViewState": "AgIAACQAAAAAAAAAAAAiwDMAAACZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-15T04:51:46.721Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\disk\\sanjar\\DPA\\dpa_estonia\\06 \u0420\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\disk\\sanjar\\DPA\\dpa_estonia\\06 \u0420\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAASwCgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-15T04:49:04.208Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "PublicUser.cs",
+              "DocumentMoniker": "C:\\disk\\sanjar\\DPA\\dpa_estonia\\06 \u0420\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\Models\\PublicUser.cs",
+              "RelativeDocumentMoniker": "Models\\PublicUser.cs",
+              "ToolTip": "C:\\disk\\sanjar\\DPA\\dpa_estonia\\06 \u0420\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\Models\\PublicUser.cs",
+              "RelativeToolTip": "Models\\PublicUser.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-15T04:15:51.785Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AppSettings.cs",
+              "DocumentMoniker": "C:\\disk\\sanjar\\DPA\\dpa_estonia\\06 \u0420\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\Models\\local_models\\AppSettings.cs",
+              "RelativeDocumentMoniker": "Models\\local_models\\AppSettings.cs",
+              "ToolTip": "C:\\disk\\sanjar\\DPA\\dpa_estonia\\06 \u0420\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\Models\\local_models\\AppSettings.cs",
+              "RelativeToolTip": "Models\\local_models\\AppSettings.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-15T04:06:33.812Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\disk\\sanjar\\DPA\\dpa_estonia\\06 \u0420\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "C:\\disk\\sanjar\\DPA\\dpa_estonia\\06 \u0420\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAACPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-04-15T04:05:50.952Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "esiController.cs",
+              "DocumentMoniker": "C:\\disk\\sanjar\\DPA\\dpa_estonia\\06 \u0420\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\Controllers\\esiController.cs",
+              "RelativeDocumentMoniker": "Controllers\\esiController.cs",
+              "ToolTip": "C:\\disk\\sanjar\\DPA\\dpa_estonia\\06 \u0420\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\Controllers\\esiController.cs",
+              "RelativeToolTip": "Controllers\\esiController.cs",
+              "ViewState": "AgIAACsAAAAAAAAAAAAkwC0AAABAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-15T04:02:23.837Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "C:\\disk\\sanjar\\DPA\\dpa_estonia\\06 \u0420\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\disk\\sanjar\\DPA\\dpa_estonia\\06 \u0420\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAAEIAAAAAAAAAAAAAAD0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-04-08T10:42:53.549Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "SanctionsController.cs",
+              "DocumentMoniker": "C:\\disk\\sanjar\\DPA\\dpa_estonia\\06 \u0420\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\Controllers\\SanctionsController.cs",
+              "RelativeDocumentMoniker": "Controllers\\SanctionsController.cs",
+              "ToolTip": "C:\\disk\\sanjar\\DPA\\dpa_estonia\\06 \u0420\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\Controllers\\SanctionsController.cs",
+              "RelativeToolTip": "Controllers\\SanctionsController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-08T10:33:40.621Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "InspectionsController.cs",
+              "DocumentMoniker": "C:\\disk\\sanjar\\DPA\\dpa_estonia\\06 \u0420\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\Controllers\\InspectionsController.cs",
+              "RelativeDocumentMoniker": "Controllers\\InspectionsController.cs",
+              "ToolTip": "C:\\disk\\sanjar\\DPA\\dpa_estonia\\06 \u0420\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\Controllers\\InspectionsController.cs",
+              "RelativeToolTip": "Controllers\\InspectionsController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-08T10:32:42.701Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "InspectionAct.cs",
+              "DocumentMoniker": "C:\\disk\\sanjar\\DPA\\dpa_estonia\\06 \u0420\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\Models\\InspectionAct.cs",
+              "RelativeDocumentMoniker": "Models\\InspectionAct.cs",
+              "ToolTip": "C:\\disk\\sanjar\\DPA\\dpa_estonia\\06 \u0420\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\Models\\InspectionAct.cs",
+              "RelativeToolTip": "Models\\InspectionAct.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAAwBIAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-08T08:19:06.715Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "LoginController.cs",
+              "DocumentMoniker": "C:\\disk\\sanjar\\DPA\\dpa_estonia\\06 \u0420\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\Controllers\\LoginController.cs",
+              "RelativeDocumentMoniker": "Controllers\\LoginController.cs",
+              "ToolTip": "C:\\disk\\sanjar\\DPA\\dpa_estonia\\06 \u0420\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\Controllers\\LoginController.cs",
+              "RelativeToolTip": "Controllers\\LoginController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-08T10:34:01.909Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "IncedentsController.cs",
+              "DocumentMoniker": "C:\\disk\\sanjar\\DPA\\dpa_estonia\\06 \u0420\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\Controllers\\IncedentsController.cs",
+              "RelativeDocumentMoniker": "Controllers\\IncedentsController.cs",
+              "ToolTip": "C:\\disk\\sanjar\\DPA\\dpa_estonia\\06 \u0420\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\Controllers\\IncedentsController.cs",
+              "RelativeToolTip": "Controllers\\IncedentsController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-08T10:31:18.376Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "ESI.cs",
+              "DocumentMoniker": "C:\\disk\\sanjar\\DPA\\dpa_estonia\\06 \u0420\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\Integrations\\ESI.cs",
+              "RelativeDocumentMoniker": "Integrations\\ESI.cs",
+              "ToolTip": "C:\\disk\\sanjar\\DPA\\dpa_estonia\\06 \u0420\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\Integrations\\ESI.cs",
+              "RelativeToolTip": "Integrations\\ESI.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-08T07:50:33.275Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "Microsoft.Common.CurrentVersion.targets",
+              "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
+              "ToolTip": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
+              "RelativeToolTip": "..\\..\\..\\..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
+              "ViewState": "AgIAAAIVAAAAAAAAAAAYwBEVAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003801|",
+              "WhenOpened": "2026-04-08T10:35:34.323Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "activeDirectory.cs",
+              "DocumentMoniker": "C:\\disk\\sanjar\\DPA\\dpa_estonia\\06 \u0420\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\Integrations\\activeDirectory.cs",
+              "RelativeDocumentMoniker": "Integrations\\activeDirectory.cs",
+              "ToolTip": "C:\\disk\\sanjar\\DPA\\dpa_estonia\\06 \u0420\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\Integrations\\activeDirectory.cs",
+              "RelativeToolTip": "Integrations\\activeDirectory.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-08T07:51:09.194Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "minJust.cs",
+              "DocumentMoniker": "C:\\disk\\sanjar\\DPA\\dpa_estonia\\06 \u0420\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\Integrations\\minJust.cs",
+              "RelativeDocumentMoniker": "Integrations\\minJust.cs",
+              "ToolTip": "C:\\disk\\sanjar\\DPA\\dpa_estonia\\06 \u0420\u0435\u0435\u0441\u0442\u0440 \u0432\u043B\u0430\u0434\u0435\u043B\u044C\u0446\u0435\u0432 \u0437\u0430\u043F\u0438\u0441\u0435\u0439\\01 \u043F\u0443\u0431\u043B\u0438\u0447\u043D\u0430\u044F \u0447\u0430\u0441\u0442\u044C\\data_registry_public\\Integrations\\minJust.cs",
+              "RelativeToolTip": "Integrations\\minJust.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-08T07:50:48.775Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

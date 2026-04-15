@@ -1,0 +1,30 @@
+﻿name: Build and Push dpa_registry_public (test)
+
+on:
+  push:
+    branches:
+      - test
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Забираем код
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2️⃣ Логин в Docker Hub
+      - name: Docker Login
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASS }}
+
+      # 3️⃣ Build + Push Docker image
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: sanjar883448/dpa_registry_public:test
