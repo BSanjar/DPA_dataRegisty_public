@@ -28,8 +28,3 @@ README.md
 !.git/config
 !.git/packed-refs
 !.git/refs/heads/**
-.vs/
-bin/
-obj/
-node_modules/
-*.user
