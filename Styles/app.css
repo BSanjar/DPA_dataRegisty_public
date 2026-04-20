@@ -4,15 +4,33 @@
 
 @layer base {
   :root {
-    color-scheme: light dark;
+    color-scheme: light;
+    --dpa-primary: #003971;
+    --dpa-primary-hover: #002d52;
+    --dpa-accent: #0077C8;
+    --dpa-accent-hover: #0066AD;
+    --dpa-text: #525E66;
+    --dpa-text-muted: #A6AFB4;
+    --dpa-border: #DDE2E6;
+    --dpa-bg-subtle: #F6F7F9;
   }
 
   html {
-    font-family: theme(fontFamily.sans);
+    font-family: 'Raleway', ui-sans-serif, system-ui, Segoe UI, Roboto, sans-serif;
   }
 
   body {
-    @apply bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100;
+    @apply bg-dpaGray-50 text-dpaGray-700;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-extrabold text-dpa-800;
+    letter-spacing: -0.015em;
+  }
+
+  /* Заголовки поля — немного строже */
+  label {
+    font-weight: 600;
   }
 }
 
@@ -22,43 +40,267 @@
   }
 
   .app-header {
-    @apply sticky top-0 z-40 border-b border-slate-200/70 bg-white/80 backdrop-blur dark:border-slate-800/80 dark:bg-slate-950/60;
+    @apply sticky top-0 z-40 border-b border-dpaGray-200 bg-white/90 backdrop-blur;
+  }
+
+  .app-footer {
+    @apply border-t border-dpaGray-200 bg-white;
   }
 
   .app-container {
     @apply mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-8;
   }
 
+  /* ===== Cards ===== */
   .card {
-    @apply rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900;
+    @apply rounded-2xl border border-dpaGray-200 bg-white shadow-sm;
   }
-
   .card-header {
-    @apply border-b border-slate-200/70 bg-slate-50 px-5 py-4 dark:border-slate-800/80 dark:bg-slate-900/60;
+    @apply border-b border-dpaGray-200 bg-dpaGray-50/80 px-5 py-4;
   }
-
   .card-body {
     @apply px-5 py-5;
   }
 
+  /* ===== Buttons ===== */
   .btn {
     @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition;
   }
-
   .btn-primary {
-    @apply btn bg-blue-600 text-white shadow-sm hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-200 dark:focus-visible:ring-blue-900/50;
+    @apply btn bg-dpa-800 text-white shadow-sm
+           hover:bg-dpa-900
+           focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-dpa-200;
   }
-
+  .btn-accent {
+    @apply btn bg-dpa-500 text-white shadow-sm
+           hover:bg-dpa-600
+           focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-dpa-200;
+  }
   .btn-secondary {
-    @apply btn bg-white text-slate-900 ring-1 ring-slate-200 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-slate-200 dark:bg-slate-900 dark:text-slate-100 dark:ring-slate-800 dark:hover:bg-slate-800/40 dark:focus-visible:ring-slate-800;
+    @apply btn bg-white text-dpaGray-800 ring-1 ring-dpaGray-200
+           hover:bg-dpaGray-50
+           focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-dpaGray-200;
+  }
+  .btn-ghost {
+    @apply btn bg-transparent text-dpaGray-700 hover:bg-dpaGray-100;
+  }
+  .btn-danger {
+    @apply btn bg-rose-600 text-white hover:bg-rose-700;
+  }
+  .btn-sm {
+    @apply px-3 py-1.5 text-xs;
   }
 
+  /* ===== Яркая кнопка регистрации инцидента (в шапке / моб. меню) ===== */
+  .btn-register {
+    @apply relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-xl px-4 py-2
+           text-sm font-bold text-white shadow-sm transition
+           focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-dpa-200;
+    background-image: linear-gradient(135deg, #0077C8 0%, #004C97 55%, #003971 100%);
+    box-shadow: 0 6px 18px -8px rgba(0, 76, 151, .55), 0 1px 0 rgba(255,255,255,.15) inset;
+  }
+  .btn-register i { @apply text-[15px]; }
+  .btn-register::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent 20%, rgba(255,255,255,.28) 50%, transparent 80%);
+    transform: translateX(-120%);
+    transition: transform .7s ease;
+    pointer-events: none;
+  }
+  .btn-register:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px -10px rgba(0, 76, 151, .70), 0 1px 0 rgba(255,255,255,.2) inset;
+  }
+  .btn-register:hover::after { transform: translateX(120%); }
+  .btn-register:active { transform: translateY(0); }
+
+  /* ===== Nav ===== */
   .navlink {
-    @apply inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-200 dark:hover:bg-slate-800/50 dark:hover:text-white;
+    @apply inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-dpaGray-700
+           hover:bg-dpa-50 hover:text-dpa-800;
+  }
+  .navlink-active {
+    @apply bg-dpa-50 text-dpa-800;
   }
 
-  .navlink-active {
-    @apply bg-slate-100 text-slate-900 dark:bg-slate-800/60 dark:text-white;
+  /* ===== Form controls ===== */
+  .form-label {
+    @apply mb-1 block text-xs font-semibold uppercase tracking-wider text-dpaGray-600;
   }
+  .form-hint {
+    @apply mt-1 text-xs text-dpaGray-500;
+  }
+  .form-control {
+    @apply block w-full rounded-lg border border-dpaGray-200 bg-white px-3 py-2 text-sm text-dpaGray-800 shadow-sm outline-none transition
+           placeholder:text-dpaGray-400
+           focus:border-dpa-500 focus:ring-4 focus:ring-dpa-100;
+  }
+  .form-control[readonly], .form-control:disabled {
+    @apply bg-dpaGray-50 text-dpaGray-700;
+  }
+  textarea.form-control {
+    @apply min-h-[88px];
+  }
+
+  .field {
+    @apply flex flex-col;
+  }
+
+  /* плотная двух-/трёх-/четырёхколоночная сетка */
+  .grid-form-2 { @apply grid gap-4 sm:grid-cols-2; }
+  .grid-form-3 { @apply grid gap-4 sm:grid-cols-2 lg:grid-cols-3; }
+  .grid-form-4 { @apply grid gap-4 sm:grid-cols-2 lg:grid-cols-4; }
+
+  /* чекбокс-карточка */
+  .check-card {
+    @apply flex cursor-pointer items-start gap-3 rounded-xl border border-dpaGray-200 bg-white p-3 shadow-sm transition
+           hover:border-dpa-400 hover:bg-dpa-50/40
+           has-[:checked]:border-dpa-500 has-[:checked]:bg-dpa-50 has-[:checked]:ring-2 has-[:checked]:ring-dpa-100;
+  }
+  .check-card input[type="checkbox"] {
+    @apply mt-0.5 h-4 w-4 rounded border-dpaGray-300 text-dpa-700 focus:ring-dpa-500;
+  }
+
+  /* Значки / бейджи */
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold;
+  }
+  .badge-neutral { @apply border-dpaGray-200 bg-dpaGray-50 text-dpaGray-700; }
+  .badge-primary { @apply border-dpa-200 bg-dpa-50 text-dpa-800; }
+  .badge-success { @apply border-emerald-200 bg-emerald-50 text-emerald-700; }
+  .badge-warning { @apply border-amber-200 bg-amber-50 text-amber-700; }
+  .badge-danger  { @apply border-rose-200 bg-rose-50 text-rose-700; }
+
+  /* Таблица */
+  .dpa-table {
+    @apply w-full text-left text-sm;
+  }
+  .dpa-table thead th {
+    @apply border-b border-dpaGray-200 bg-dpaGray-50 px-4 py-3 text-xs font-semibold uppercase tracking-wider text-dpaGray-600;
+  }
+  .dpa-table tbody td {
+    @apply border-b border-dpaGray-100 px-4 py-3 align-top;
+  }
+  .dpa-table tbody tr:hover {
+    @apply bg-dpa-50/40;
+  }
+
+  /* Утилиты */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Hero-цветная плашка с DPA-градиентом */
+  .dpa-hero {
+    background: linear-gradient(135deg, #003971 0%, #004C97 55%, #0077C8 100%);
+    color: #fff;
+  }
+
+  /* ===== KPI красочные мини-карточки ===== */
+  .kpi {
+    @apply relative flex items-center gap-3 overflow-hidden rounded-xl border px-3 py-2.5 shadow-sm;
+  }
+  .kpi-icon {
+    @apply flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-base;
+  }
+  .kpi-body { @apply min-w-0 flex-1; }
+  .kpi-label { @apply text-[10px] font-semibold uppercase tracking-wider leading-none; }
+  .kpi-value { @apply mt-0.5 text-xl font-extrabold leading-tight; }
+
+  .kpi-blue {
+    @apply border-dpa-200;
+    background: linear-gradient(135deg, #E6F1FB 0%, #F2F7FC 100%);
+  }
+  .kpi-blue .kpi-icon { @apply bg-dpa-800 text-white; }
+  .kpi-blue .kpi-label { @apply text-dpa-700; }
+  .kpi-blue .kpi-value { @apply text-dpa-800; }
+
+  .kpi-red {
+    @apply border-rose-200;
+    background: linear-gradient(135deg, #FEE2E2 0%, #FFF1F2 100%);
+  }
+  .kpi-red .kpi-icon { @apply bg-rose-600 text-white; }
+  .kpi-red .kpi-label { @apply text-rose-700; }
+  .kpi-red .kpi-value { @apply text-rose-700; }
+
+  .kpi-cyan {
+    @apply border-cyan-200;
+    background: linear-gradient(135deg, #CFFAFE 0%, #ECFEFF 100%);
+  }
+  .kpi-cyan .kpi-icon { @apply bg-cyan-600 text-white; }
+  .kpi-cyan .kpi-label { @apply text-cyan-800; }
+  .kpi-cyan .kpi-value { @apply text-cyan-800; }
+
+  .kpi-green {
+    @apply border-emerald-200;
+    background: linear-gradient(135deg, #D1FAE5 0%, #ECFDF5 100%);
+  }
+  .kpi-green .kpi-icon { @apply bg-emerald-600 text-white; }
+  .kpi-green .kpi-label { @apply text-emerald-800; }
+  .kpi-green .kpi-value { @apply text-emerald-800; }
+
+  .kpi-amber {
+    @apply border-amber-200;
+    background: linear-gradient(135deg, #FEF3C7 0%, #FFFBEB 100%);
+  }
+  .kpi-amber .kpi-icon { @apply bg-amber-500 text-white; }
+  .kpi-amber .kpi-label { @apply text-amber-800; }
+  .kpi-amber .kpi-value { @apply text-amber-800; }
+
+  /* Chart holders */
+  .chart-holder { @apply relative w-full; }
+  .chart-center {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    pointer-events: none; text-align: center;
+  }
+
+  /* Stepper */
+  .stepper { @apply flex items-center gap-2 sm:gap-3; }
+  .step {
+    @apply flex flex-1 items-center gap-3 rounded-xl border border-dpaGray-200 bg-white px-3 py-2.5 shadow-sm transition;
+  }
+  .step.is-active { @apply border-dpa-500 bg-dpa-50; }
+  .step.is-done   { @apply border-emerald-400 bg-emerald-50; }
+  .step-num {
+    @apply flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-dpaGray-100 text-sm font-bold text-dpaGray-600;
+  }
+  .step.is-active .step-num { @apply bg-dpa-800 text-white; }
+  .step.is-done   .step-num { @apply bg-emerald-600 text-white; }
+  .step-title { @apply text-sm font-semibold text-dpaGray-800 leading-tight; }
+  .step-sub   { @apply text-[11px] uppercase tracking-wider text-dpaGray-500; }
 }
 
+/* ===== Плавные анимации появления ===== */
+@keyframes dpaFadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-up {
+  opacity: 0;
+  animation: dpaFadeUp .55s cubic-bezier(.22,.61,.36,1) forwards;
+}
+.animate-fade-up.delay-1 { animation-delay: .07s; }
+.animate-fade-up.delay-2 { animation-delay: .16s; }
+.animate-fade-up.delay-3 { animation-delay: .26s; }
+.animate-fade-up.delay-4 { animation-delay: .36s; }
+.animate-fade-up.delay-5 { animation-delay: .46s; }
+
+/* мягкий hover у карточек */
+.card { transition: box-shadow .2s ease, transform .2s ease; }
+.card:hover { box-shadow: 0 10px 24px -14px rgba(0, 57, 113, .28); }
+
+/* мягкая анимация KPI */
+.kpi { transition: transform .25s ease, box-shadow .25s ease; }
+.kpi:hover { transform: translateY(-2px); box-shadow: 0 8px 20px -12px rgba(0, 57, 113, .25); }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up, .card, .kpi { animation: none !important; transition: none !important; }
+}

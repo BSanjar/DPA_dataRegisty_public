@@ -1,0 +1,336 @@
+@model data_registry_public.Models.local_models.IncidentCreateViewModel
+@{
+    ViewData["Title"] = "Регистрация инцидента";
+    var org = ViewBag.CurrentOrg as data_registry_public.Integrations.MinJustOrganizationInfo;
+}
+
+<div class="mb-6 flex flex-col gap-2">
+    <a class="inline-flex w-fit items-center gap-1 text-sm text-dpaGray-500 hover:text-dpa-800" asp-action="Index">
+        <i class="bi bi-arrow-left"></i> Назад к списку
+    </a>
+    <div class="flex flex-wrap items-end justify-between gap-3">
+        <div>
+            <div class="text-[11px] font-semibold uppercase tracking-wider text-dpa-500">Инцидент · Регистрация</div>
+            <h1 class="mt-1 text-2xl font-extrabold tracking-tight text-dpa-800 sm:text-3xl">Регистрация инцидента</h1>
+            <p class="mt-1 text-sm text-dpaGray-500">Три шага. Данные организации уже подтянуты из Минюста.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Stepper -->
+<ol id="wizSteps" class="stepper mb-6">
+    <li class="step is-active" data-step="1">
+        <div class="step-num">1</div>
+        <div><div class="step-sub">Шаг 1</div><div class="step-title">Организация</div></div>
+    </li>
+    <li class="step" data-step="2">
+        <div class="step-num">2</div>
+        <div><div class="step-sub">Шаг 2</div><div class="step-title">Инцидент</div></div>
+    </li>
+    <li class="step" data-step="3">
+        <div class="step-num">3</div>
+        <div><div class="step-sub">Шаг 3</div><div class="step-title">Данные и меры</div></div>
+    </li>
+</ol>
+
+<form id="wizForm" asp-action="Save" method="post" class="space-y-6" novalidate>
+    @Html.AntiForgeryToken()
+
+    <!-- ========== STEP 1: Organization (read-only) ========== -->
+    <section class="wiz-pane card" data-pane="1">
+        <div class="card-header flex flex-wrap items-center justify-between gap-2">
+            <div>
+                <div class="text-base font-extrabold text-dpa-800">Организация</div>
+                <div class="text-xs text-dpaGray-500">Сведения из Министерства юстиции. Поля недоступны для редактирования.</div>
+            </div>
+            <span class="badge badge-success"><i class="bi bi-check2-circle"></i> Подтверждено Минюстом</span>
+        </div>
+
+        @if (org == null)
+        {
+            <div class="card-body">
+                <div class="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
+                    <i class="bi bi-exclamation-circle"></i>
+                    Не удалось получить данные организации. Попробуйте позже или обратитесь к администратору.
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="card-body">
+                <div class="flex items-start gap-3">
+                    <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-dpa-800 text-white">
+                        <i class="bi bi-building"></i>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <div class="text-base font-extrabold text-dpa-800">@org.FullName</div>
+                        <div class="text-xs text-dpaGray-500">
+                            ИНН @org.Tin · @org.LegalForm · @org.BusinessSectorName
+                        </div>
+                    </div>
+                </div>
+
+                <dl class="mt-4 grid gap-x-6 gap-y-3 text-sm sm:grid-cols-2 lg:grid-cols-3">
+                    <div class="field">
+                        <dt class="form-label">Рег. номер</dt>
+                        <dd class="text-dpaGray-800">@org.RegistrationNumber</dd>
+                    </div>
+                    <div class="field">
+                        <dt class="form-label">Дата регистрации</dt>
+                        <dd class="text-dpaGray-800">@org.RegistrationDate</dd>
+                    </div>
+                    <div class="field">
+                        <dt class="form-label">Статус</dt>
+                        <dd class="text-dpaGray-800"><span class="badge badge-success">@org.Status</span></dd>
+                    </div>
+                    <div class="field lg:col-span-2">
+                        <dt class="form-label">Юридический адрес</dt>
+                        <dd class="text-dpaGray-800">@org.Address</dd>
+                    </div>
+                    <div class="field">
+                        <dt class="form-label">Руководитель</dt>
+                        <dd class="text-dpaGray-800">
+                            @org.DirectorName
+                            @if (!string.IsNullOrEmpty(org.DirectorPosition))
+                            {
+                                <span class="text-dpaGray-500"> · @org.DirectorPosition</span>
+                            }
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+        }
+
+        <div class="card-body flex justify-between border-t border-dpaGray-200">
+            <a class="btn-secondary" asp-action="Index"><i class="bi bi-x-lg"></i> Отмена</a>
+            <button type="button" class="btn-primary" data-next="2" @(org == null ? "disabled" : "")>
+                Далее <i class="bi bi-arrow-right"></i>
+            </button>
+        </div>
+    </section>
+
+    <!-- ========== STEP 2: Incident info ========== -->
+    <section class="wiz-pane card hidden" data-pane="2">
+        <div class="card-header">
+            <div class="text-base font-extrabold text-dpa-800">Общие сведения об инциденте</div>
+            <div class="text-xs text-dpaGray-500">Даты, тип, критичность, место и описание</div>
+        </div>
+        <div class="card-body space-y-5">
+
+            <!-- Даты + критичность + тип в одну сетку -->
+            <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <div class="field">
+                    <label asp-for="DateOccurrence" class="form-label">Дата возникновения</label>
+                    <input asp-for="DateOccurrence" type="datetime-local" class="form-control" />
+                </div>
+                <div class="field">
+                    <label asp-for="DateDetection" class="form-label">Дата обнаружения</label>
+                    <input asp-for="DateDetection" type="datetime-local" class="form-control" />
+                </div>
+                <div class="field">
+                    <label asp-for="IncidentType" class="form-label">Тип инцидента</label>
+                    <select asp-for="IncidentType" class="form-control">
+                        <option value="">— выберите —</option>
+                        <option value="Unauthorized access">Несанкц. доступ</option>
+                        <option value="Data leak">Утечка данных</option>
+                        <option value="Data loss">Потеря данных</option>
+                        <option value="Data destruction">Уничтожение данных</option>
+                        <option value="Phishing">Фишинг</option>
+                        <option value="Malware">Вредоносное ПО</option>
+                        <option value="Insider">Инсайдер</option>
+                        <option value="Other">Иное</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label asp-for="IncidentSeverity" class="form-label">Критичность</label>
+                    <select asp-for="IncidentSeverity" class="form-control">
+                        <option value="">— выберите —</option>
+                        <option value="Low">Низкий</option>
+                        <option value="Medium">Средний</option>
+                        <option value="High">Высокий</option>
+                        <option value="Critical">Критический</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- место + система + тип системы -->
+            <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <div class="field">
+                    <label asp-for="IncidentLocation" class="form-label">Место возникновения</label>
+                    <input asp-for="IncidentLocation" class="form-control" placeholder="ИС, подразделение, офис…" />
+                </div>
+                <div class="field">
+                    <label asp-for="AffectedInformationSystem" class="form-label">Затронутая система</label>
+                    <input asp-for="AffectedInformationSystem" class="form-control" placeholder="CRM, сайт, 1С…" />
+                </div>
+                <div class="field">
+                    <label asp-for="SystemType" class="form-label">Тип системы</label>
+                    <select asp-for="SystemType" class="form-control">
+                        <option value="">— выберите —</option>
+                        <option value="db">База данных</option>
+                        <option value="website">Веб-сайт</option>
+                        <option value="infosystem">Информационная система</option>
+                        <option value="cloude_service">Облачный сервис</option>
+                        <option value="local_network">Локальная сеть</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="field">
+                <label asp-for="IncidentDescription" class="form-label">
+                    Краткое описание <span class="text-rose-600">*</span>
+                </label>
+                <textarea asp-for="IncidentDescription" rows="3" class="form-control"
+                          placeholder="Что произошло, как был обнаружен инцидент и его последствия…"></textarea>
+                <span asp-validation-for="IncidentDescription" class="text-xs text-rose-600"></span>
+            </div>
+
+            <div class="field">
+                <label asp-for="SuspectedCause" class="form-label">Предполагаемая причина</label>
+                <textarea asp-for="SuspectedCause" rows="2" class="form-control"
+                          placeholder="Человеческий фактор, уязвимость ПО, фишинг…"></textarea>
+            </div>
+        </div>
+        <div class="card-body flex justify-between border-t border-dpaGray-200">
+            <button type="button" class="btn-secondary" data-prev="1"><i class="bi bi-arrow-left"></i> Назад</button>
+            <button type="button" class="btn-primary" data-next="3">Далее <i class="bi bi-arrow-right"></i></button>
+        </div>
+    </section>
+
+    <!-- ========== STEP 3: Data & actions ========== -->
+    <section class="wiz-pane card hidden" data-pane="3">
+        <div class="card-header">
+            <div class="text-base font-extrabold text-dpa-800">Затронутые данные и меры</div>
+            <div class="text-xs text-dpaGray-500">Характеристики данных и реакция на инцидент</div>
+        </div>
+        <div class="card-body space-y-5">
+
+            <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <div class="field">
+                    <label asp-for="AffectedRecordsCount" class="form-label">Записей</label>
+                    <input asp-for="AffectedRecordsCount" type="number" min="0" step="1" class="form-control" placeholder="0" />
+                </div>
+                <div class="field">
+                    <label asp-for="EstimatedDataSubjectsCount" class="form-label">Субъектов (прибл.)</label>
+                    <input asp-for="EstimatedDataSubjectsCount" class="form-control" placeholder="1500" />
+                </div>
+                <div class="field">
+                    <label asp-for="PersonalDataType" class="form-label">Тип данных</label>
+                    <select asp-for="PersonalDataType" class="form-control">
+                        <option value="">—</option>
+                        <option value="Regular">Обычные</option>
+                        <option value="Special">Специальные</option>
+                        <option value="Biometric">Биометрические</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label asp-for="DataSubjectCategory" class="form-label">Категория субъектов</label>
+                    <select asp-for="DataSubjectCategory" class="form-control">
+                        <option value="">—</option>
+                        <option value="Employees">Сотрудники</option>
+                        <option value="Clients">Клиенты</option>
+                        <option value="Citizens">Граждане</option>
+                        <option value="SiteUsers">Пользователи сайта</option>
+                        <option value="Other">Иные</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="field">
+                <label asp-for="PersonalDataCategories" class="form-label">Категории ПДн</label>
+                <input asp-for="PersonalDataCategories" class="form-control"
+                       placeholder="ФИО, паспорт, контакты, финансовая информация…" />
+            </div>
+
+            <!-- Чекбоксы в компактной сетке 2×2 -->
+            <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                <label class="check-card">
+                    <input asp-for="IsDataCopiedOrStolen" type="checkbox" />
+                    <div>
+                        <div class="text-sm font-semibold">Скопированы / похищены</div>
+                        <div class="text-xs text-dpaGray-500">Подтверждено</div>
+                    </div>
+                </label>
+                <label class="check-card">
+                    <input asp-for="IsDataPublished" type="checkbox" />
+                    <div>
+                        <div class="text-sm font-semibold">Опубликованы</div>
+                        <div class="text-xs text-dpaGray-500">В открытых источниках</div>
+                    </div>
+                </label>
+                <label class="check-card">
+                    <input asp-for="HasRiskOfHarmToSubjects" type="checkbox" />
+                    <div>
+                        <div class="text-sm font-semibold">Риск вреда</div>
+                        <div class="text-xs text-dpaGray-500">Субъектам ПДн</div>
+                    </div>
+                </label>
+                <label class="check-card">
+                    <input asp-for="AreSubjectsNotified" type="checkbox" />
+                    <div>
+                        <div class="text-sm font-semibold">Субъекты уведомлены</div>
+                        <div class="text-xs text-dpaGray-500">Уведомление отправлено</div>
+                    </div>
+                </label>
+            </div>
+
+            <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <div class="field">
+                    <label asp-for="NotificationSentAt" class="form-label">Дата отправки уведомления</label>
+                    <input asp-for="NotificationSentAt" type="datetime-local" class="form-control" />
+                </div>
+            </div>
+
+            <div class="grid gap-4 lg:grid-cols-3">
+                <div class="field">
+                    <label asp-for="ActionsTaken" class="form-label">Меры по устранению</label>
+                    <textarea asp-for="ActionsTaken" rows="3" class="form-control"
+                              placeholder="Блокировка, ротация паролей, отключение сервисов…"></textarea>
+                </div>
+                <div class="field">
+                    <label asp-for="PreventionMeasures" class="form-label">Меры по предотвращению</label>
+                    <textarea asp-for="PreventionMeasures" rows="3" class="form-control"
+                              placeholder="Обновление политик, обучение сотрудников, DLP…"></textarea>
+                </div>
+                <div class="field">
+                    <label asp-for="InvestigationInfo" class="form-label">Расследование</label>
+                    <textarea asp-for="InvestigationInfo" rows="3" class="form-control"
+                              placeholder="Ответственные, сроки, выводы…"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="card-body flex flex-col gap-3 border-t border-dpaGray-200 sm:flex-row sm:justify-between">
+            <button type="button" class="btn-secondary" data-prev="2"><i class="bi bi-arrow-left"></i> Назад</button>
+            <button type="submit" class="btn-primary">
+                <i class="bi bi-check2-circle"></i> Зарегистрировать инцидент
+            </button>
+        </div>
+    </section>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function () {
+            const steps = Array.from(document.querySelectorAll('#wizSteps .step'));
+            const panes = Array.from(document.querySelectorAll('.wiz-pane'));
+
+            function showStep(n) {
+                panes.forEach(p => p.classList.toggle('hidden', p.dataset.pane !== String(n)));
+                steps.forEach(s => {
+                    const num = Number(s.dataset.step);
+                    s.classList.remove('is-active', 'is-done');
+                    if (num < n) s.classList.add('is-done');
+                    else if (num === n) s.classList.add('is-active');
+                });
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+            document.querySelectorAll('[data-next]').forEach(btn => {
+                btn.addEventListener('click', () => showStep(Number(btn.dataset.next)));
+            });
+            document.querySelectorAll('[data-prev]').forEach(btn => {
+                btn.addEventListener('click', () => showStep(Number(btn.dataset.prev)));
+            });
+        })();
+    </script>
+}

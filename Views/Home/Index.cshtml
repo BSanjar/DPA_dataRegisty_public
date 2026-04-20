@@ -1,58 +1,400 @@
-﻿@{
-    ViewData["Title"] = "Обзор";
+﻿@model data_registry_public.Models.local_models.DashboardViewModel
+@{
+    ViewData["Title"] = "Главная";
+
+    string J(string? s) => System.Text.Json.JsonSerializer.Serialize(s ?? "");
+    string IntArr(IEnumerable<int> xs) => "[" + string.Join(",", xs) + "]";
+    string StrArr(IEnumerable<string> xs) => "[" + string.Join(",", xs.Select(x => System.Text.Json.JsonSerializer.Serialize(x))) + "]";
+
+    string sectorSelected(string v) => Model.Sector == v ? "selected" : "";
+    string periodSelected(string v) => Model.Period == v ? "selected" : "";
+    string severitySelected(string v) => Model.Severity == v ? "selected" : "";
 }
 
-<div class="grid gap-4 lg:grid-cols-12 lg:gap-6">
-    <section class="card lg:col-span-7">
-        <div class="card-body">
-            <div class="mb-4 inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-900 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100">
-                <i class="bi bi-shield-lock text-blue-600 dark:text-blue-400" aria-hidden="true"></i>
-                <span>АИС «Реестр владельцев записей»</span>
+<!-- ===== Hero + фильтры ===== -->
+<section class="dpa-hero mb-4 overflow-hidden rounded-2xl shadow-sm animate-fade-up">
+    <div class="relative px-5 py-5 sm:px-8 sm:py-6">
+        <!-- декоративная сетка -->
+        <div class="pointer-events-none absolute inset-0 opacity-25"
+             style="background-image: radial-gradient(rgba(255,255,255,.25) 1px, transparent 1px); background-size: 18px 18px;"></div>
+
+        <div class="relative grid gap-4 lg:grid-cols-12 lg:items-end">
+            <div class="lg:col-span-5 xl:col-span-6">
+                <div class="inline-flex items-center gap-1 rounded-full bg-white/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-white/90">
+                    <i class="bi bi-speedometer2"></i> Аналитический дашборд
+                </div>
+                <h1 class="mt-2 text-2xl font-extrabold text-white sm:text-3xl">Главная</h1>
+                <p class="mt-1 max-w-xl text-sm text-white/80">
+                    Сводная статистика по всем инцидентам с персональными данными в системе. Данные «Мои инциденты» — в отдельном разделе.
+                </p>
             </div>
 
-            <h1 class="text-3xl font-bold tracking-tight sm:text-4xl">Учёт инцидентов, проверок и ответственности</h1>
-            <p class="mt-3 max-w-2xl text-slate-600 dark:text-slate-300">
-                Единое пространство для фиксации событий с персональными данными, контроля соблюдения законодательства и ведения материалов по привлечению к ответственности.
-            </p>
+            <!-- Фильтры -->
+            <form method="get" class="relative grid gap-2 sm:grid-cols-3 lg:col-span-7 xl:col-span-6 lg:grid-cols-4">
+                <div class="field">
+                    <label class="form-label !text-white/80">Период</label>
+                    <select name="period" class="form-control !bg-white/95">
+                        <option value="" selected="@(string.IsNullOrEmpty(Model.Period))">Всё время</option>
+                        <option value="7" selected="@(Model.Period=="7")">7 дней</option>
+                        <option value="30" selected="@(Model.Period=="30")">30 дней</option>
+                        <option value="90" selected="@(Model.Period=="90")">90 дней</option>
+                        <option value="year" selected="@(Model.Period=="year")">Год</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label class="form-label !text-white/80">Критичность</label>
+                    <select name="severity" class="form-control !bg-white/95">
+                        <option value="" selected="@(string.IsNullOrEmpty(Model.Severity))">Все</option>
+                        <option value="Low" selected="@(Model.Severity=="Low")">Низкий</option>
+                        <option value="Medium" selected="@(Model.Severity=="Medium")">Средний</option>
+                        <option value="High" selected="@(Model.Severity=="High")">Высокий</option>
+                        <option value="Critical" selected="@(Model.Severity=="Critical")">Критический</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label class="form-label !text-white/80">Сектор</label>
+                    <select name="sector" class="form-control !bg-white/95">
+                        <option value="" selected="@(string.IsNullOrEmpty(Model.Sector))">Все</option>
+                        <option value="Government" selected="@(Model.Sector=="Government")">Госорганы</option>
+                        <option value="Banking" selected="@(Model.Sector=="Banking")">Банки</option>
+                        <option value="Healthcare" selected="@(Model.Sector=="Healthcare")">Медицина</option>
+                        <option value="Telecommunications" selected="@(Model.Sector=="Telecommunications")">Телеком</option>
+                        <option value="Education" selected="@(Model.Sector=="Education")">Образование</option>
+                        <option value="IT" selected="@(Model.Sector=="IT")">IT</option>
+                        <option value="Retail" selected="@(Model.Sector=="Retail")">Торговля</option>
+                    </select>
+                </div>
+                <div class="flex gap-2 self-end">
+                    <button type="submit" class="btn-accent flex-1"><i class="bi bi-funnel"></i> Применить</button>
+                    <a class="btn-secondary" asp-action="Index" title="Сбросить"><i class="bi bi-arrow-counterclockwise"></i></a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
 
-            <div class="mt-6 flex flex-col gap-2 sm:flex-row">
-                <a class="btn-primary" href="#"><i class="bi bi-plus-lg" aria-hidden="true"></i> Создать запись</a>
-                <a class="btn-secondary" href="#"><i class="bi bi-search" aria-hidden="true"></i> Найти</a>
+<!-- ===== KPI ===== -->
+<div class="mb-4 grid gap-3 grid-cols-2 md:grid-cols-3 xl:grid-cols-6 animate-fade-up delay-1">
+    <div class="kpi kpi-blue">
+        <div class="kpi-icon"><i class="bi bi-stack"></i></div>
+        <div class="kpi-body">
+            <div class="kpi-label">Всего в системе</div>
+            <div class="kpi-value"><span class="count-up" data-target="@Model.TotalAll">0</span></div>
+        </div>
+    </div>
+    <div class="kpi kpi-cyan">
+        <div class="kpi-icon"><i class="bi bi-filter-circle"></i></div>
+        <div class="kpi-body">
+            <div class="kpi-label">Под фильтром</div>
+            <div class="kpi-value"><span class="count-up" data-target="@Model.TotalInPeriod">0</span></div>
+        </div>
+    </div>
+    <div class="kpi kpi-red">
+        <div class="kpi-icon"><i class="bi bi-shield-exclamation"></i></div>
+        <div class="kpi-body">
+            <div class="kpi-label">Критичные</div>
+            <div class="kpi-value">
+                <span class="count-up" data-target="@Model.CriticalCount">0</span>
+                <span class="ml-1 text-xs font-semibold text-rose-600">· @Model.CriticalPct.ToString("0.#",System.Globalization.CultureInfo.InvariantCulture)%</span>
             </div>
         </div>
-    </section>
-
-    <aside class="card lg:col-span-5">
-        <div class="card-header">
-            <div class="flex items-center justify-between">
-                <div class="font-semibold">Быстрый доступ</div>
-                <div class="text-xs text-slate-500 dark:text-slate-400">Шаблоны разделов</div>
+    </div>
+    <div class="kpi kpi-amber">
+        <div class="kpi-icon"><i class="bi bi-globe"></i></div>
+        <div class="kpi-body">
+            <div class="kpi-label">С публикацией</div>
+            <div class="kpi-value"><span class="count-up" data-target="@Model.PublishedCount">0</span></div>
+        </div>
+    </div>
+    <div class="kpi kpi-green">
+        <div class="kpi-icon"><i class="bi bi-send-check"></i></div>
+        <div class="kpi-body">
+            <div class="kpi-label">Уведомлено</div>
+            <div class="kpi-value">
+                <span class="count-up" data-target="@Model.NotifiedCount">0</span>
+                <span class="ml-1 text-xs font-semibold text-emerald-700">· @Model.NotifiedPct.ToString("0.#",System.Globalization.CultureInfo.InvariantCulture)%</span>
             </div>
         </div>
-        <div class="card-body">
-            <div class="grid gap-2">
-                <a class="navlink border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900" asp-area="" asp-controller="Incedents" asp-action="Index">
-                    <i class="bi bi-exclamation-triangle text-amber-500" aria-hidden="true"></i>
-                    <div class="leading-tight">
-                        <div class="font-semibold text-slate-900 dark:text-slate-100">Инциденты</div>
-                        <div class="text-xs text-slate-500 dark:text-slate-400">Фиксация и сопровождение</div>
-                    </div>
-                </a>
-                <a class="navlink border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900" asp-area="" asp-controller="Inspections" asp-action="Index">
-                    <i class="bi bi-clipboard-check text-emerald-500" aria-hidden="true"></i>
-                    <div class="leading-tight">
-                        <div class="font-semibold text-slate-900 dark:text-slate-100">Проверки</div>
-                        <div class="text-xs text-slate-500 dark:text-slate-400">План / внеплан, итоги</div>
-                    </div>
-                </a>
-                <a class="navlink border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900" asp-area="" asp-controller="Sanctions" asp-action="Index">
-                    <i class="bi bi-journal-text text-blue-600 dark:text-blue-400" aria-hidden="true"></i>
-                    <div class="leading-tight">
-                        <div class="font-semibold text-slate-900 dark:text-slate-100">Протоколы</div>
-                        <div class="text-xs text-slate-500 dark:text-slate-400">Привлечение к ответственности</div>
-                    </div>
-                </a>
-            </div>
+    </div>
+    <div class="kpi kpi-blue">
+        <div class="kpi-icon"><i class="bi bi-database"></i></div>
+        <div class="kpi-body">
+            <div class="kpi-label">Записей затронуто</div>
+            <div class="kpi-value"><span class="count-up" data-target="@Model.AffectedRecordsSum">0</span></div>
         </div>
-    </aside>
+    </div>
 </div>
+
+<!-- ===== Графики ===== -->
+<div class="mb-4 grid gap-4 lg:grid-cols-12">
+
+    <!-- Тренд за 12 месяцев -->
+    <div class="card animate-fade-up delay-2 lg:col-span-8">
+        <div class="card-header flex items-center justify-between">
+            <div>
+                <div class="text-base font-extrabold text-dpa-800">Динамика регистрации инцидентов</div>
+                <div class="text-xs text-dpaGray-500">За последние 12 месяцев — всего и критичные</div>
+            </div>
+            <div class="hidden items-center gap-3 text-xs sm:flex">
+                <span class="inline-flex items-center gap-1"><span class="h-2.5 w-2.5 rounded-full bg-dpa-600"></span> Всего</span>
+                <span class="inline-flex items-center gap-1"><span class="h-2.5 w-2.5 rounded-full bg-rose-500"></span> Критичные</span>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="chart-holder h-72"><canvas id="chartMonthly"></canvas></div>
+        </div>
+    </div>
+
+    <!-- Доля по критичности -->
+    <div class="card animate-fade-up delay-2 lg:col-span-4">
+        <div class="card-header">
+            <div class="text-base font-extrabold text-dpa-800">Распределение по критичности</div>
+            <div class="text-xs text-dpaGray-500">В выбранном периоде</div>
+        </div>
+        <div class="card-body">
+            <div class="chart-holder h-72 relative">
+                <canvas id="chartSeverity"></canvas>
+                <div class="chart-center">
+                    <div class="text-[11px] uppercase tracking-wider text-dpaGray-500">Всего</div>
+                    <div class="text-3xl font-extrabold text-dpa-800">@Model.TotalInPeriod</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Типы систем -->
+    <div class="card animate-fade-up delay-3 lg:col-span-6">
+        <div class="card-header">
+            <div class="text-base font-extrabold text-dpa-800">Затронутые типы систем</div>
+            <div class="text-xs text-dpaGray-500">Где возникают инциденты</div>
+        </div>
+        <div class="card-body">
+            <div class="chart-holder h-64"><canvas id="chartSystems"></canvas></div>
+        </div>
+    </div>
+
+    <!-- Категории ПДн -->
+    <div class="card animate-fade-up delay-3 lg:col-span-3">
+        <div class="card-header">
+            <div class="text-base font-extrabold text-dpa-800">Тип ПДн</div>
+            <div class="text-xs text-dpaGray-500">Обычные/специальные/биометрические</div>
+        </div>
+        <div class="card-body">
+            <div class="chart-holder h-64"><canvas id="chartPdType"></canvas></div>
+        </div>
+    </div>
+
+    <!-- Категории субъектов -->
+    <div class="card animate-fade-up delay-3 lg:col-span-3">
+        <div class="card-header">
+            <div class="text-base font-extrabold text-dpa-800">Субъекты</div>
+            <div class="text-xs text-dpaGray-500">Кто пострадал</div>
+        </div>
+        <div class="card-body">
+            <div class="chart-holder h-64"><canvas id="chartSubjects"></canvas></div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script>
+        // ===== count-up анимация =====
+        (function () {
+            function animate(el) {
+                const target = Number(el.dataset.target) || 0;
+                const duration = 900;
+                const start = performance.now();
+                function tick(now) {
+                    const p = Math.min(1, (now - start) / duration);
+                    const eased = 1 - Math.pow(1 - p, 3);
+                    el.textContent = Math.round(target * eased).toLocaleString('ru-RU');
+                    if (p < 1) requestAnimationFrame(tick);
+                }
+                requestAnimationFrame(tick);
+            }
+            const io = new IntersectionObserver(entries => {
+                entries.forEach(e => { if (e.isIntersecting) { animate(e.target); io.unobserve(e.target); } });
+            }, { threshold: 0.2 });
+            document.querySelectorAll('.count-up').forEach(el => io.observe(el));
+        })();
+
+        // ===== Chart.js ======
+        const brand = {
+            blue700: '#004C97', blue800: '#003971', blue500: '#0077C8',
+            cyan:    '#0891B2',
+            rose:    '#E11D48', roseLt: 'rgba(225,29,72,.15)',
+            amber:   '#F59E0B',
+            emerald: '#10B981',
+            slate:   '#64748B',
+            grayLt:  '#E5E7EB'
+        };
+
+        Chart.defaults.font.family = 'Raleway, sans-serif';
+        Chart.defaults.color = '#525E66';
+        Chart.defaults.plugins.legend.labels.boxWidth = 10;
+        Chart.defaults.plugins.legend.labels.boxHeight = 10;
+        Chart.defaults.plugins.legend.labels.usePointStyle = true;
+        Chart.defaults.plugins.tooltip.padding = 10;
+        Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(0, 57, 113, .95)';
+        Chart.defaults.plugins.tooltip.titleColor = '#fff';
+        Chart.defaults.plugins.tooltip.bodyColor = '#fff';
+        Chart.defaults.plugins.tooltip.cornerRadius = 8;
+        Chart.defaults.animation.duration = 900;
+        Chart.defaults.animation.easing = 'easeOutQuart';
+
+        function gradient(ctx, c1, c2) {
+            const h = ctx.canvas.height || 260;
+            const g = ctx.createLinearGradient(0, 0, 0, h);
+            g.addColorStop(0, c1); g.addColorStop(1, c2);
+            return g;
+        }
+
+        // ---- Monthly
+        (function () {
+            const ctx = document.getElementById('chartMonthly').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: @Html.Raw(StrArr(Model.MonthlyLabels)),
+                    datasets: [
+                        {
+                            label: 'Всего',
+                            data: @Html.Raw(IntArr(Model.MonthlySeries)),
+                            borderColor: brand.blue700,
+                            backgroundColor: gradient(ctx, 'rgba(0,76,151,.35)', 'rgba(0,76,151,0)'),
+                            borderWidth: 3,
+                            pointRadius: 3,
+                            pointHoverRadius: 6,
+                            tension: 0.35,
+                            fill: true
+                        },
+                        {
+                            label: 'Критичные',
+                            data: @Html.Raw(IntArr(Model.MonthlyCriticalSeries)),
+                            borderColor: brand.rose,
+                            backgroundColor: brand.roseLt,
+                            borderWidth: 2,
+                            borderDash: [6, 4],
+                            pointRadius: 2,
+                            tension: 0.35,
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { beginAtZero: true, grid: { color: brand.grayLt }, ticks: { precision: 0 } }
+                    }
+                }
+            });
+        })();
+
+        // ---- Severity doughnut
+        (function () {
+            const ctx = document.getElementById('chartSeverity').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Критический', 'Высокий', 'Средний', 'Низкий'],
+                    datasets: [{
+                        data: [@Model.BySeverity["Critical"], @Model.BySeverity["High"], @Model.BySeverity["Medium"], @Model.BySeverity["Low"]],
+                        backgroundColor: [brand.rose, '#F97316', brand.amber, brand.emerald],
+                        borderColor: '#fff',
+                        borderWidth: 2,
+                        hoverOffset: 8
+                    }]
+                },
+                options: {
+                    cutout: '68%',
+                    plugins: { legend: { position: 'bottom' } },
+                    maintainAspectRatio: false,
+                    responsive: true
+                }
+            });
+        })();
+
+        // ---- Systems bar
+        (function () {
+            const ctx = document.getElementById('chartSystems').getContext('2d');
+            const rawLabels  = @Html.Raw(StrArr(Model.BySystemType.Keys));
+            const niceLabels = rawLabels.map(x => ({
+                db:'База данных', website:'Веб-сайт', infosystem:'ИС',
+                cloude_service:'Облако', local_network:'ЛВС', unknown:'Не указано'
+            }[x] || x));
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: niceLabels,
+                    datasets: [{
+                        label: 'Инцидентов',
+                        data: @Html.Raw(IntArr(Model.BySystemType.Values)),
+                        backgroundColor: gradient(ctx, brand.blue500, brand.blue800),
+                        borderRadius: 10,
+                        borderSkipped: false,
+                        maxBarThickness: 42
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { beginAtZero: true, grid: { color: brand.grayLt }, ticks: { precision: 0 } }
+                    }
+                }
+            });
+        })();
+
+        // ---- PD Type pie
+        (function () {
+            const ctx = document.getElementById('chartPdType').getContext('2d');
+            new Chart(ctx, {
+                type: 'polarArea',
+                data: {
+                    labels: ['Обычные', 'Специальные', 'Биометрические'],
+                    datasets: [{
+                        data: [@Model.ByPersonalDataType["Regular"], @Model.ByPersonalDataType["Special"], @Model.ByPersonalDataType["Biometric"]],
+                        backgroundColor: ['rgba(0,119,200,.75)','rgba(225,29,72,.75)','rgba(16,185,129,.75)'],
+                        borderColor: '#fff', borderWidth: 2
+                    }]
+                },
+                options: {
+                    plugins: { legend: { position: 'bottom' } },
+                    responsive: true, maintainAspectRatio: false,
+                    scales: { r: { grid: { color: brand.grayLt }, ticks: { display: false } } }
+                }
+            });
+        })();
+
+        // ---- Subjects
+        (function () {
+            const ctx = document.getElementById('chartSubjects').getContext('2d');
+            const rawLabels  = @Html.Raw(StrArr(Model.BySubjectCategory.Keys));
+            const niceLabels = rawLabels.map(x => ({
+                Employees:'Сотрудники', Clients:'Клиенты', Citizens:'Граждане',
+                SiteUsers:'Польз. сайта', Other:'Иные'
+            }[x] || x));
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: niceLabels,
+                    datasets: [{
+                        data: @Html.Raw(IntArr(Model.BySubjectCategory.Values)),
+                        backgroundColor: [brand.blue700, brand.cyan, brand.emerald, brand.amber, brand.slate, brand.rose],
+                        borderColor: '#fff', borderWidth: 2, hoverOffset: 8
+                    }]
+                },
+                options: {
+                    cutout: '60%',
+                    plugins: { legend: { position: 'bottom' } },
+                    responsive: true, maintainAspectRatio: false
+                }
+            });
+        })();
+    </script>
+}

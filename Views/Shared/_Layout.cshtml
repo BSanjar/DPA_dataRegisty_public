@@ -1,102 +1,112 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var ctx = ViewContext.RouteData.Values["controller"]?.ToString()?.ToLowerInvariant();
+    string NavClass(string ctrl) =>
+        "navlink" + (string.Equals(ctx, ctrl, StringComparison.OrdinalIgnoreCase) ? " navlink-active" : "");
+}
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" content="#0b5ed7" />
-    <title>@ViewData["Title"] - Реестр владельцев записей</title>
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#003971" />
+    <title>@ViewData["Title"] — Реестр владельцев записей</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="~/css/app.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/data_registry_local.styles.css" asp-append-version="true" />
 </head>
 <body class="app-shell">
-    <a class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-xl focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-slate-900 focus:shadow dark:focus:bg-slate-900 dark:focus:text-slate-100"
+    <a class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-xl focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-dpa-800 focus:shadow"
        href="#main">Перейти к содержимому</a>
 
     <header class="app-header">
         <div class="app-container">
-            <div class="flex h-16 items-center justify-between gap-3">
+            <div class="flex h-16 items-center gap-3">
                 <a class="flex items-center gap-3" asp-area="" asp-controller="Home" asp-action="Index">
-                    <span class="inline-flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                        <i class="bi bi-shield-check text-blue-600 dark:text-blue-400" aria-hidden="true"></i>
+                    <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-dpa-800 text-white shadow-sm">
+                        <i class="bi bi-shield-lock" aria-hidden="true"></i>
                     </span>
                     <div class="leading-tight">
-                        <div class="text-sm font-semibold">Реестр владельцев записей</div>
-                        <div class="text-xs text-slate-500 dark:text-slate-400">АИС учёта ПДн</div>
+                        <div class="text-sm font-extrabold text-dpa-800">DPA · Реестр владельцев записей</div>
+                        <div class="text-[11px] uppercase tracking-wider text-dpaGray-500">АИС учёта персональных данных</div>
                     </div>
                 </a>
 
-                <button id="navToggle"
-                        class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white p-2 text-slate-700 shadow-sm hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-slate-200 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800/40 dark:focus-visible:ring-slate-800 lg:hidden"
-                        type="button" aria-controls="mobileNav" aria-expanded="false" aria-label="Открыть меню">
-                    <i class="bi bi-list text-xl" aria-hidden="true"></i>
-                </button>
-
-                <nav class="hidden items-center gap-1 lg:flex" aria-label="Основная навигация">
-                    <a class="navlink" asp-area="" asp-controller="Home" asp-action="Index">
-                        <i class="bi bi-grid-1x2" aria-hidden="true"></i> Обзор
+                <nav class="ml-4 hidden items-center gap-1 lg:flex" aria-label="Основная навигация">
+                    <a class="@NavClass("home")" asp-area="" asp-controller="Home" asp-action="Index">
+                        <i class="bi bi-house-door" aria-hidden="true"></i> Главная
                     </a>
-                    <a class="navlink" asp-area="" asp-controller="Incedents" asp-action="Index">
-                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Инциденты
+                    <a class="@NavClass("incedents")" asp-area="" asp-controller="Incedents" asp-action="Index">
+                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Мои инциденты
                     </a>
-                    <a class="navlink" asp-area="" asp-controller="Inspections" asp-action="Index">
-                        <i class="bi bi-clipboard-check" aria-hidden="true"></i> Проверки
-                    </a>
-                    <a class="navlink" asp-area="" asp-controller="Sanctions" asp-action="Index">
-                        <i class="bi bi-journal-text" aria-hidden="true"></i> Протоколы
+                    <a class="btn-register ml-2" asp-controller="Incedents" asp-action="Create">
+                        <i class="bi bi-plus-circle-fill" aria-hidden="true"></i>
+                        <span>Зарегистрировать инцидент</span>
                     </a>
                 </nav>
 
-                <div class="hidden items-center gap-2 lg:flex">
-                    <div class="relative">
-                        <i class="bi bi-search pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" aria-hidden="true"></i>
-                        <input class="h-10 w-64 rounded-xl border border-slate-200 bg-white pl-10 pr-3 text-sm shadow-sm outline-none placeholder:text-slate-400 focus:ring-4 focus:ring-blue-200 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:ring-blue-900/40"
-                               type="search" placeholder="Поиск…" aria-label="Поиск" />
-                    </div>
-                    <a class="btn-primary" href="#"><i class="bi bi-plus-lg" aria-hidden="true"></i> Создать</a>
-                    <a class="btn-primary" href='@Url.Action("Login", "esi")'><i class="bi bi-plus-lg" aria-hidden="true"></i> Войти</a>
-
+                <div class="ml-auto flex items-center gap-2">
+                    <button id="navToggle"
+                            class="inline-flex items-center justify-center rounded-xl border border-dpaGray-200 bg-white p-2 text-dpaGray-700 shadow-sm hover:bg-dpaGray-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-dpaGray-200 lg:hidden"
+                            type="button" aria-controls="mobileNav" aria-expanded="false" aria-label="Открыть меню">
+                        <i class="bi bi-list text-xl" aria-hidden="true"></i>
+                    </button>
+                    <a class="hidden btn-secondary lg:inline-flex" href='@Url.Action("Login", "esi")'>
+                        <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> Войти через ЕСИ
+                    </a>
                 </div>
             </div>
         </div>
 
-        <div id="mobileNav" class="hidden border-t border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950 lg:hidden">
+        <div id="mobileNav" class="hidden border-t border-dpaGray-200 bg-white lg:hidden">
             <div class="app-container py-3">
                 <div class="grid gap-2">
-                    <a class="navlink" asp-area="" asp-controller="Home" asp-action="Index"><i class="bi bi-grid-1x2" aria-hidden="true"></i> Обзор</a>
-                    <a class="navlink" asp-area="" asp-controller="Incedents" asp-action="Index"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Инциденты</a>
-                    <a class="navlink" asp-area="" asp-controller="Inspections" asp-action="Index"><i class="bi bi-clipboard-check" aria-hidden="true"></i> Проверки</a>
-                    <a class="navlink" asp-area="" asp-controller="Sanctions" asp-action="Index"><i class="bi bi-journal-text" aria-hidden="true"></i> Протоколы</a>
-                         
-                    <div class="mt-2 grid gap-2">
-                        
-                        <a class="btn-primary" href="#"><i class="bi bi-plus-lg" aria-hidden="true"></i> Создать</a>
-                        <a class="btn-secondary" href="#"><i class="bi bi-search" aria-hidden="true"></i> Поиск</a>
-                    </div>
+                    <a class="@NavClass("home")" asp-area="" asp-controller="Home" asp-action="Index"><i class="bi bi-house-door"></i> Главная</a>
+                    <a class="@NavClass("incedents")" asp-area="" asp-controller="Incedents" asp-action="Index"><i class="bi bi-exclamation-triangle"></i> Мои инциденты</a>
+                    <a class="btn-register mt-1 w-full" asp-controller="Incedents" asp-action="Create">
+                        <i class="bi bi-plus-circle-fill"></i>
+                        <span>Зарегистрировать инцидент</span>
+                    </a>
                 </div>
             </div>
         </div>
     </header>
 
+    @* Toast-сообщения *@
+    @if (TempData["SuccessMessage"] is string okMsg && !string.IsNullOrEmpty(okMsg))
+    {
+        <div class="app-container mt-4">
+            <div class="flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-emerald-800">
+                <i class="bi bi-check2-circle text-xl"></i>
+                <div class="text-sm font-medium">@okMsg</div>
+            </div>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] is string errMsg && !string.IsNullOrEmpty(errMsg))
+    {
+        <div class="app-container mt-4">
+            <div class="flex items-start gap-3 rounded-xl border border-rose-200 bg-rose-50 p-3 text-rose-800">
+                <i class="bi bi-exclamation-circle text-xl"></i>
+                <div class="text-sm font-medium">@errMsg</div>
+            </div>
+        </div>
+    }
+
     <div class="app-container">
-        <main id="main" role="main" class="py-6 lg:py-10">
+        <main id="main" role="main" class="py-4 lg:py-6">
             @RenderBody()
         </main>
     </div>
 
     <footer class="app-footer">
         <div class="app-container">
-            <div class="flex flex-col gap-2 border-t border-slate-200 py-6 text-sm text-slate-500 dark:border-slate-800 dark:text-slate-400 md:flex-row md:items-center md:justify-between">
-                <div>
-                    &copy; 2026 — АИС «Реестр владельцев записей»
-                </div>
+            <div class="flex flex-col gap-2 py-6 text-sm text-dpaGray-500 md:flex-row md:items-center md:justify-between">
+                <div>&copy; 2026 — АИС «Реестр владельцев записей»</div>
                 <div class="flex gap-4">
-                    <a class="hover:text-slate-900 dark:hover:text-slate-100" asp-area="" asp-controller="Home" asp-action="Privacy">Политика</a>
-                    <a class="hover:text-slate-900 dark:hover:text-slate-100" href="#">Поддержка</a>
+                    <a class="hover:text-dpa-800" asp-area="" asp-controller="Home" asp-action="Privacy">Политика</a>
+                    <a class="hover:text-dpa-800" href="#">Поддержка</a>
                 </div>
             </div>
         </div>
@@ -104,6 +114,13 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        (function () {
+            var btn = document.getElementById('navToggle');
+            var nav = document.getElementById('mobileNav');
+            if (btn && nav) btn.addEventListener('click', function () { nav.classList.toggle('hidden'); });
+        })();
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
