@@ -8,6 +8,68 @@
     int totalOwn = (int)(ViewBag.TotalOwn ?? 0);
     string? highlightId = TempData.Peek("HighlightIncidentId") as string;
     TempData.Remove("HighlightIncidentId");
+
+    // Если пришли со свежей регистрации — берём сообщение и гасим глобальный toast,
+    // чтоб не дублировался в _Layout.
+    string? successMsg = null;
+    if (!string.IsNullOrEmpty(highlightId))
+    {
+        successMsg = TempData["SuccessMessage"] as string;
+        TempData.Remove("SuccessMessage");
+    }
+
+    // Достаём свежую карточку, чтоб показать ссылку на неё в баннере
+    var freshIncident = string.IsNullOrEmpty(highlightId)
+        ? null
+        : Model.FirstOrDefault(i => i.Id == highlightId);
+}
+
+@if (!string.IsNullOrEmpty(highlightId))
+{
+    <div id="successBanner" class="success-banner mb-4" role="status" aria-live="polite">
+        <span class="success-confetti"><span></span><span></span><span></span><span></span><span></span><span></span></span>
+
+        <div class="success-icon" aria-hidden="true">
+            <svg viewBox="0 0 52 52">
+                <circle class="success-icon-circle" cx="26" cy="26" r="22" fill="none" stroke-width="3"></circle>
+                <path class="success-icon-check" d="M14 27 l9 9 l15 -17" fill="none" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+        </div>
+
+        <div class="success-body">
+            <div class="success-title">Инцидент успешно зарегистрирован</div>
+            <div class="success-sub">
+                @(successMsg ?? "Новая запись появилась в списке ниже — она подсвечена.")
+            </div>
+            @if (freshIncident != null)
+            {
+                <div class="success-meta">
+                    <span class="success-chip"><i class="bi bi-hash"></i>@freshIncident.IncidentRegnumber</span>
+                    <span class="success-chip"><i class="bi bi-calendar3"></i>@freshIncident.DateCreate?.ToString("dd.MM.yyyy HH:mm")</span>
+                </div>
+            }
+        </div>
+
+        <div class="success-actions">
+            @if (freshIncident != null)
+            {
+                <a class="btn-primary btn-sm" asp-action="Details" asp-route-id="@freshIncident.Id">
+                    <i class="bi bi-eye"></i> Открыть
+                </a>
+            }
+            <button type="button" class="success-close" aria-label="Закрыть" onclick="this.closest('#successBanner').classList.add('is-closing');setTimeout(()=>this.closest('#successBanner').remove(),300);">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Автоматическое закрытие через 10 секунд
+        setTimeout(function () {
+            var b = document.getElementById('successBanner');
+            if (b) { b.classList.add('is-closing'); setTimeout(function(){ b.remove(); }, 300); }
+        }, 10000);
+    </script>
 }
 
 <!-- Компактная шапка + KPI в одной строке -->

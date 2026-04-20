@@ -33,15 +33,42 @@
     </li>
 </ol>
 
-<form id="wizForm" asp-action="Save" method="post" class="space-y-6" novalidate>
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="mb-4 flex items-start gap-3 rounded-xl border border-rose-200 bg-rose-50 p-3 text-rose-800">
+        <i class="bi bi-exclamation-triangle-fill mt-0.5"></i>
+        <div class="text-sm font-medium">
+            Пожалуйста, исправьте ошибки в форме — некоторые обязательные поля заполнены некорректно.
+        </div>
+    </div>
+}
+
+<form id="wizForm" asp-action="Save" method="post" class="relative space-y-6" novalidate>
     @Html.AntiForgeryToken()
+
+    <!-- Оверлей, блокирующий форму во время регистрации -->
+    <div id="wizOverlay" class="wiz-overlay" aria-hidden="true">
+        <div class="wiz-overlay-box">
+            <div class="wiz-spinner" aria-hidden="true">
+                <svg viewBox="0 0 50 50" class="wiz-spinner-svg">
+                    <circle class="wiz-spinner-track" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+                    <circle class="wiz-spinner-head"  cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+                </svg>
+            </div>
+            <div class="mt-4 text-base font-extrabold text-dpa-800">Регистрируем инцидент…</div>
+            <div class="mt-1 text-sm text-dpaGray-500">Сохраняем данные, привязываем к организации. Это займёт пару секунд.</div>
+            <div class="mt-4 flex items-center gap-1 text-xs text-dpaGray-400">
+                <span class="wiz-dot"></span><span class="wiz-dot"></span><span class="wiz-dot"></span>
+            </div>
+        </div>
+    </div>
 
     <!-- ========== STEP 1: Organization (read-only) ========== -->
     <section class="wiz-pane card" data-pane="1">
         <div class="card-header flex flex-wrap items-center justify-between gap-2">
             <div>
                 <div class="text-base font-extrabold text-dpa-800">Организация</div>
-                <div class="text-xs text-dpaGray-500">Сведения из Министерства юстиции. Поля недоступны для редактирования.</div>
+                <div class="text-xs text-dpaGray-500">Сведения из Министерства юстиции. Недоступны для редактирования.</div>
             </div>
             <span class="badge badge-success"><i class="bi bi-check2-circle"></i> Подтверждено Минюстом</span>
         </div>
@@ -110,26 +137,27 @@
     </section>
 
     <!-- ========== STEP 2: Incident info ========== -->
-    <section class="wiz-pane card hidden" data-pane="2">
+    <section class="wiz-pane card hidden" data-pane="2" data-validate-pane>
         <div class="card-header">
             <div class="text-base font-extrabold text-dpa-800">Общие сведения об инциденте</div>
-            <div class="text-xs text-dpaGray-500">Даты, тип, критичность, место и описание</div>
+            <div class="text-xs text-dpaGray-500">Все поля, отмеченные <span class="text-rose-600">*</span>, обязательны</div>
         </div>
         <div class="card-body space-y-5">
 
-            <!-- Даты + критичность + тип в одну сетку -->
             <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <div class="field">
-                    <label asp-for="DateOccurrence" class="form-label">Дата возникновения</label>
-                    <input asp-for="DateOccurrence" type="datetime-local" class="form-control" />
+                    <label asp-for="DateOccurrence" class="form-label">Дата возникновения <span class="text-rose-600">*</span></label>
+                    <input asp-for="DateOccurrence" type="datetime-local" class="form-control" data-required="true" data-validate="datetime-past" />
+                    <span class="field-error" asp-validation-for="DateOccurrence"></span>
                 </div>
                 <div class="field">
-                    <label asp-for="DateDetection" class="form-label">Дата обнаружения</label>
-                    <input asp-for="DateDetection" type="datetime-local" class="form-control" />
+                    <label asp-for="DateDetection" class="form-label">Дата обнаружения <span class="text-rose-600">*</span></label>
+                    <input asp-for="DateDetection" type="datetime-local" class="form-control" data-required="true" data-validate="datetime-after-occurrence" />
+                    <span class="field-error" asp-validation-for="DateDetection"></span>
                 </div>
                 <div class="field">
-                    <label asp-for="IncidentType" class="form-label">Тип инцидента</label>
-                    <select asp-for="IncidentType" class="form-control">
+                    <label asp-for="IncidentType" class="form-label">Тип инцидента <span class="text-rose-600">*</span></label>
+                    <select asp-for="IncidentType" class="form-control" data-required="true">
                         <option value="">— выберите —</option>
                         <option value="Unauthorized access">Несанкц. доступ</option>
                         <option value="Data leak">Утечка данных</option>
@@ -140,32 +168,37 @@
                         <option value="Insider">Инсайдер</option>
                         <option value="Other">Иное</option>
                     </select>
+                    <span class="field-error" asp-validation-for="IncidentType"></span>
                 </div>
                 <div class="field">
-                    <label asp-for="IncidentSeverity" class="form-label">Критичность</label>
-                    <select asp-for="IncidentSeverity" class="form-control">
+                    <label asp-for="IncidentSeverity" class="form-label">Критичность <span class="text-rose-600">*</span></label>
+                    <select asp-for="IncidentSeverity" class="form-control" data-required="true">
                         <option value="">— выберите —</option>
                         <option value="Low">Низкий</option>
                         <option value="Medium">Средний</option>
                         <option value="High">Высокий</option>
                         <option value="Critical">Критический</option>
                     </select>
+                    <span class="field-error" asp-validation-for="IncidentSeverity"></span>
                 </div>
             </div>
 
-            <!-- место + система + тип системы -->
             <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <div class="field">
-                    <label asp-for="IncidentLocation" class="form-label">Место возникновения</label>
-                    <input asp-for="IncidentLocation" class="form-control" placeholder="ИС, подразделение, офис…" />
+                    <label asp-for="IncidentLocation" class="form-label">Место возникновения <span class="text-rose-600">*</span></label>
+                    <input asp-for="IncidentLocation" class="form-control" data-required="true" maxlength="255"
+                           placeholder="ИС, подразделение, офис…" />
+                    <span class="field-error" asp-validation-for="IncidentLocation"></span>
                 </div>
                 <div class="field">
-                    <label asp-for="AffectedInformationSystem" class="form-label">Затронутая система</label>
-                    <input asp-for="AffectedInformationSystem" class="form-control" placeholder="CRM, сайт, 1С…" />
+                    <label asp-for="AffectedInformationSystem" class="form-label">Затронутая система <span class="text-rose-600">*</span></label>
+                    <input asp-for="AffectedInformationSystem" class="form-control" data-required="true" maxlength="255"
+                           placeholder="CRM, сайт, 1С…" />
+                    <span class="field-error" asp-validation-for="AffectedInformationSystem"></span>
                 </div>
                 <div class="field">
-                    <label asp-for="SystemType" class="form-label">Тип системы</label>
-                    <select asp-for="SystemType" class="form-control">
+                    <label asp-for="SystemType" class="form-label">Тип системы <span class="text-rose-600">*</span></label>
+                    <select asp-for="SystemType" class="form-control" data-required="true">
                         <option value="">— выберите —</option>
                         <option value="db">База данных</option>
                         <option value="website">Веб-сайт</option>
@@ -173,22 +206,26 @@
                         <option value="cloude_service">Облачный сервис</option>
                         <option value="local_network">Локальная сеть</option>
                     </select>
+                    <span class="field-error" asp-validation-for="SystemType"></span>
                 </div>
             </div>
 
             <div class="field">
                 <label asp-for="IncidentDescription" class="form-label">
                     Краткое описание <span class="text-rose-600">*</span>
+                    <span class="char-counter" data-counter-for="IncidentDescription">0 / 4000</span>
                 </label>
                 <textarea asp-for="IncidentDescription" rows="3" class="form-control"
-                          placeholder="Что произошло, как был обнаружен инцидент и его последствия…"></textarea>
-                <span asp-validation-for="IncidentDescription" class="text-xs text-rose-600"></span>
+                          data-required="true" data-min-length="10" maxlength="4000"
+                          placeholder="Что произошло, как был обнаружен инцидент и его последствия (минимум 10 символов)…"></textarea>
+                <span class="field-error" asp-validation-for="IncidentDescription"></span>
             </div>
 
             <div class="field">
                 <label asp-for="SuspectedCause" class="form-label">Предполагаемая причина</label>
-                <textarea asp-for="SuspectedCause" rows="2" class="form-control"
+                <textarea asp-for="SuspectedCause" rows="2" class="form-control" maxlength="2000"
                           placeholder="Человеческий фактор, уязвимость ПО, фишинг…"></textarea>
+                <span class="field-error" asp-validation-for="SuspectedCause"></span>
             </div>
         </div>
         <div class="card-body flex justify-between border-t border-dpaGray-200">
@@ -198,51 +235,59 @@
     </section>
 
     <!-- ========== STEP 3: Data & actions ========== -->
-    <section class="wiz-pane card hidden" data-pane="3">
+    <section class="wiz-pane card hidden" data-pane="3" data-validate-pane>
         <div class="card-header">
             <div class="text-base font-extrabold text-dpa-800">Затронутые данные и меры</div>
-            <div class="text-xs text-dpaGray-500">Характеристики данных и реакция на инцидент</div>
+            <div class="text-xs text-dpaGray-500">Все поля с <span class="text-rose-600">*</span> обязательны</div>
         </div>
         <div class="card-body space-y-5">
 
             <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <div class="field">
-                    <label asp-for="AffectedRecordsCount" class="form-label">Записей</label>
-                    <input asp-for="AffectedRecordsCount" type="number" min="0" step="1" class="form-control" placeholder="0" />
+                    <label asp-for="AffectedRecordsCount" class="form-label">Записей <span class="text-rose-600">*</span></label>
+                    <input asp-for="AffectedRecordsCount" type="number" min="0" step="1" class="form-control"
+                           data-required="true" data-validate="integer-nonneg" inputmode="numeric"
+                           placeholder="0" />
+                    <span class="field-error" asp-validation-for="AffectedRecordsCount"></span>
                 </div>
                 <div class="field">
-                    <label asp-for="EstimatedDataSubjectsCount" class="form-label">Субъектов (прибл.)</label>
-                    <input asp-for="EstimatedDataSubjectsCount" class="form-control" placeholder="1500" />
+                    <label asp-for="EstimatedDataSubjectsCount" class="form-label">Субъектов (прибл.) <span class="text-rose-600">*</span></label>
+                    <input asp-for="EstimatedDataSubjectsCount" class="form-control"
+                           data-required="true" data-validate="digits-only" inputmode="numeric" maxlength="10"
+                           placeholder="1500" />
+                    <span class="field-error" asp-validation-for="EstimatedDataSubjectsCount"></span>
                 </div>
                 <div class="field">
-                    <label asp-for="PersonalDataType" class="form-label">Тип данных</label>
-                    <select asp-for="PersonalDataType" class="form-control">
-                        <option value="">—</option>
+                    <label asp-for="PersonalDataType" class="form-label">Тип данных <span class="text-rose-600">*</span></label>
+                    <select asp-for="PersonalDataType" class="form-control" data-required="true">
+                        <option value="">— выберите —</option>
                         <option value="Regular">Обычные</option>
                         <option value="Special">Специальные</option>
                         <option value="Biometric">Биометрические</option>
                     </select>
+                    <span class="field-error" asp-validation-for="PersonalDataType"></span>
                 </div>
                 <div class="field">
-                    <label asp-for="DataSubjectCategory" class="form-label">Категория субъектов</label>
-                    <select asp-for="DataSubjectCategory" class="form-control">
-                        <option value="">—</option>
+                    <label asp-for="DataSubjectCategory" class="form-label">Категория субъектов <span class="text-rose-600">*</span></label>
+                    <select asp-for="DataSubjectCategory" class="form-control" data-required="true">
+                        <option value="">— выберите —</option>
                         <option value="Employees">Сотрудники</option>
                         <option value="Clients">Клиенты</option>
                         <option value="Citizens">Граждане</option>
                         <option value="SiteUsers">Пользователи сайта</option>
                         <option value="Other">Иные</option>
                     </select>
+                    <span class="field-error" asp-validation-for="DataSubjectCategory"></span>
                 </div>
             </div>
 
             <div class="field">
-                <label asp-for="PersonalDataCategories" class="form-label">Категории ПДн</label>
-                <input asp-for="PersonalDataCategories" class="form-control"
+                <label asp-for="PersonalDataCategories" class="form-label">Категории ПДн <span class="text-rose-600">*</span></label>
+                <input asp-for="PersonalDataCategories" class="form-control" data-required="true" maxlength="500"
                        placeholder="ФИО, паспорт, контакты, финансовая информация…" />
+                <span class="field-error" asp-validation-for="PersonalDataCategories"></span>
             </div>
 
-            <!-- Чекбоксы в компактной сетке 2×2 -->
             <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 <label class="check-card">
                     <input asp-for="IsDataCopiedOrStolen" type="checkbox" />
@@ -266,7 +311,7 @@
                     </div>
                 </label>
                 <label class="check-card">
-                    <input asp-for="AreSubjectsNotified" type="checkbox" />
+                    <input asp-for="AreSubjectsNotified" type="checkbox" id="AreSubjectsNotifiedChk" />
                     <div>
                         <div class="text-sm font-semibold">Субъекты уведомлены</div>
                         <div class="text-xs text-dpaGray-500">Уведомление отправлено</div>
@@ -277,31 +322,37 @@
             <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <div class="field">
                     <label asp-for="NotificationSentAt" class="form-label">Дата отправки уведомления</label>
-                    <input asp-for="NotificationSentAt" type="datetime-local" class="form-control" />
+                    <input asp-for="NotificationSentAt" type="datetime-local" class="form-control"
+                           data-required-if="#AreSubjectsNotifiedChk" />
+                    <span class="field-error" asp-validation-for="NotificationSentAt"></span>
                 </div>
             </div>
 
             <div class="grid gap-4 lg:grid-cols-3">
                 <div class="field">
-                    <label asp-for="ActionsTaken" class="form-label">Меры по устранению</label>
+                    <label asp-for="ActionsTaken" class="form-label">Меры по устранению <span class="text-rose-600">*</span></label>
                     <textarea asp-for="ActionsTaken" rows="3" class="form-control"
+                              data-required="true" data-min-length="5" maxlength="2000"
                               placeholder="Блокировка, ротация паролей, отключение сервисов…"></textarea>
+                    <span class="field-error" asp-validation-for="ActionsTaken"></span>
                 </div>
                 <div class="field">
                     <label asp-for="PreventionMeasures" class="form-label">Меры по предотвращению</label>
-                    <textarea asp-for="PreventionMeasures" rows="3" class="form-control"
+                    <textarea asp-for="PreventionMeasures" rows="3" class="form-control" maxlength="2000"
                               placeholder="Обновление политик, обучение сотрудников, DLP…"></textarea>
+                    <span class="field-error" asp-validation-for="PreventionMeasures"></span>
                 </div>
                 <div class="field">
                     <label asp-for="InvestigationInfo" class="form-label">Расследование</label>
-                    <textarea asp-for="InvestigationInfo" rows="3" class="form-control"
+                    <textarea asp-for="InvestigationInfo" rows="3" class="form-control" maxlength="2000"
                               placeholder="Ответственные, сроки, выводы…"></textarea>
+                    <span class="field-error" asp-validation-for="InvestigationInfo"></span>
                 </div>
             </div>
         </div>
         <div class="card-body flex flex-col gap-3 border-t border-dpaGray-200 sm:flex-row sm:justify-between">
             <button type="button" class="btn-secondary" data-prev="2"><i class="bi bi-arrow-left"></i> Назад</button>
-            <button type="submit" class="btn-primary">
+            <button type="submit" id="submitBtn" class="btn-primary">
                 <i class="bi bi-check2-circle"></i> Зарегистрировать инцидент
             </button>
         </div>
@@ -309,28 +360,237 @@
 </form>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
     <script>
-        (function () {
-            const steps = Array.from(document.querySelectorAll('#wizSteps .step'));
-            const panes = Array.from(document.querySelectorAll('.wiz-pane'));
+    (function () {
+        const steps = Array.from(document.querySelectorAll('#wizSteps .step'));
+        const panes = Array.from(document.querySelectorAll('.wiz-pane'));
+        const form  = document.getElementById('wizForm');
 
-            function showStep(n) {
-                panes.forEach(p => p.classList.toggle('hidden', p.dataset.pane !== String(n)));
-                steps.forEach(s => {
-                    const num = Number(s.dataset.step);
-                    s.classList.remove('is-active', 'is-done');
-                    if (num < n) s.classList.add('is-done');
-                    else if (num === n) s.classList.add('is-active');
-                });
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+        // ===== helpers =====
+        function isEmpty(v) { return v === null || v === undefined || String(v).trim() === ''; }
+
+        function setError(el, message) {
+            el.classList.add('is-invalid');
+            el.classList.remove('is-valid');
+            const err = el.parentElement.querySelector('.field-error');
+            if (err) { err.textContent = message; err.classList.add('visible'); }
+        }
+        function clearError(el) {
+            el.classList.remove('is-invalid');
+            const err = el.parentElement.querySelector('.field-error');
+            if (err) { err.textContent = ''; err.classList.remove('visible'); }
+        }
+
+        // ===== input masks =====
+        document.querySelectorAll('[data-validate="digits-only"]').forEach(input => {
+            input.addEventListener('input', () => {
+                const cleaned = input.value.replace(/\D+/g, '');
+                if (cleaned !== input.value) input.value = cleaned;
+            });
+            input.addEventListener('paste', e => {
+                e.preventDefault();
+                const text = (e.clipboardData || window.clipboardData).getData('text').replace(/\D+/g, '');
+                document.execCommand('insertText', false, text);
+            });
+        });
+        document.querySelectorAll('[data-validate="integer-nonneg"]').forEach(input => {
+            input.addEventListener('input', () => {
+                if (input.value && Number(input.value) < 0) input.value = '0';
+                const cleaned = input.value.replace(/[^\d]/g, '');
+                if (cleaned !== input.value) input.value = cleaned;
+            });
+        });
+
+        // Счётчик символов для textarea с maxlength
+        document.querySelectorAll('.char-counter').forEach(c => {
+            const name = c.dataset.counterFor;
+            const field = form.querySelector(`[name="${name}"]`);
+            if (!field) return;
+            const max = field.getAttribute('maxlength') || '∞';
+            const update = () => { c.textContent = `${field.value.length} / ${max}`; };
+            field.addEventListener('input', update);
+            update();
+        });
+
+        // ===== validation of a single field =====
+        function validateField(el) {
+            if (el.tagName === 'INPUT' && el.type === 'hidden') return true;
+            const required = el.dataset.required === 'true';
+            const validate = el.dataset.validate;
+            const minLen   = el.dataset.minLength ? Number(el.dataset.minLength) : 0;
+            const requiredIf = el.dataset.requiredIf;
+            const val = el.value;
+
+            // required-if: поле обязательно только если checkbox отмечен
+            if (!required && requiredIf) {
+                const target = document.querySelector(requiredIf);
+                if (target && target.checked && isEmpty(val)) {
+                    setError(el, 'Укажите дату отправки уведомления');
+                    return false;
+                }
             }
-            document.querySelectorAll('[data-next]').forEach(btn => {
-                btn.addEventListener('click', () => showStep(Number(btn.dataset.next)));
+
+            if (required && isEmpty(val)) {
+                setError(el, 'Поле обязательно для заполнения');
+                return false;
+            }
+
+            if (!isEmpty(val)) {
+                if (validate === 'digits-only' && !/^\d+$/.test(val)) {
+                    setError(el, 'Только цифры'); return false;
+                }
+                if (validate === 'integer-nonneg') {
+                    const n = Number(val);
+                    if (!Number.isFinite(n) || n < 0 || !Number.isInteger(n)) {
+                        setError(el, 'Целое число ≥ 0'); return false;
+                    }
+                }
+                if (minLen > 0 && val.trim().length < minLen) {
+                    setError(el, `Минимум ${minLen} символов`); return false;
+                }
+                if (validate === 'datetime-past') {
+                    if (new Date(val) > new Date()) {
+                        setError(el, 'Дата не может быть в будущем'); return false;
+                    }
+                }
+                if (validate === 'datetime-after-occurrence') {
+                    const occ = form.querySelector('[name="DateOccurrence"]')?.value;
+                    if (occ && new Date(val) < new Date(occ)) {
+                        setError(el, 'Дата обнаружения не может быть раньше даты возникновения');
+                        return false;
+                    }
+                    if (new Date(val) > new Date()) {
+                        setError(el, 'Дата не может быть в будущем'); return false;
+                    }
+                }
+            }
+
+            clearError(el);
+            return true;
+        }
+
+        // ===== validate all fields of a pane =====
+        function validatePane(paneNum) {
+            const pane = document.querySelector(`.wiz-pane[data-pane="${paneNum}"][data-validate-pane]`);
+            if (!pane) return true;
+            const fields = pane.querySelectorAll('[data-required], [data-validate], [data-min-length], [data-required-if]');
+            let allOk = true;
+            let firstInvalid = null;
+            fields.forEach(el => {
+                const ok = validateField(el);
+                if (!ok && !firstInvalid) firstInvalid = el;
+                allOk = allOk && ok;
             });
-            document.querySelectorAll('[data-prev]').forEach(btn => {
-                btn.addEventListener('click', () => showStep(Number(btn.dataset.prev)));
+            if (!allOk && firstInvalid) {
+                firstInvalid.focus({ preventScroll: true });
+                firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            return allOk;
+        }
+
+        // live-валидация при blur и при изменении
+        form.querySelectorAll('[data-required], [data-validate], [data-min-length], [data-required-if]').forEach(el => {
+            el.addEventListener('blur',   () => validateField(el));
+            el.addEventListener('change', () => validateField(el));
+            if (el.tagName === 'TEXTAREA' || el.type === 'text' || el.type === 'number') {
+                el.addEventListener('input', () => {
+                    if (el.classList.contains('is-invalid')) validateField(el);
+                });
+            }
+        });
+
+        // если checkbox "субъекты уведомлены" меняется — пересчитываем валидность NotificationSentAt
+        const notifiedChk = document.getElementById('AreSubjectsNotifiedChk');
+        if (notifiedChk) {
+            notifiedChk.addEventListener('change', () => {
+                const dt = form.querySelector('[name="NotificationSentAt"]');
+                if (dt) validateField(dt);
             });
-        })();
+        }
+
+        // ===== step navigation =====
+        function showStep(n) {
+            panes.forEach(p => p.classList.toggle('hidden', p.dataset.pane !== String(n)));
+            steps.forEach(s => {
+                const num = Number(s.dataset.step);
+                s.classList.remove('is-active', 'is-done');
+                if (num < n) s.classList.add('is-done');
+                else if (num === n) s.classList.add('is-active');
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        document.querySelectorAll('[data-next]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const current = Array.from(panes).find(p => !p.classList.contains('hidden'))?.dataset.pane;
+                if (current && !validatePane(Number(current))) {
+                    return; // не пускаем дальше
+                }
+                showStep(Number(btn.dataset.next));
+            });
+        });
+        document.querySelectorAll('[data-prev]').forEach(btn => {
+            btn.addEventListener('click', () => showStep(Number(btn.dataset.prev)));
+        });
+
+        // ===== финальный submit =====
+        const overlay = document.getElementById('wizOverlay');
+        const submitBtn = document.getElementById('submitBtn');
+
+        function showSubmittingState() {
+            // Оверлей сам по себе блокирует взаимодействие (pointer-events: auto).
+            // НЕЛЬЗЯ disable'ить инпуты — тогда они не отправятся в POST,
+            // включая __RequestVerificationToken, и сервер вернёт 400.
+            if (overlay) {
+                overlay.classList.add('is-active');
+                overlay.setAttribute('aria-hidden', 'false');
+            }
+            if (submitBtn) {
+                // используем aria-busy и data-атрибут вместо disabled,
+                // чтобы кнопка тоже попала в POST (если это важно для сервера)
+                submitBtn.setAttribute('aria-busy', 'true');
+                submitBtn.classList.add('pointer-events-none', 'opacity-80');
+                submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Регистрирую…';
+            }
+        }
+
+        let submitted = false;
+        form.addEventListener('submit', e => {
+            if (submitted) { e.preventDefault(); return; } // защита от двойного submit
+            const ok2 = validatePane(2);
+            const ok3 = validatePane(3);
+            if (!ok2 || !ok3) {
+                e.preventDefault();
+                if (!ok2) showStep(2);
+                else if (!ok3) showStep(3);
+                return;
+            }
+            submitted = true;
+            showSubmittingState();
+        });
+
+        // Защита от «back/forward cache» — при возврате сбрасываем overlay
+        window.addEventListener('pageshow', () => {
+            submitted = false;
+            if (overlay) {
+                overlay.classList.remove('is-active');
+                overlay.setAttribute('aria-hidden', 'true');
+            }
+            if (submitBtn) {
+                submitBtn.removeAttribute('aria-busy');
+                submitBtn.classList.remove('pointer-events-none', 'opacity-80');
+                submitBtn.innerHTML = '<i class="bi bi-check2-circle"></i> Зарегистрировать инцидент';
+            }
+        });
+
+        // Если сервер вернул ошибки валидации — подсветим инпуты с server-side error
+        document.querySelectorAll('.field-error').forEach(span => {
+            if (span.textContent && span.textContent.trim().length > 0) {
+                span.classList.add('visible');
+                const control = span.parentElement.querySelector('input, select, textarea');
+                if (control) control.classList.add('is-invalid');
+            }
+        });
+    })();
     </script>
 }

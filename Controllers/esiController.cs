@@ -1,9 +1,11 @@
 ﻿using data_registry_local.Models;
+using data_registry_public.Integrations;
 using data_registry_public.Models;
 using data_registry_public.Models.local_models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
@@ -22,13 +24,20 @@ namespace data_registry_public.Controllers
         private readonly AppSettings _appSettings;
         private readonly ILogger<esiController> _logger;
         private readonly AppDbContext _db;
+        private readonly IMinJustService _minJust;
 
-        public esiController(IHttpClientFactory httpClientFactory, IOptions<AppSettings> appSettings, ILogger<esiController> logger, AppDbContext db)
+        public esiController(
+            IHttpClientFactory httpClientFactory,
+            IOptions<AppSettings> appSettings,
+            ILogger<esiController> logger,
+            AppDbContext db,
+            IMinJustService minJust)
         {
             _httpClientFactory = httpClientFactory;
             _appSettings = appSettings.Value;
             _logger = logger;
             _db = db;
+            _minJust = minJust;
         }
 
 
@@ -61,34 +70,52 @@ namespace data_registry_public.Controllers
 
 
         /// <summary>
-        /// тестовый вход
+        /// Тестовый (эмуляционный) вход без реального ЕСИ.
+        /// Создаёт тестового пользователя и подтягивает организацию
+        /// через эмулятор Минюста.
         /// </summary>
-        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> LoginTest()
         {
-            PublicUser userModel = new PublicUser();
-            userModel.Email = "djabaeva.a@gmail.com";
-            userModel.EsiEmail = "djabaeva.a@gmail.com";
-            userModel.Name = "Айдана";
-            userModel.EsiPin = "01001202210023";
-            userModel.EsiName = "Айдана";
-            userModel.EsiBirthdate = "01.01.2000";
-            userModel.OrganizationTin = "01001202210023";
-            //регистрирую пользователя
-            //string newUserId = Guid.NewGuid().ToString();
-            string userId = await registrateNewUser(userModel);
-            if (userId != null && userId != "")
+            // Фиксированный тестовый пользователь с известным ИНН.
+            // Данные организации будут детерминированно сгенерированы эмулятором Минюста.
+            var userModel = new PublicUser
             {
-                //аутентификация
-                userModel.Id = userId;
-                await Authenticate(userModel);
-                _logger.LogInformation("Пользователь " + userModel.Name + " успешно авторизовался через ЕСИ");
-                //await _journalling.AddToJournalAsynk(userModel?.Name, "Авторизация через ЕСИ");
-                return RedirectToAction("Index", "UserPage");
+                Email = "test.user@dpa.local",
+                EsiEmail = "test.user@dpa.local",
+                Name = "Тестовый Пользователь",
+                EsiName = "Тестовый Пользователь",
+                EsiFamilyName = "Тестовый",
+                EsiGivenName = "Пользователь",
+                EsiPin = "01001202210023",
+                EsiBirthdate = "01.01.1990",
+                EsiPhoneNumber = "+996 700 000 000",
+                OrganizationTin = "01001202210023",
+                PositionName = "Ответственный за ПДн",
+            };
+
+            string userId = await registrateNewUser(userModel);
+            if (string.IsNullOrEmpty(userId))
+            {
+                TempData["ErrorMessage"] = "Не удалось зарегистрировать тестового пользователя.";
+                return RedirectToAction("Index", "Home");
             }
 
-            return RedirectToAction("Index", "Landing");
+            userModel.Id = userId;
+
+            // useEmulator = true: обращаемся только к эмулятору Минюста
+            var link = await UpsertOrganizationAndLinkUserAsync(userModel, useEmulator: true);
+            if (!link.Success || string.IsNullOrEmpty(link.OrgId))
+            {
+                TempData["ErrorMessage"] = "Вход не выполнен: " + (link.ErrorMessage ?? "не удалось сохранить организацию.");
+                _logger.LogWarning("Тестовый вход отменён: {Err}", link.ErrorMessage);
+                return RedirectToAction("Index", "Home");
+            }
+
+            await Authenticate(userModel, link.OrgId);
+            _logger.LogInformation("Тестовый вход: {Name} авторизован, org: {Org}", userModel.Name, link.OrgId);
+            TempData["SuccessMessage"] = "Вы вошли в тестовом режиме. Данные организации — из эмулятора Минюста.";
+            return RedirectToAction("Index", "UserPage");
         }
 
 
@@ -145,25 +172,38 @@ namespace data_registry_public.Controllers
                         var userModel = parseUserInfo(userInfo);
                         if (userModel != null && userModel.EsiPin != "")
                         {
-                            //регистрирую пользователя
-                            //string newUserId = Guid.NewGuid().ToString();
                             string userId = await registrateNewUser(userModel);
-                            if (userId != null && userId != "")
+                            if (string.IsNullOrEmpty(userId))
                             {
-                                //аутентификация
-                                userModel.Id = userId;
-                                await Authenticate(userModel);
-                                _logger.LogInformation("Пользователь " + userModel.Name + " успешно авторизовался через ЕСИ");
-                                //await _journalling.AddToJournalAsynk(userModel?.Name, "Авторизация через ЕСИ");
-                                return RedirectToAction("Index", "UserPage");
+                                TempData["ErrorMessage"] = "Не удалось зарегистрировать пользователя после ЕСИ.";
+                                return RedirectToAction("Index", "Home");
                             }
+
+                            userModel.Id = userId;
+
+                            // Подтягиваем данные организации из Минюста и привязываем пользователя
+                            var link = await UpsertOrganizationAndLinkUserAsync(userModel);
+                            if (!link.Success || string.IsNullOrEmpty(link.OrgId))
+                            {
+                                // Явно выходим — логин не состоялся
+                                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                                TempData["ErrorMessage"] =
+                                    "Вход не выполнен: " + (link.ErrorMessage ?? "не удалось получить и сохранить данные организации из Минюста.");
+                                _logger.LogWarning("ЕСИ-вход отменён для {Name}: {Err}", userModel.Name, link.ErrorMessage);
+                                return RedirectToAction("Index", "Home");
+                            }
+
+                            await Authenticate(userModel, link.OrgId);
+                            _logger.LogInformation("Пользователь {Name} авторизовался через ЕСИ, org: {Org}", userModel.Name, link.OrgId);
+                            return RedirectToAction("Index", "UserPage");
                         }
                     }
                 }
 
 
 
-                return RedirectToAction("Index", "Landing");
+                TempData["ErrorMessage"] = "Авторизация через ЕСИ не завершена.";
+                return RedirectToAction("Index", "Home");
             }
             catch (Exception ex)
             {
@@ -207,25 +247,157 @@ namespace data_registry_public.Controllers
             }
         }
 
-        private async Task Authenticate(PublicUser user)
+        private async Task Authenticate(PublicUser user, string? orgId = null)
         {
-
-            // создаем один claim
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.EsiName),
-                new Claim(ClaimTypes.Email, user.EsiEmail),
-                new Claim(ClaimTypes.DateOfBirth, user.EsiBirthdate),
-                new Claim("pin", user.EsiPin),
-                new Claim("orgPin", user.OrganizationTin),
-                //new Claim("pin", "01001202210023"), //тест
-                new Claim("id", user.Id),
+                new Claim(ClaimTypes.Name, user.EsiName ?? user.Name ?? ""),
+                new Claim(ClaimTypes.Email, user.EsiEmail ?? user.Email ?? ""),
+                new Claim(ClaimTypes.DateOfBirth, user.EsiBirthdate ?? ""),
+                new Claim("pin", user.EsiPin ?? ""),
+                new Claim("orgPin", user.OrganizationTin ?? ""),
+                new Claim("orgName", user.OrganizationName ?? ""),
+                new Claim("id", user.Id ?? ""),
             };
-            // создаем объект ClaimsIdentity
-            ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
-            // установка аутентификационных куки
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
+            if (!string.IsNullOrEmpty(orgId))
+            {
+                claims.Add(new Claim("orgId", orgId));
+            }
 
+            ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie",
+                ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
+        }
+
+        /// <summary>
+        /// Результат попытки привязки организации к пользователю.
+        /// </summary>
+        private sealed class OrgLinkResult
+        {
+            public bool Success { get; set; }
+            public string? OrgId { get; set; }
+            public string? ErrorMessage { get; set; }
+        }
+
+        /// <summary>
+        /// Подтягивает данные организации из Минюста, upsert в таблицу organizations
+        /// и связывает PublicUser с организацией.
+        /// </summary>
+        /// <param name="user">Пользователь с заполненным OrganizationTin</param>
+        /// <param name="useEmulator">При true — используется эмулятор Минюста (для тестового входа)</param>
+        private async Task<OrgLinkResult> UpsertOrganizationAndLinkUserAsync(PublicUser user, bool useEmulator = false)
+        {
+            var result = new OrgLinkResult();
+
+            if (string.IsNullOrWhiteSpace(user.OrganizationTin))
+            {
+                result.ErrorMessage = "У пользователя не указан ИНН организации (ЕСИ не передал поле organization_tin).";
+                _logger.LogWarning("Вход без OrganizationTin для {Name}", user.Name);
+                return result;
+            }
+
+            try
+            {
+                // 1. Минюст (реальный API или эмулятор)
+                var info = await _minJust.GetOrganizationByTinAsync(user.OrganizationTin, useEmulator);
+                if (info == null)
+                {
+                    result.ErrorMessage = $"Не удалось получить сведения об организации по ИНН {user.OrganizationTin} из Минюста.";
+                    _logger.LogWarning("Минюст не вернул данные по ИНН {Tin}", user.OrganizationTin);
+                    return result;
+                }
+
+                // 2. Валидируем код сектора по справочнику (FK organizations_fk).
+                //    Если код не найден — используем 'OTHER'. Если и OTHER отсутствует — NULL.
+                string? safeSector = null;
+                if (!string.IsNullOrWhiteSpace(info.BusinessSector))
+                {
+                    var exists = await _db.OrganizationBuisnesSectors
+                        .AsNoTracking()
+                        .AnyAsync(s => s.Id == info.BusinessSector);
+                    if (exists)
+                    {
+                        safeSector = info.BusinessSector;
+                    }
+                }
+                if (safeSector == null)
+                {
+                    var otherExists = await _db.OrganizationBuisnesSectors
+                        .AsNoTracking()
+                        .AnyAsync(s => s.Id == "OTHER");
+                    if (otherExists) safeSector = "OTHER";
+                    _logger.LogInformation(
+                        "Сектор '{Code}' не найден в справочнике, использую '{Fallback}'",
+                        info.BusinessSector, safeSector ?? "NULL");
+                }
+
+                // 3. Upsert организации (Id = ИНН). При повторном входе обновляются ВСЕ поля.
+                var now = DateTime.Now;
+                var existing = await _db.Organizations.FirstOrDefaultAsync(o => o.Id == info.Tin);
+                if (existing == null)
+                {
+                    await _db.Organizations.AddAsync(new Organization
+                    {
+                        Id = info.Tin,
+                        Fullnamegl = info.FullName,
+                        ShortName = info.ShortName,
+                        LegalForm = info.LegalForm,
+                        RegistrationNumber = info.RegistrationNumber,
+                        RegistrationDate = info.RegistrationDate,
+                        Address = info.Address,
+                        DirectorName = info.DirectorName,
+                        DirectorPosition = info.DirectorPosition,
+                        Status = string.IsNullOrEmpty(info.Status) ? "Активный" : info.Status,
+                        Businesssector = safeSector,
+                        Risklevel = "Low",
+                        LastSyncedAt = now,
+                    });
+                }
+                else
+                {
+                    // Обновляем ВСЕ реквизиты организации (актуализация из Минюста)
+                    if (!string.IsNullOrEmpty(info.FullName))           existing.Fullnamegl         = info.FullName;
+                    if (!string.IsNullOrEmpty(info.ShortName))          existing.ShortName          = info.ShortName;
+                    if (!string.IsNullOrEmpty(info.LegalForm))          existing.LegalForm          = info.LegalForm;
+                    if (!string.IsNullOrEmpty(info.RegistrationNumber)) existing.RegistrationNumber = info.RegistrationNumber;
+                    if (!string.IsNullOrEmpty(info.RegistrationDate))   existing.RegistrationDate   = info.RegistrationDate;
+                    if (!string.IsNullOrEmpty(info.Address))            existing.Address            = info.Address;
+                    if (!string.IsNullOrEmpty(info.DirectorName))       existing.DirectorName       = info.DirectorName;
+                    if (!string.IsNullOrEmpty(info.DirectorPosition))   existing.DirectorPosition   = info.DirectorPosition;
+                    if (!string.IsNullOrEmpty(info.Status))             existing.Status             = info.Status;
+                    // сектор обновляем только если новый код валиден (не обнуляем имеющийся)
+                    if (safeSector != null) existing.Businesssector = safeSector;
+                    existing.LastSyncedAt = now;
+                }
+
+                // 4. Привязываем пользователя
+                var dbUser = await _db.PublicUsers.FirstOrDefaultAsync(u => u.Id == user.Id);
+                if (dbUser != null)
+                {
+                    dbUser.Organization = info.Tin;
+                    dbUser.OrganizationTin = info.Tin;
+                    dbUser.OrganizationName = info.FullName;
+                    dbUser.UpdatedAt = DateTime.Now;
+                }
+
+                await _db.SaveChangesAsync();
+
+                _logger.LogInformation("Организация {Tin} ({Name}) привязана к пользователю {User}",
+                    info.Tin, info.FullName, user.Name);
+
+                // обновляем модель пользователя в памяти — чтобы корректно лёг claim orgName
+                user.OrganizationName = info.FullName;
+
+                result.Success = true;
+                result.OrgId = info.Tin;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при upsert организации для пользователя {Name}", user.Name);
+                result.ErrorMessage = "Ошибка при сохранении организации: " + (ex.InnerException?.Message ?? ex.Message);
+                return result;
+            }
         }
 
 
@@ -263,9 +435,8 @@ namespace data_registry_public.Controllers
 
         public async Task<IActionResult> Logout()
         {
-            //logoutEsi();
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index", "Landing");
+            return RedirectToAction("Index", "Home");
         }
 
 

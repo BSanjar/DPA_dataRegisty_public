@@ -152,10 +152,18 @@ public partial class AppDbContext : DbContext
                 .HasComment("тип системы:\r\ndb - база данных\r\nwebsite - веб-сайт\r\ninfosystem - информационная система\r\ncloude_service - облачный сервис\r\nlocal_network - локальная сеть")
                 .HasColumnType("character varying")
                 .HasColumnName("systemtype");
+            entity.Property(e => e.Organization)
+                .HasComment("организация, в которой произошёл инцидент (ИНН)")
+                .HasColumnType("character varying")
+                .HasColumnName("organization");
 
             entity.HasOne(d => d.IncidentTypeNavigation).WithMany(p => p.Incidents)
                 .HasForeignKey(d => d.IncidentType)
                 .HasConstraintName("incidents_fk");
+
+            entity.HasOne(d => d.OrganizationNavigation).WithMany(p => p.Incidents)
+                .HasForeignKey(d => d.Organization)
+                .HasConstraintName("incidents_organization_fk");
         });
 
         modelBuilder.Entity<IncidentMaterial>(entity =>
@@ -443,16 +451,29 @@ public partial class AppDbContext : DbContext
                 .HasColumnType("character varying")
                 .HasColumnName("id");
             entity.Property(e => e.Businesssector)
-                .HasComment("сфера деятельности субъекта:\r\nGovernment — государственные органы\r\nTelecommunications — телеком\r\nHealthcare — медицина\r\nBanking — банки / финансы\r\nEducation — образование\r\nInsurance — страхование\r\nRetail — торговля\r\nIT — IT / технологии\r\nManufacturing — производство\r\nEnergy — энергетика\r\nTransportation — транспорт / логистика\r\nAgriculture — сельское хозяйство\r\nMedia — СМИ\r\nHospitality — туризм / гостиницы\r\nOther — другое")
+                .HasComment("сфера деятельности субъекта (FK organization_buisnes_sectors)")
                 .HasColumnType("character varying")
                 .HasColumnName("businesssector");
             entity.Property(e => e.Fullnamegl)
                 .HasColumnType("character varying")
                 .HasColumnName("fullnamegl");
             entity.Property(e => e.Risklevel)
-                .HasComment("уровень риска субъекта:\r\nLow-низкий\n\r\nMedium-средний\n\r\nHigh-высокий\n\r\nCritical-критический")
+                .HasComment("уровень риска субъекта:\r\nLow-низкий\nMedium-средний\nHigh-высокий\nCritical-критический")
                 .HasColumnType("character varying")
                 .HasColumnName("risklevel");
+
+            // Дополнительные данные из Минюста
+            entity.Property(e => e.ShortName).HasColumnType("character varying").HasColumnName("short_name");
+            entity.Property(e => e.LegalForm).HasColumnType("character varying").HasColumnName("legal_form");
+            entity.Property(e => e.RegistrationNumber).HasColumnType("character varying").HasColumnName("registration_number");
+            entity.Property(e => e.RegistrationDate).HasColumnType("character varying").HasColumnName("registration_date");
+            entity.Property(e => e.Address).HasColumnType("character varying").HasColumnName("address");
+            entity.Property(e => e.DirectorName).HasColumnType("character varying").HasColumnName("director_name");
+            entity.Property(e => e.DirectorPosition).HasColumnType("character varying").HasColumnName("director_position");
+            entity.Property(e => e.Status).HasColumnType("character varying").HasColumnName("status");
+            entity.Property(e => e.LastSyncedAt)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("last_synced_at");
 
             entity.HasOne(d => d.BusinesssectorNavigation).WithMany(p => p.Organizations)
                 .HasForeignKey(d => d.Businesssector)

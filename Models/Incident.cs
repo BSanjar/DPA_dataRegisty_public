@@ -139,7 +139,15 @@ public partial class Incident
     /// </summary>
     public string? Datasubjectcategory { get; set; }
 
+    /// <summary>
+    /// Организация, в которой зарегистрирован инцидент.
+    /// FK на organizations.id (используется ИНН как Id).
+    /// </summary>
+    public string? Organization { get; set; }
+
     public virtual ICollection<IncidentMaterial> IncidentMaterials { get; set; } = new List<IncidentMaterial>();
 
     public virtual IncidentType? IncidentTypeNavigation { get; set; }
+
+    public virtual Organization? OrganizationNavigation { get; set; }
 }

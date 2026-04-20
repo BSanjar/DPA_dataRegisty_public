@@ -2,6 +2,7 @@
 using data_registry_public.Integrations;
 using data_registry_public.Models;
 using data_registry_public.Models.local_models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,14 +10,14 @@ namespace data_registry_public.Controllers
 {
     /// <summary>
     /// Инциденты с персональными данными.
-    /// TODO: после внедрения авторизации через ЕСИ фильтрация "свои"
-    /// должна идти по ИНН организации из claims (orgPin), а не через cookie.
+    /// Доступ только для авторизованных пользователей.
+    /// Фильтрация "свои" — по ИНН организации из claim orgId.
     /// </summary>
+    [Authorize]
     public class IncedentsController : Controller
     {
         /// <summary>
-        /// DEV-заглушка ИНН текущей организации, пока не подключена авторизация.
-        /// Совпадает с ИНН из esiController.LoginTest.
+        /// DEV-заглушка ИНН для неавторизованных сценариев.
         /// </summary>
         private const string DevCurrentOrgTin = "01001202210023";
 
@@ -38,17 +39,26 @@ namespace data_registry_public.Controllers
 
         public async Task<IActionResult> Index(string? q, string? severity, string? period)
         {
-            var ownIds = GetOwnIncidentIds();
-
             var query = _db.Incidents.AsNoTracking().AsQueryable();
 
-            if (ownIds.Count == 0)
+            // Приоритет: авторизованный пользователь → фильтр по его организации.
+            // Без авторизации — фильтр по cookie (dev-режим).
+            var orgTin = GetCurrentOrgTin();
+            if (!string.IsNullOrEmpty(orgTin))
             {
-                query = query.Where(i => false);
+                query = query.Where(i => i.Organization == orgTin);
             }
             else
             {
-                query = query.Where(i => ownIds.Contains(i.Id));
+                var ownIds = GetOwnIncidentIds();
+                if (ownIds.Count == 0)
+                {
+                    query = query.Where(i => false);
+                }
+                else
+                {
+                    query = query.Where(i => ownIds.Contains(i.Id));
+                }
             }
 
             if (!string.IsNullOrWhiteSpace(q))
@@ -88,7 +98,17 @@ namespace data_registry_public.Controllers
             ViewBag.FilterQuery = q;
             ViewBag.FilterSeverity = severity;
             ViewBag.FilterPeriod = period;
-            ViewBag.TotalOwn = ownIds.Count;
+
+            // "всего моих" считаем по той же логике
+            if (!string.IsNullOrEmpty(orgTin))
+            {
+                ViewBag.TotalOwn = await _db.Incidents.AsNoTracking().CountAsync(i => i.Organization == orgTin);
+            }
+            else
+            {
+                ViewBag.TotalOwn = GetOwnIncidentIds().Count;
+            }
+
             return View(list);
         }
 
@@ -101,17 +121,30 @@ namespace data_registry_public.Controllers
                 return NotFound();
             }
 
-            var ownIds = GetOwnIncidentIds();
-            if (!ownIds.Contains(id))
-            {
-                return Forbid();
-            }
-
             var incident = await _db.Incidents
                 .AsNoTracking()
                 .FirstOrDefaultAsync(i => i.Id == id);
 
             if (incident == null) return NotFound();
+
+            // Доступ только к своим:
+            //  — авторизованный пользователь: инцидент должен принадлежать его организации
+            //  — dev-режим: id должен быть в cookie "мои"
+            var orgTin = GetCurrentOrgTin();
+            if (!string.IsNullOrEmpty(orgTin))
+            {
+                if (incident.Organization != orgTin)
+                {
+                    return Forbid();
+                }
+            }
+            else
+            {
+                if (!GetOwnIncidentIds().Contains(id))
+                {
+                    return Forbid();
+                }
+            }
 
             ViewBag.CurrentOrg = await ResolveCurrentOrganizationAsync();
             return View(incident);
@@ -175,9 +208,10 @@ namespace data_registry_public.Controllers
                 return RedirectToAction(nameof(Create));
             }
 
-            if (string.IsNullOrWhiteSpace(model.IncidentDescription))
+            // Поля организации read-only — убираем их из ModelState, чтоб не мешали валидации
+            foreach (var key in ModelState.Keys.Where(k => k.StartsWith("Organization")).ToList())
             {
-                ModelState.AddModelError(nameof(model.IncidentDescription), "Опишите инцидент");
+                ModelState.Remove(key);
             }
 
             if (!ModelState.IsValid)
@@ -195,6 +229,7 @@ namespace data_registry_public.Controllers
                 model.OrganizationDirectorPosition = org.DirectorPosition;
                 model.OrganizationSector = org.BusinessSector;
                 model.OrganizationSectorName = org.BusinessSectorName;
+                TempData["ErrorMessage"] = "Форма заполнена с ошибками. Проверьте подсвеченные поля.";
                 return View("Create", model);
             }
 
@@ -206,6 +241,8 @@ namespace data_registry_public.Controllers
                 Id = id,
                 DateCreate = DateTime.Now,
                 IncidentRegnumber = regNumber,
+                // Привязка к организации (для авторизованных — orgId из claim, иначе dev-ИНН)
+                Organization = org.Tin,
                 DateDetection = model.DateDetection,
                 DateOccurrence = model.DateOccurrence,
                 IncidetLocation = model.IncidentLocation,
@@ -263,28 +300,35 @@ namespace data_registry_public.Controllers
 
         private async Task<MinJustOrganizationInfo?> ResolveCurrentOrganizationAsync()
         {
-            string? tin = null;
+            var tin = GetCurrentOrgTin();
 
-            // 1) авторизация через ЕСИ (когда будет подключена)
-            if (User?.Identity?.IsAuthenticated == true)
-            {
-                tin = User.FindFirst("orgPin")?.Value;
-            }
-
-            // 2) dev: cookie от предыдущего сеанса
+            // dev: cookie от предыдущего сеанса
             if (string.IsNullOrWhiteSpace(tin))
             {
                 tin = ReadCurrentOrgFromCookie()?.Tin;
             }
 
-            // 3) dev: фиксированная заглушка — чтобы при первом заходе организация тоже
-            //    автоматически подтянулась
+            // dev: фиксированная заглушка — чтобы при первом заходе организация
+            // тоже автоматически подтянулась
             if (string.IsNullOrWhiteSpace(tin))
             {
                 tin = DevCurrentOrgTin;
             }
 
             return await _minJust.GetOrganizationByTinAsync(tin);
+        }
+
+        /// <summary>
+        /// ИНН организации текущего пользователя из claims (orgId или orgPin).
+        /// Возвращает null, если пользователь не авторизован.
+        /// </summary>
+        private string? GetCurrentOrgTin()
+        {
+            if (User?.Identity?.IsAuthenticated != true) return null;
+            var tin = User.FindFirst("orgId")?.Value;
+            if (string.IsNullOrWhiteSpace(tin))
+                tin = User.FindFirst("orgPin")?.Value;
+            return string.IsNullOrWhiteSpace(tin) ? null : tin;
         }
 
         // === Cookie-helpers ===============================================

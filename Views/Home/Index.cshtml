@@ -55,13 +55,27 @@
                     <label class="form-label !text-white/80">Сектор</label>
                     <select name="sector" class="form-control !bg-white/95">
                         <option value="" selected="@(string.IsNullOrEmpty(Model.Sector))">Все</option>
-                        <option value="Government" selected="@(Model.Sector=="Government")">Госорганы</option>
-                        <option value="Banking" selected="@(Model.Sector=="Banking")">Банки</option>
-                        <option value="Healthcare" selected="@(Model.Sector=="Healthcare")">Медицина</option>
-                        <option value="Telecommunications" selected="@(Model.Sector=="Telecommunications")">Телеком</option>
-                        <option value="Education" selected="@(Model.Sector=="Education")">Образование</option>
-                        <option value="IT" selected="@(Model.Sector=="IT")">IT</option>
-                        <option value="Retail" selected="@(Model.Sector=="Retail")">Торговля</option>
+                        <option value="IT"    selected="@(Model.Sector=="IT")">Информационные технологии</option>
+                        <option value="FIN"   selected="@(Model.Sector=="FIN")">Финансы</option>
+                        <option value="EDU"   selected="@(Model.Sector=="EDU")">Образование</option>
+                        <option value="HLTH"  selected="@(Model.Sector=="HLTH")">Здравоохранение</option>
+                        <option value="CONS"  selected="@(Model.Sector=="CONS")">Строительство</option>
+                        <option value="TRD"   selected="@(Model.Sector=="TRD")">Торговля</option>
+                        <option value="LOG"   selected="@(Model.Sector=="LOG")">Логистика</option>
+                        <option value="AGRO"  selected="@(Model.Sector=="AGRO")">Сельское хозяйство</option>
+                        <option value="MFG"   selected="@(Model.Sector=="MFG")">Производство</option>
+                        <option value="TEL"   selected="@(Model.Sector=="TEL")">Телекоммуникации</option>
+                        <option value="ENER"  selected="@(Model.Sector=="ENER")">Энергетика</option>
+                        <option value="TOUR"  selected="@(Model.Sector=="TOUR")">Туризм</option>
+                        <option value="REAL"  selected="@(Model.Sector=="REAL")">Недвижимость</option>
+                        <option value="SERV"  selected="@(Model.Sector=="SERV")">Услуги</option>
+                        <option value="GOV"   selected="@(Model.Sector=="GOV")">Государственный сектор</option>
+                        <option value="MEDIA" selected="@(Model.Sector=="MEDIA")">Медиа и развлечения</option>
+                        <option value="INS"   selected="@(Model.Sector=="INS")">Страхование</option>
+                        <option value="BANK"  selected="@(Model.Sector=="BANK")">Банковская деятельность</option>
+                        <option value="AUTO"  selected="@(Model.Sector=="AUTO")">Автомобильная отрасль</option>
+                        <option value="FOOD"  selected="@(Model.Sector=="FOOD")">Пищевая промышленность</option>
+                        <option value="OTHER" selected="@(Model.Sector=="OTHER")">Другое</option>
                     </select>
                 </div>
                 <div class="flex gap-2 self-end">

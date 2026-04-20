@@ -47,12 +47,12 @@ namespace data_registry_local.Controllers
                 query = query.Where(i => i.Incidentseverity == severity);
             }
 
-            // Сектор — пока инцидент не связан напрямую с Organization, фильтр "про запас":
-            // ищем по подстроке в описании (тип инцидента хранится там). На будущее, когда
-            // появится FK organization → использовать JOIN.
+            // Сектор — через FK incidents.organization → organizations.businesssector.
             if (!string.IsNullOrWhiteSpace(sector))
             {
-                query = query.Where(i => i.IncidentDescription != null && i.IncidentDescription.Contains(sector));
+                query = query.Where(i =>
+                    i.OrganizationNavigation != null &&
+                    i.OrganizationNavigation.Businesssector == sector);
             }
 
             var incidents = await query.ToListAsync();

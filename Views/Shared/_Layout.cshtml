@@ -2,6 +2,11 @@
     var ctx = ViewContext.RouteData.Values["controller"]?.ToString()?.ToLowerInvariant();
     string NavClass(string ctrl) =>
         "navlink" + (string.Equals(ctx, ctrl, StringComparison.OrdinalIgnoreCase) ? " navlink-active" : "");
+
+    bool isAuth = User.Identity?.IsAuthenticated ?? false;
+    string userName = User.Identity?.Name ?? "";
+    string userOrg = User.FindFirst("orgName")?.Value ?? "";
+    string userInitial = !string.IsNullOrEmpty(userName) ? userName[0].ToString().ToUpper() : "?";
 }
 <!DOCTYPE html>
 <html lang="ru">
@@ -38,13 +43,16 @@
                     <a class="@NavClass("home")" asp-area="" asp-controller="Home" asp-action="Index">
                         <i class="bi bi-house-door" aria-hidden="true"></i> Главная
                     </a>
-                    <a class="@NavClass("incedents")" asp-area="" asp-controller="Incedents" asp-action="Index">
-                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Мои инциденты
-                    </a>
-                    <a class="btn-register ml-2" asp-controller="Incedents" asp-action="Create">
-                        <i class="bi bi-plus-circle-fill" aria-hidden="true"></i>
-                        <span>Зарегистрировать инцидент</span>
-                    </a>
+                    @if (isAuth)
+                    {
+                        <a class="@NavClass("incedents")" asp-area="" asp-controller="Incedents" asp-action="Index">
+                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Мои инциденты
+                        </a>
+                        <a class="btn-register ml-2" asp-controller="Incedents" asp-action="Create">
+                            <i class="bi bi-plus-circle-fill" aria-hidden="true"></i>
+                            <span>Зарегистрировать инцидент</span>
+                        </a>
+                    }
                 </nav>
 
                 <div class="ml-auto flex items-center gap-2">
@@ -53,9 +61,68 @@
                             type="button" aria-controls="mobileNav" aria-expanded="false" aria-label="Открыть меню">
                         <i class="bi bi-list text-xl" aria-hidden="true"></i>
                     </button>
-                    <a class="hidden btn-secondary lg:inline-flex" href='@Url.Action("Login", "esi")'>
-                        <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> Войти через ЕСИ
-                    </a>
+
+                    @if (isAuth)
+                    {
+                        <div id="userDropdownWrap" class="relative hidden lg:block">
+                            <button id="userDropdownBtn" type="button"
+                                    class="flex items-center gap-2 rounded-xl border border-dpaGray-200 bg-white px-2 py-1.5 shadow-sm transition hover:border-dpa-300 hover:bg-dpa-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-dpa-200"
+                                    aria-haspopup="true" aria-expanded="false">
+                                <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-dpa-800 text-sm font-extrabold text-white">@userInitial</span>
+                                <span class="flex flex-col items-start leading-tight">
+                                    <span class="max-w-[160px] truncate text-sm font-semibold text-dpa-800">@userName</span>
+                                    @if (!string.IsNullOrEmpty(userOrg))
+                                    {
+                                        <span class="max-w-[160px] truncate text-[11px] text-dpaGray-500">@userOrg</span>
+                                    }
+                                </span>
+                                <i class="bi bi-chevron-down text-xs text-dpaGray-500"></i>
+                            </button>
+
+                            <div id="userDropdownMenu"
+                                 class="invisible absolute right-0 z-50 mt-2 w-64 origin-top-right scale-95 rounded-2xl border border-dpaGray-200 bg-white p-2 opacity-0 shadow-lg transition"
+                                 role="menu">
+                                <div class="mb-1 border-b border-dpaGray-100 px-3 py-2">
+                                    <div class="truncate text-sm font-semibold text-dpa-800">@userName</div>
+                                    <div class="truncate text-xs text-dpaGray-500">@(User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value)</div>
+                                    @if (!string.IsNullOrEmpty(userOrg))
+                                    {
+                                        <div class="mt-1 flex items-center gap-1 text-[11px] text-dpaGray-500">
+                                            <i class="bi bi-building"></i>
+                                            <span class="truncate">@userOrg</span>
+                                        </div>
+                                    }
+                                </div>
+                                <a class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-dpaGray-700 hover:bg-dpa-50 hover:text-dpa-800"
+                                   asp-controller="UserPage" asp-action="Index">
+                                    <i class="bi bi-person-vcard"></i> Мой профиль
+                                </a>
+                                <a class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-dpaGray-700 hover:bg-dpa-50 hover:text-dpa-800"
+                                   asp-controller="Incedents" asp-action="Index">
+                                    <i class="bi bi-collection"></i> Мои инциденты
+                                </a>
+                                <div class="my-1 border-t border-dpaGray-100"></div>
+                                <a class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-rose-600 hover:bg-rose-50"
+                                   asp-controller="esi" asp-action="Logout">
+                                    <i class="bi bi-box-arrow-right"></i> Выйти
+                                </a>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="hidden items-center gap-2 lg:flex">
+                            <a class="btn-secondary" href='@Url.Action("Login", "esi")'>
+                                <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> Войти через ЕСИ
+                            </a>
+                            <a class="btn-test" href='@Url.Action("LoginTest", "esi")'
+                               title="Быстрый вход тестовым пользователем с эмулятором Минюста">
+                                <i class="bi bi-person-gear" aria-hidden="true"></i>
+                                <span>Тестовый вход</span>
+                                <span class="ml-1 rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-700">dev</span>
+                            </a>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
@@ -64,11 +131,45 @@
             <div class="app-container py-3">
                 <div class="grid gap-2">
                     <a class="@NavClass("home")" asp-area="" asp-controller="Home" asp-action="Index"><i class="bi bi-house-door"></i> Главная</a>
-                    <a class="@NavClass("incedents")" asp-area="" asp-controller="Incedents" asp-action="Index"><i class="bi bi-exclamation-triangle"></i> Мои инциденты</a>
-                    <a class="btn-register mt-1 w-full" asp-controller="Incedents" asp-action="Create">
-                        <i class="bi bi-plus-circle-fill"></i>
-                        <span>Зарегистрировать инцидент</span>
-                    </a>
+                    @if (isAuth)
+                    {
+                        <a class="@NavClass("incedents")" asp-area="" asp-controller="Incedents" asp-action="Index"><i class="bi bi-exclamation-triangle"></i> Мои инциденты</a>
+                        <a class="btn-register mt-1 w-full" asp-controller="Incedents" asp-action="Create">
+                            <i class="bi bi-plus-circle-fill"></i>
+                            <span>Зарегистрировать инцидент</span>
+                        </a>
+                    }
+
+                    @if (isAuth)
+                    {
+                        <div class="mt-2 rounded-xl border border-dpaGray-200 bg-dpaGray-50 p-3">
+                            <div class="flex items-center gap-3">
+                                <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-dpa-800 text-sm font-extrabold text-white">@userInitial</span>
+                                <div class="min-w-0">
+                                    <div class="truncate text-sm font-semibold text-dpa-800">@userName</div>
+                                    @if (!string.IsNullOrEmpty(userOrg))
+                                    {
+                                        <div class="truncate text-[11px] text-dpaGray-500">@userOrg</div>
+                                    }
+                                </div>
+                            </div>
+                            <div class="mt-2 grid gap-1">
+                                <a class="navlink" asp-controller="UserPage" asp-action="Index"><i class="bi bi-person-vcard"></i> Мой профиль</a>
+                                <a class="navlink text-rose-600" asp-controller="esi" asp-action="Logout"><i class="bi bi-box-arrow-right"></i> Выйти</a>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <a class="btn-secondary mt-2" href='@Url.Action("Login", "esi")'>
+                            <i class="bi bi-box-arrow-in-right"></i> Войти через ЕСИ
+                        </a>
+                        <a class="btn-test mt-1" href='@Url.Action("LoginTest", "esi")'>
+                            <i class="bi bi-person-gear"></i>
+                            <span>Тестовый вход</span>
+                            <span class="ml-1 rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-700">dev</span>
+                        </a>
+                    }
                 </div>
             </div>
         </div>
@@ -119,6 +220,42 @@
             var btn = document.getElementById('navToggle');
             var nav = document.getElementById('mobileNav');
             if (btn && nav) btn.addEventListener('click', function () { nav.classList.toggle('hidden'); });
+
+            // User dropdown
+            var uBtn = document.getElementById('userDropdownBtn');
+            var uMenu = document.getElementById('userDropdownMenu');
+            var uWrap = document.getElementById('userDropdownWrap');
+            if (uBtn && uMenu && uWrap) {
+                function show() {
+                    uMenu.classList.remove('invisible', 'opacity-0', 'scale-95');
+                    uMenu.classList.add('visible', 'opacity-100', 'scale-100');
+                    uBtn.setAttribute('aria-expanded', 'true');
+                }
+                function hide() {
+                    uMenu.classList.add('invisible', 'opacity-0', 'scale-95');
+                    uMenu.classList.remove('visible', 'opacity-100', 'scale-100');
+                    uBtn.setAttribute('aria-expanded', 'false');
+                }
+                var hover = false, timer = null;
+                function openWithDelay() { clearTimeout(timer); hover = true; show(); }
+                function closeWithDelay() {
+                    hover = false;
+                    clearTimeout(timer);
+                    timer = setTimeout(function () { if (!hover) hide(); }, 120);
+                }
+                uWrap.addEventListener('mouseenter', openWithDelay);
+                uWrap.addEventListener('mouseleave', closeWithDelay);
+                uBtn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    if (uMenu.classList.contains('invisible')) show(); else hide();
+                });
+                document.addEventListener('click', function (e) {
+                    if (!uWrap.contains(e.target)) hide();
+                });
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape') hide();
+                });
+            }
         })();
     </script>
     @await RenderSectionAsync("Scripts", required: false)

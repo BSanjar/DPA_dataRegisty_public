@@ -1,0 +1,174 @@
+@model data_registry_public.Models.PublicUser
+@{
+    ViewData["Title"] = "Профиль";
+    var mj = ViewBag.MinJustOrg as data_registry_public.Integrations.MinJustOrganizationInfo;
+    var orgDb = ViewBag.OrganizationDb as data_registry_public.Models.Organization;
+    int totalIncidents = (int)(ViewBag.TotalIncidents ?? 0);
+
+    string userName = Model?.EsiName ?? User.Identity?.Name ?? "—";
+    string userEmail = Model?.EsiEmail ?? User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value ?? "—";
+    string userPin = Model?.EsiPin ?? User.FindFirst("pin")?.Value ?? "—";
+}
+
+<div class="mb-6">
+    <a class="inline-flex items-center gap-1 text-sm text-dpaGray-500 hover:text-dpa-800" asp-controller="Home" asp-action="Index">
+        <i class="bi bi-arrow-left"></i> На главную
+    </a>
+    <h1 class="mt-2 text-2xl font-extrabold text-dpa-800 sm:text-3xl">Мой профиль</h1>
+    <p class="mt-1 text-sm text-dpaGray-500">Данные пользователя и организации, подтянутые из ЕСИ и Министерства юстиции.</p>
+</div>
+
+<div class="grid gap-4 lg:grid-cols-3">
+    <!-- Пользователь -->
+    <div class="card lg:col-span-1">
+        <div class="card-header"><div class="text-base font-extrabold text-dpa-800">Пользователь</div></div>
+        <div class="card-body space-y-4">
+            <div class="flex items-center gap-3">
+                <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-dpa-800 text-xl font-extrabold text-white">
+                    @(!string.IsNullOrEmpty(userName) && userName.Length > 0 ? userName[0].ToString().ToUpper() : "?")
+                </div>
+                <div class="min-w-0">
+                    <div class="truncate text-base font-extrabold text-dpa-800">@userName</div>
+                    <div class="truncate text-xs text-dpaGray-500">@userEmail</div>
+                </div>
+            </div>
+
+            <dl class="space-y-2 text-sm">
+                <div>
+                    <dt class="form-label">ИНН (ПИН)</dt>
+                    <dd class="font-mono font-semibold text-dpaGray-800">@userPin</dd>
+                </div>
+                @if (!string.IsNullOrEmpty(Model?.EsiPhoneNumber))
+                {
+                    <div>
+                        <dt class="form-label">Телефон</dt>
+                        <dd class="font-semibold text-dpaGray-800">@Model.EsiPhoneNumber</dd>
+                    </div>
+                }
+                @if (!string.IsNullOrEmpty(Model?.PositionName))
+                {
+                    <div>
+                        <dt class="form-label">Должность</dt>
+                        <dd class="font-semibold text-dpaGray-800">@Model.PositionName</dd>
+                    </div>
+                }
+            </dl>
+
+            <a class="btn-secondary w-full" asp-controller="esi" asp-action="Logout">
+                <i class="bi bi-box-arrow-right"></i> Выйти
+            </a>
+        </div>
+    </div>
+
+    <!-- Организация -->
+    <div class="card lg:col-span-2">
+        <div class="card-header flex flex-wrap items-center justify-between gap-2">
+            <div>
+                <div class="text-base font-extrabold text-dpa-800">Организация</div>
+                <div class="text-xs text-dpaGray-500">Сведения получены из Минюста и сохранены в реестре</div>
+            </div>
+            <span class="badge badge-success"><i class="bi bi-check2-circle"></i> @(mj?.Source ?? "—")</span>
+        </div>
+        @if (mj == null)
+        {
+            <div class="card-body">
+                <div class="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+                    <i class="bi bi-exclamation-circle"></i>
+                    К вашему аккаунту не привязана организация. Это может означать, что ЕСИ
+                    не передал ИНН организации или сервис Минюста временно недоступен.
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="card-body space-y-5">
+                <div class="flex items-start gap-3">
+                    <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-dpa-800 text-white">
+                        <i class="bi bi-building"></i>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <div class="text-base font-extrabold text-dpa-800">@mj.FullName</div>
+                        <div class="text-xs text-dpaGray-500">
+                            ИНН @mj.Tin · @mj.LegalForm
+                            @if (!string.IsNullOrEmpty(mj.BusinessSectorName))
+                            {
+                                <span>· @mj.BusinessSectorName</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <dl class="grid gap-x-6 gap-y-3 text-sm sm:grid-cols-2 lg:grid-cols-3">
+                    <div>
+                        <dt class="form-label">Рег. номер</dt>
+                        <dd class="text-dpaGray-800">@(string.IsNullOrEmpty(mj.RegistrationNumber) ? "—" : mj.RegistrationNumber)</dd>
+                    </div>
+                    <div>
+                        <dt class="form-label">Дата регистрации</dt>
+                        <dd class="text-dpaGray-800">@(string.IsNullOrEmpty(mj.RegistrationDate) ? "—" : mj.RegistrationDate)</dd>
+                    </div>
+                    <div>
+                        <dt class="form-label">Статус</dt>
+                        <dd><span class="badge badge-success">@mj.Status</span></dd>
+                    </div>
+                    <div class="sm:col-span-2 lg:col-span-3">
+                        <dt class="form-label">Юридический адрес</dt>
+                        <dd class="text-dpaGray-800">@(string.IsNullOrEmpty(mj.Address) ? "—" : mj.Address)</dd>
+                    </div>
+                    <div class="sm:col-span-2">
+                        <dt class="form-label">Руководитель</dt>
+                        <dd class="text-dpaGray-800">
+                            @(string.IsNullOrEmpty(mj.DirectorName) ? "—" : mj.DirectorName)
+                            @if (!string.IsNullOrEmpty(mj.DirectorPosition))
+                            {
+                                <span class="text-dpaGray-500"> · @mj.DirectorPosition</span>
+                            }
+                        </dd>
+                    </div>
+                </dl>
+
+                <div class="grid gap-3 sm:grid-cols-3">
+                    <div class="kpi kpi-blue">
+                        <div class="kpi-icon"><i class="bi bi-collection"></i></div>
+                        <div class="kpi-body">
+                            <div class="kpi-label">Инцидентов организации</div>
+                            <div class="kpi-value">@totalIncidents</div>
+                        </div>
+                    </div>
+                    <div class="kpi kpi-green">
+                        <div class="kpi-icon"><i class="bi bi-shield-check"></i></div>
+                        <div class="kpi-body">
+                            <div class="kpi-label">Уровень риска</div>
+                            <div class="kpi-value">
+                                @(orgDb?.Risklevel switch
+                                {
+                                    "High" => "Высокий",
+                                    "Critical" => "Крит.",
+                                    "Medium" => "Средний",
+                                    "Low" => "Низкий",
+                                    _ => "—"
+                                })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="kpi kpi-cyan">
+                        <div class="kpi-icon"><i class="bi bi-database-check"></i></div>
+                        <div class="kpi-body">
+                            <div class="kpi-label">В реестре</div>
+                            <div class="kpi-value">@(orgDb != null ? "Да" : "Нет")</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-2">
+                    <a class="btn-primary" asp-controller="Incedents" asp-action="Create">
+                        <i class="bi bi-plus-circle-fill"></i> Зарегистрировать инцидент
+                    </a>
+                    <a class="btn-secondary" asp-controller="Incedents" asp-action="Index">
+                        <i class="bi bi-collection"></i> Мои инциденты
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+</div>

@@ -8,9 +8,40 @@ namespace data_registry_public.Models;
 /// </summary>
 public partial class Organization
 {
+    /// <summary>
+    /// Идентификатор (ИНН организации).
+    /// </summary>
     public string Id { get; set; } = null!;
 
+    /// <summary>Полное наименование (как в Минюсте).</summary>
     public string? Fullnamegl { get; set; }
+
+    /// <summary>Краткое наименование.</summary>
+    public string? ShortName { get; set; }
+
+    /// <summary>Организационно-правовая форма (ОсОО, ОАО и т.п.).</summary>
+    public string? LegalForm { get; set; }
+
+    /// <summary>Регистрационный номер из Минюста.</summary>
+    public string? RegistrationNumber { get; set; }
+
+    /// <summary>Дата регистрации (строкой, как отдаёт Минюст).</summary>
+    public string? RegistrationDate { get; set; }
+
+    /// <summary>Юридический адрес.</summary>
+    public string? Address { get; set; }
+
+    /// <summary>ФИО руководителя.</summary>
+    public string? DirectorName { get; set; }
+
+    /// <summary>Должность руководителя.</summary>
+    public string? DirectorPosition { get; set; }
+
+    /// <summary>Текущий статус (Активный, Ликвидирована и т.п.).</summary>
+    public string? Status { get; set; }
+
+    /// <summary>Время последнего обновления данных из Минюста.</summary>
+    public DateTime? LastSyncedAt { get; set; }
 
     /// <summary>
     /// сфера деятельности субъекта:
@@ -49,4 +80,6 @@ public partial class Organization
     public virtual ICollection<Inspection> Inspections { get; set; } = new List<Inspection>();
 
     public virtual ICollection<PublicUser> PublicUsers { get; set; } = new List<PublicUser>();
+
+    public virtual ICollection<Incident> Incidents { get; set; } = new List<Incident>();
 }
