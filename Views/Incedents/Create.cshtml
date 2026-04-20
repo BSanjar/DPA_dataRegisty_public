@@ -1,18 +1,18 @@
 @model data_registry_public.Models.local_models.IncidentCreateViewModel
 @{
-    ViewData["Title"] = "Регистрация инцидента";
+    ViewData["Title"] = L["Create.Title"].Value;
     var org = ViewBag.CurrentOrg as data_registry_public.Integrations.MinJustOrganizationInfo;
 }
 
 <div class="mb-6 flex flex-col gap-2">
     <a class="inline-flex w-fit items-center gap-1 text-sm text-dpaGray-500 hover:text-dpa-800" asp-action="Index">
-        <i class="bi bi-arrow-left"></i> Назад к списку
+        <i class="bi bi-arrow-left"></i> @L["Common.BackToList"]
     </a>
     <div class="flex flex-wrap items-end justify-between gap-3">
         <div>
-            <div class="text-[11px] font-semibold uppercase tracking-wider text-dpa-500">Инцидент · Регистрация</div>
-            <h1 class="mt-1 text-2xl font-extrabold tracking-tight text-dpa-800 sm:text-3xl">Регистрация инцидента</h1>
-            <p class="mt-1 text-sm text-dpaGray-500">Три шага. Данные организации уже подтянуты из Минюста.</p>
+            <div class="text-[11px] font-semibold uppercase tracking-wider text-dpa-500">@L["Create.Breadcrumb"]</div>
+            <h1 class="mt-1 text-2xl font-extrabold tracking-tight text-dpa-800 sm:text-3xl">@L["Create.Title"]</h1>
+            <p class="mt-1 text-sm text-dpaGray-500">@L["Create.Subtitle"]</p>
         </div>
     </div>
 </div>
@@ -21,15 +21,15 @@
 <ol id="wizSteps" class="stepper mb-6">
     <li class="step is-active" data-step="1">
         <div class="step-num">1</div>
-        <div><div class="step-sub">Шаг 1</div><div class="step-title">Организация</div></div>
+        <div><div class="step-sub">@L["Create.Step1"]</div><div class="step-title">@L["Create.Step1.Title"]</div></div>
     </li>
     <li class="step" data-step="2">
         <div class="step-num">2</div>
-        <div><div class="step-sub">Шаг 2</div><div class="step-title">Инцидент</div></div>
+        <div><div class="step-sub">@L["Create.Step2"]</div><div class="step-title">@L["Create.Step2.Title"]</div></div>
     </li>
     <li class="step" data-step="3">
         <div class="step-num">3</div>
-        <div><div class="step-sub">Шаг 3</div><div class="step-title">Данные и меры</div></div>
+        <div><div class="step-sub">@L["Create.Step3"]</div><div class="step-title">@L["Create.Step3.Title"]</div></div>
     </li>
 </ol>
 
@@ -37,9 +37,7 @@
 {
     <div class="mb-4 flex items-start gap-3 rounded-xl border border-rose-200 bg-rose-50 p-3 text-rose-800">
         <i class="bi bi-exclamation-triangle-fill mt-0.5"></i>
-        <div class="text-sm font-medium">
-            Пожалуйста, исправьте ошибки в форме — некоторые обязательные поля заполнены некорректно.
-        </div>
+        <div class="text-sm font-medium">@L["Create.ServerErrorsHeading"]</div>
     </div>
 }
 
@@ -55,8 +53,8 @@
                     <circle class="wiz-spinner-head"  cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
                 </svg>
             </div>
-            <div class="mt-4 text-base font-extrabold text-dpa-800">Регистрируем инцидент…</div>
-            <div class="mt-1 text-sm text-dpaGray-500">Сохраняем данные, привязываем к организации. Это займёт пару секунд.</div>
+            <div class="mt-4 text-base font-extrabold text-dpa-800">@L["Create.Overlay.Title"]</div>
+            <div class="mt-1 text-sm text-dpaGray-500">@L["Create.Overlay.Sub"]</div>
             <div class="mt-4 flex items-center gap-1 text-xs text-dpaGray-400">
                 <span class="wiz-dot"></span><span class="wiz-dot"></span><span class="wiz-dot"></span>
             </div>
@@ -67,10 +65,10 @@
     <section class="wiz-pane card" data-pane="1">
         <div class="card-header flex flex-wrap items-center justify-between gap-2">
             <div>
-                <div class="text-base font-extrabold text-dpa-800">Организация</div>
-                <div class="text-xs text-dpaGray-500">Сведения из Министерства юстиции. Недоступны для редактирования.</div>
+                <div class="text-base font-extrabold text-dpa-800">@L["Create.Step1.Title"]</div>
+                <div class="text-xs text-dpaGray-500">@L["Create.Step1.Header.Sub"]</div>
             </div>
-            <span class="badge badge-success"><i class="bi bi-check2-circle"></i> Подтверждено Минюстом</span>
+            <span class="badge badge-success"><i class="bi bi-check2-circle"></i> @L["Create.Step1.Badge"]</span>
         </div>
 
         @if (org == null)
@@ -78,7 +76,7 @@
             <div class="card-body">
                 <div class="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
                     <i class="bi bi-exclamation-circle"></i>
-                    Не удалось получить данные организации. Попробуйте позже или обратитесь к администратору.
+                    @L["Create.Org.NotFound"]
                 </div>
             </div>
         }
@@ -99,23 +97,23 @@
 
                 <dl class="mt-4 grid gap-x-6 gap-y-3 text-sm sm:grid-cols-2 lg:grid-cols-3">
                     <div class="field">
-                        <dt class="form-label">Рег. номер</dt>
+                        <dt class="form-label">@L["Create.Org.RegNumber"]</dt>
                         <dd class="text-dpaGray-800">@org.RegistrationNumber</dd>
                     </div>
                     <div class="field">
-                        <dt class="form-label">Дата регистрации</dt>
+                        <dt class="form-label">@L["Create.Org.RegDate"]</dt>
                         <dd class="text-dpaGray-800">@org.RegistrationDate</dd>
                     </div>
                     <div class="field">
-                        <dt class="form-label">Статус</dt>
+                        <dt class="form-label">@L["Create.Org.Status"]</dt>
                         <dd class="text-dpaGray-800"><span class="badge badge-success">@org.Status</span></dd>
                     </div>
                     <div class="field lg:col-span-2">
-                        <dt class="form-label">Юридический адрес</dt>
+                        <dt class="form-label">@L["Create.Org.Address"]</dt>
                         <dd class="text-dpaGray-800">@org.Address</dd>
                     </div>
                     <div class="field">
-                        <dt class="form-label">Руководитель</dt>
+                        <dt class="form-label">@L["Create.Org.Director"]</dt>
                         <dd class="text-dpaGray-800">
                             @org.DirectorName
                             @if (!string.IsNullOrEmpty(org.DirectorPosition))
@@ -129,9 +127,9 @@
         }
 
         <div class="card-body flex justify-between border-t border-dpaGray-200">
-            <a class="btn-secondary" asp-action="Index"><i class="bi bi-x-lg"></i> Отмена</a>
+            <a class="btn-secondary" asp-action="Index"><i class="bi bi-x-lg"></i> @L["Common.Cancel"]</a>
             <button type="button" class="btn-primary" data-next="2" @(org == null ? "disabled" : "")>
-                Далее <i class="bi bi-arrow-right"></i>
+                @L["Common.Next"] <i class="bi bi-arrow-right"></i>
             </button>
         </div>
     </section>
@@ -139,45 +137,45 @@
     <!-- ========== STEP 2: Incident info ========== -->
     <section class="wiz-pane card hidden" data-pane="2" data-validate-pane>
         <div class="card-header">
-            <div class="text-base font-extrabold text-dpa-800">Общие сведения об инциденте</div>
-            <div class="text-xs text-dpaGray-500">Все поля, отмеченные <span class="text-rose-600">*</span>, обязательны</div>
+            <div class="text-base font-extrabold text-dpa-800">@L["Create.Step2.Header.Title"]</div>
+            <div class="text-xs text-dpaGray-500">@L["Create.Step2.Header.Sub"]</div>
         </div>
         <div class="card-body space-y-5">
 
             <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <div class="field">
-                    <label asp-for="DateOccurrence" class="form-label">Дата возникновения <span class="text-rose-600">*</span></label>
+                    <label asp-for="DateOccurrence" class="form-label">@L["Create.Label.DateOccurrence"] <span class="text-rose-600">*</span></label>
                     <input asp-for="DateOccurrence" type="datetime-local" class="form-control" data-required="true" data-validate="datetime-past" />
                     <span class="field-error" asp-validation-for="DateOccurrence"></span>
                 </div>
                 <div class="field">
-                    <label asp-for="DateDetection" class="form-label">Дата обнаружения <span class="text-rose-600">*</span></label>
+                    <label asp-for="DateDetection" class="form-label">@L["Create.Label.DateDetection"] <span class="text-rose-600">*</span></label>
                     <input asp-for="DateDetection" type="datetime-local" class="form-control" data-required="true" data-validate="datetime-after-occurrence" />
                     <span class="field-error" asp-validation-for="DateDetection"></span>
                 </div>
                 <div class="field">
-                    <label asp-for="IncidentType" class="form-label">Тип инцидента <span class="text-rose-600">*</span></label>
+                    <label asp-for="IncidentType" class="form-label">@L["Create.Label.IncidentType"] <span class="text-rose-600">*</span></label>
                     <select asp-for="IncidentType" class="form-control" data-required="true">
-                        <option value="">— выберите —</option>
-                        <option value="Unauthorized access">Несанкц. доступ</option>
-                        <option value="Data leak">Утечка данных</option>
-                        <option value="Data loss">Потеря данных</option>
-                        <option value="Data destruction">Уничтожение данных</option>
-                        <option value="Phishing">Фишинг</option>
-                        <option value="Malware">Вредоносное ПО</option>
-                        <option value="Insider">Инсайдер</option>
-                        <option value="Other">Иное</option>
+                        <option value="">@L["Common.Choose"]</option>
+                        <option value="Unauthorized access">@L["IncType.Unauthorized"]</option>
+                        <option value="Data leak">@L["IncType.Leak"]</option>
+                        <option value="Data loss">@L["IncType.Loss"]</option>
+                        <option value="Data destruction">@L["IncType.Destruction"]</option>
+                        <option value="Phishing">@L["IncType.Phishing"]</option>
+                        <option value="Malware">@L["IncType.Malware"]</option>
+                        <option value="Insider">@L["IncType.Insider"]</option>
+                        <option value="Other">@L["IncType.Other"]</option>
                     </select>
                     <span class="field-error" asp-validation-for="IncidentType"></span>
                 </div>
                 <div class="field">
-                    <label asp-for="IncidentSeverity" class="form-label">Критичность <span class="text-rose-600">*</span></label>
+                    <label asp-for="IncidentSeverity" class="form-label">@L["Create.Label.Severity"] <span class="text-rose-600">*</span></label>
                     <select asp-for="IncidentSeverity" class="form-control" data-required="true">
-                        <option value="">— выберите —</option>
-                        <option value="Low">Низкий</option>
-                        <option value="Medium">Средний</option>
-                        <option value="High">Высокий</option>
-                        <option value="Critical">Критический</option>
+                        <option value="">@L["Common.Choose"]</option>
+                        <option value="Low">@L["Severity.Low"]</option>
+                        <option value="Medium">@L["Severity.Medium"]</option>
+                        <option value="High">@L["Severity.High"]</option>
+                        <option value="Critical">@L["Severity.Critical"]</option>
                     </select>
                     <span class="field-error" asp-validation-for="IncidentSeverity"></span>
                 </div>
@@ -185,26 +183,26 @@
 
             <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <div class="field">
-                    <label asp-for="IncidentLocation" class="form-label">Место возникновения <span class="text-rose-600">*</span></label>
+                    <label asp-for="IncidentLocation" class="form-label">@L["Create.Label.Location"] <span class="text-rose-600">*</span></label>
                     <input asp-for="IncidentLocation" class="form-control" data-required="true" maxlength="255"
-                           placeholder="ИС, подразделение, офис…" />
+                           placeholder="@L["Create.PH.Location"]" />
                     <span class="field-error" asp-validation-for="IncidentLocation"></span>
                 </div>
                 <div class="field">
-                    <label asp-for="AffectedInformationSystem" class="form-label">Затронутая система <span class="text-rose-600">*</span></label>
+                    <label asp-for="AffectedInformationSystem" class="form-label">@L["Create.Label.AffectedSystem"] <span class="text-rose-600">*</span></label>
                     <input asp-for="AffectedInformationSystem" class="form-control" data-required="true" maxlength="255"
-                           placeholder="CRM, сайт, 1С…" />
+                           placeholder="@L["Create.PH.AffectedSystem"]" />
                     <span class="field-error" asp-validation-for="AffectedInformationSystem"></span>
                 </div>
                 <div class="field">
-                    <label asp-for="SystemType" class="form-label">Тип системы <span class="text-rose-600">*</span></label>
+                    <label asp-for="SystemType" class="form-label">@L["Create.Label.SystemType"] <span class="text-rose-600">*</span></label>
                     <select asp-for="SystemType" class="form-control" data-required="true">
-                        <option value="">— выберите —</option>
-                        <option value="db">База данных</option>
-                        <option value="website">Веб-сайт</option>
-                        <option value="infosystem">Информационная система</option>
-                        <option value="cloude_service">Облачный сервис</option>
-                        <option value="local_network">Локальная сеть</option>
+                        <option value="">@L["Common.Choose"]</option>
+                        <option value="db">@L["SystemType.Db"]</option>
+                        <option value="website">@L["SystemType.Website"]</option>
+                        <option value="infosystem">@L["SystemType.InfoSystem"]</option>
+                        <option value="cloude_service">@L["SystemType.Cloud"]</option>
+                        <option value="local_network">@L["SystemType.LocalNetwork"]</option>
                     </select>
                     <span class="field-error" asp-validation-for="SystemType"></span>
                 </div>
@@ -212,79 +210,79 @@
 
             <div class="field">
                 <label asp-for="IncidentDescription" class="form-label">
-                    Краткое описание <span class="text-rose-600">*</span>
+                    @L["Create.Label.Description"] <span class="text-rose-600">*</span>
                     <span class="char-counter" data-counter-for="IncidentDescription">0 / 4000</span>
                 </label>
                 <textarea asp-for="IncidentDescription" rows="3" class="form-control"
                           data-required="true" data-min-length="10" maxlength="4000"
-                          placeholder="Что произошло, как был обнаружен инцидент и его последствия (минимум 10 символов)…"></textarea>
+                          placeholder="@L["Create.PH.Description"]"></textarea>
                 <span class="field-error" asp-validation-for="IncidentDescription"></span>
             </div>
 
             <div class="field">
-                <label asp-for="SuspectedCause" class="form-label">Предполагаемая причина</label>
+                <label asp-for="SuspectedCause" class="form-label">@L["Create.Label.SuspectedCause"]</label>
                 <textarea asp-for="SuspectedCause" rows="2" class="form-control" maxlength="2000"
-                          placeholder="Человеческий фактор, уязвимость ПО, фишинг…"></textarea>
+                          placeholder="@L["Create.PH.Cause"]"></textarea>
                 <span class="field-error" asp-validation-for="SuspectedCause"></span>
             </div>
         </div>
         <div class="card-body flex justify-between border-t border-dpaGray-200">
-            <button type="button" class="btn-secondary" data-prev="1"><i class="bi bi-arrow-left"></i> Назад</button>
-            <button type="button" class="btn-primary" data-next="3">Далее <i class="bi bi-arrow-right"></i></button>
+            <button type="button" class="btn-secondary" data-prev="1"><i class="bi bi-arrow-left"></i> @L["Common.Back"]</button>
+            <button type="button" class="btn-primary" data-next="3">@L["Common.Next"] <i class="bi bi-arrow-right"></i></button>
         </div>
     </section>
 
     <!-- ========== STEP 3: Data & actions ========== -->
     <section class="wiz-pane card hidden" data-pane="3" data-validate-pane>
         <div class="card-header">
-            <div class="text-base font-extrabold text-dpa-800">Затронутые данные и меры</div>
-            <div class="text-xs text-dpaGray-500">Все поля с <span class="text-rose-600">*</span> обязательны</div>
+            <div class="text-base font-extrabold text-dpa-800">@L["Create.Step3.Header.Title"]</div>
+            <div class="text-xs text-dpaGray-500">@L["Create.Step3.Header.Sub"]</div>
         </div>
         <div class="card-body space-y-5">
 
             <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <div class="field">
-                    <label asp-for="AffectedRecordsCount" class="form-label">Записей <span class="text-rose-600">*</span></label>
+                    <label asp-for="AffectedRecordsCount" class="form-label">@L["Create.Label.Records"] <span class="text-rose-600">*</span></label>
                     <input asp-for="AffectedRecordsCount" type="number" min="0" step="1" class="form-control"
                            data-required="true" data-validate="integer-nonneg" inputmode="numeric"
                            placeholder="0" />
                     <span class="field-error" asp-validation-for="AffectedRecordsCount"></span>
                 </div>
                 <div class="field">
-                    <label asp-for="EstimatedDataSubjectsCount" class="form-label">Субъектов (прибл.) <span class="text-rose-600">*</span></label>
+                    <label asp-for="EstimatedDataSubjectsCount" class="form-label">@L["Create.Label.Subjects"] <span class="text-rose-600">*</span></label>
                     <input asp-for="EstimatedDataSubjectsCount" class="form-control"
                            data-required="true" data-validate="digits-only" inputmode="numeric" maxlength="10"
                            placeholder="1500" />
                     <span class="field-error" asp-validation-for="EstimatedDataSubjectsCount"></span>
                 </div>
                 <div class="field">
-                    <label asp-for="PersonalDataType" class="form-label">Тип данных <span class="text-rose-600">*</span></label>
+                    <label asp-for="PersonalDataType" class="form-label">@L["Create.Label.PdType"] <span class="text-rose-600">*</span></label>
                     <select asp-for="PersonalDataType" class="form-control" data-required="true">
-                        <option value="">— выберите —</option>
-                        <option value="Regular">Обычные</option>
-                        <option value="Special">Специальные</option>
-                        <option value="Biometric">Биометрические</option>
+                        <option value="">@L["Common.Choose"]</option>
+                        <option value="Regular">@L["PdType.Regular"]</option>
+                        <option value="Special">@L["PdType.Special"]</option>
+                        <option value="Biometric">@L["PdType.Biometric"]</option>
                     </select>
                     <span class="field-error" asp-validation-for="PersonalDataType"></span>
                 </div>
                 <div class="field">
-                    <label asp-for="DataSubjectCategory" class="form-label">Категория субъектов <span class="text-rose-600">*</span></label>
+                    <label asp-for="DataSubjectCategory" class="form-label">@L["Create.Label.SubjectCategory"] <span class="text-rose-600">*</span></label>
                     <select asp-for="DataSubjectCategory" class="form-control" data-required="true">
-                        <option value="">— выберите —</option>
-                        <option value="Employees">Сотрудники</option>
-                        <option value="Clients">Клиенты</option>
-                        <option value="Citizens">Граждане</option>
-                        <option value="SiteUsers">Пользователи сайта</option>
-                        <option value="Other">Иные</option>
+                        <option value="">@L["Common.Choose"]</option>
+                        <option value="Employees">@L["SubjCat.Employees"]</option>
+                        <option value="Clients">@L["SubjCat.Clients"]</option>
+                        <option value="Citizens">@L["SubjCat.Citizens"]</option>
+                        <option value="SiteUsers">@L["SubjCat.SiteUsers"]</option>
+                        <option value="Other">@L["SubjCat.Other"]</option>
                     </select>
                     <span class="field-error" asp-validation-for="DataSubjectCategory"></span>
                 </div>
             </div>
 
             <div class="field">
-                <label asp-for="PersonalDataCategories" class="form-label">Категории ПДн <span class="text-rose-600">*</span></label>
+                <label asp-for="PersonalDataCategories" class="form-label">@L["Create.Label.PdCategories"] <span class="text-rose-600">*</span></label>
                 <input asp-for="PersonalDataCategories" class="form-control" data-required="true" maxlength="500"
-                       placeholder="ФИО, паспорт, контакты, финансовая информация…" />
+                       placeholder="@L["Create.PH.PdCategories"]" />
                 <span class="field-error" asp-validation-for="PersonalDataCategories"></span>
             </div>
 
@@ -292,36 +290,36 @@
                 <label class="check-card">
                     <input asp-for="IsDataCopiedOrStolen" type="checkbox" />
                     <div>
-                        <div class="text-sm font-semibold">Скопированы / похищены</div>
-                        <div class="text-xs text-dpaGray-500">Подтверждено</div>
+                        <div class="text-sm font-semibold">@L["Create.Label.IsCopied"]</div>
+                        <div class="text-xs text-dpaGray-500">@L["Create.Note.IsCopied"]</div>
                     </div>
                 </label>
                 <label class="check-card">
                     <input asp-for="IsDataPublished" type="checkbox" />
                     <div>
-                        <div class="text-sm font-semibold">Опубликованы</div>
-                        <div class="text-xs text-dpaGray-500">В открытых источниках</div>
+                        <div class="text-sm font-semibold">@L["Create.Label.IsPublished"]</div>
+                        <div class="text-xs text-dpaGray-500">@L["Create.Note.IsPublished"]</div>
                     </div>
                 </label>
                 <label class="check-card">
                     <input asp-for="HasRiskOfHarmToSubjects" type="checkbox" />
                     <div>
-                        <div class="text-sm font-semibold">Риск вреда</div>
-                        <div class="text-xs text-dpaGray-500">Субъектам ПДн</div>
+                        <div class="text-sm font-semibold">@L["Create.Label.HasRisk"]</div>
+                        <div class="text-xs text-dpaGray-500">@L["Create.Note.HasRisk"]</div>
                     </div>
                 </label>
                 <label class="check-card">
                     <input asp-for="AreSubjectsNotified" type="checkbox" id="AreSubjectsNotifiedChk" />
                     <div>
-                        <div class="text-sm font-semibold">Субъекты уведомлены</div>
-                        <div class="text-xs text-dpaGray-500">Уведомление отправлено</div>
+                        <div class="text-sm font-semibold">@L["Create.Label.Notified"]</div>
+                        <div class="text-xs text-dpaGray-500">@L["Create.Note.Notified"]</div>
                     </div>
                 </label>
             </div>
 
             <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 <div class="field">
-                    <label asp-for="NotificationSentAt" class="form-label">Дата отправки уведомления</label>
+                    <label asp-for="NotificationSentAt" class="form-label">@L["Create.Label.NotifSentAt"]</label>
                     <input asp-for="NotificationSentAt" type="datetime-local" class="form-control"
                            data-required-if="#AreSubjectsNotifiedChk" />
                     <span class="field-error" asp-validation-for="NotificationSentAt"></span>
@@ -330,30 +328,30 @@
 
             <div class="grid gap-4 lg:grid-cols-3">
                 <div class="field">
-                    <label asp-for="ActionsTaken" class="form-label">Меры по устранению <span class="text-rose-600">*</span></label>
+                    <label asp-for="ActionsTaken" class="form-label">@L["Create.Label.ActionsTaken"] <span class="text-rose-600">*</span></label>
                     <textarea asp-for="ActionsTaken" rows="3" class="form-control"
                               data-required="true" data-min-length="5" maxlength="2000"
-                              placeholder="Блокировка, ротация паролей, отключение сервисов…"></textarea>
+                              placeholder="@L["Create.PH.ActionsTaken"]"></textarea>
                     <span class="field-error" asp-validation-for="ActionsTaken"></span>
                 </div>
                 <div class="field">
-                    <label asp-for="PreventionMeasures" class="form-label">Меры по предотвращению</label>
+                    <label asp-for="PreventionMeasures" class="form-label">@L["Create.Label.Prevention"]</label>
                     <textarea asp-for="PreventionMeasures" rows="3" class="form-control" maxlength="2000"
-                              placeholder="Обновление политик, обучение сотрудников, DLP…"></textarea>
+                              placeholder="@L["Create.PH.Prevention"]"></textarea>
                     <span class="field-error" asp-validation-for="PreventionMeasures"></span>
                 </div>
                 <div class="field">
-                    <label asp-for="InvestigationInfo" class="form-label">Расследование</label>
+                    <label asp-for="InvestigationInfo" class="form-label">@L["Create.Label.Investigation"]</label>
                     <textarea asp-for="InvestigationInfo" rows="3" class="form-control" maxlength="2000"
-                              placeholder="Ответственные, сроки, выводы…"></textarea>
+                              placeholder="@L["Create.PH.Investigation"]"></textarea>
                     <span class="field-error" asp-validation-for="InvestigationInfo"></span>
                 </div>
             </div>
         </div>
         <div class="card-body flex flex-col gap-3 border-t border-dpaGray-200 sm:flex-row sm:justify-between">
-            <button type="button" class="btn-secondary" data-prev="2"><i class="bi bi-arrow-left"></i> Назад</button>
+            <button type="button" class="btn-secondary" data-prev="2"><i class="bi bi-arrow-left"></i> @L["Common.Back"]</button>
             <button type="submit" id="submitBtn" class="btn-primary">
-                <i class="bi bi-check2-circle"></i> Зарегистрировать инцидент
+                <i class="bi bi-check2-circle"></i> @L["Create.Btn.Register"]
             </button>
         </div>
     </section>
@@ -546,11 +544,9 @@
                 overlay.setAttribute('aria-hidden', 'false');
             }
             if (submitBtn) {
-                // используем aria-busy и data-атрибут вместо disabled,
-                // чтобы кнопка тоже попала в POST (если это важно для сервера)
                 submitBtn.setAttribute('aria-busy', 'true');
                 submitBtn.classList.add('pointer-events-none', 'opacity-80');
-                submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Регистрирую…';
+                submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> ' + @Html.Raw(System.Text.Json.JsonSerializer.Serialize(L["Create.Btn.Submitting"].Value));
             }
         }
 
@@ -579,7 +575,7 @@
             if (submitBtn) {
                 submitBtn.removeAttribute('aria-busy');
                 submitBtn.classList.remove('pointer-events-none', 'opacity-80');
-                submitBtn.innerHTML = '<i class="bi bi-check2-circle"></i> Зарегистрировать инцидент';
+                submitBtn.innerHTML = '<i class="bi bi-check2-circle"></i> ' + @Html.Raw(System.Text.Json.JsonSerializer.Serialize(L["Create.Btn.Register"].Value));
             }
         });
 

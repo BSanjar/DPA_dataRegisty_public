@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <!-- App / Layout -->
+  <data name="App.Name" xml:space="preserve"><value>DPA · Реестр владельцев записей</value></data>
+  <data name="App.Subtitle" xml:space="preserve"><value>АИС учёта персональных данных</value></data>
+  <data name="App.TitleSuffix" xml:space="preserve"><value>Реестр владельцев записей</value></data>
+  <data name="App.SkipToContent" xml:space="preserve"><value>Перейти к содержимому</value></data>
+  <data name="App.OpenMenu" xml:space="preserve"><value>Открыть меню</value></data>
+  <data name="Footer.Copyright" xml:space="preserve"><value>© 2026 — АИС «Реестр владельцев записей»</value></data>
+  <data name="Footer.Privacy" xml:space="preserve"><value>Политика</value></data>
+  <data name="Footer.Support" xml:space="preserve"><value>Поддержка</value></data>
+
+  <!-- Navigation -->
+  <data name="Nav.Home" xml:space="preserve"><value>Главная</value></data>
+  <data name="Nav.MyIncidents" xml:space="preserve"><value>Мои инциденты</value></data>
+  <data name="Nav.RegisterIncident" xml:space="preserve"><value>Зарегистрировать инцидент</value></data>
+  <data name="Nav.Profile" xml:space="preserve"><value>Мой профиль</value></data>
+  <data name="Nav.Logout" xml:space="preserve"><value>Выйти</value></data>
+  <data name="Nav.LoginEsi" xml:space="preserve"><value>Войти через ЕСИ</value></data>
+  <data name="Nav.LoginTest" xml:space="preserve"><value>Тестовый вход</value></data>
+  <data name="Nav.DevBadge" xml:space="preserve"><value>dev</value></data>
+
+  <!-- Language switcher -->
+  <data name="Lang.Title" xml:space="preserve"><value>Язык</value></data>
+  <data name="Lang.Russian" xml:space="preserve"><value>Русский</value></data>
+  <data name="Lang.English" xml:space="preserve"><value>Английский</value></data>
+  <data name="Lang.Kyrgyz" xml:space="preserve"><value>Кыргызча</value></data>
+
+  <!-- Common -->
+  <data name="Common.Back" xml:space="preserve"><value>Назад</value></data>
+  <data name="Common.BackToList" xml:space="preserve"><value>Назад к списку</value></data>
+  <data name="Common.BackToHome" xml:space="preserve"><value>На главную</value></data>
+  <data name="Common.Next" xml:space="preserve"><value>Далее</value></data>
+  <data name="Common.Cancel" xml:space="preserve"><value>Отмена</value></data>
+  <data name="Common.Apply" xml:space="preserve"><value>Применить</value></data>
+  <data name="Common.Reset" xml:space="preserve"><value>Сбросить</value></data>
+  <data name="Common.Search" xml:space="preserve"><value>Поиск</value></data>
+  <data name="Common.Refresh" xml:space="preserve"><value>Обновить</value></data>
+  <data name="Common.Add" xml:space="preserve"><value>Добавить</value></data>
+  <data name="Common.Open" xml:space="preserve"><value>Открыть</value></data>
+  <data name="Common.Close" xml:space="preserve"><value>Закрыть</value></data>
+  <data name="Common.All" xml:space="preserve"><value>Все</value></data>
+  <data name="Common.AllTime" xml:space="preserve"><value>Всё время</value></data>
+  <data name="Common.Yes" xml:space="preserve"><value>Да</value></data>
+  <data name="Common.No" xml:space="preserve"><value>Нет</value></data>
+  <data name="Common.Choose" xml:space="preserve"><value>— выберите —</value></data>
+  <data name="Common.Dash" xml:space="preserve"><value>—</value></data>
+
+  <!-- Home / Dashboard -->
+  <data name="Home.Badge" xml:space="preserve"><value>Аналитический дашборд</value></data>
+  <data name="Home.Title" xml:space="preserve"><value>Главная</value></data>
+  <data name="Home.Subtitle" xml:space="preserve"><value>Сводная статистика по всем инцидентам с персональными данными в системе. Данные «Мои инциденты» — в отдельном разделе.</value></data>
+  <data name="Home.Filters.Period" xml:space="preserve"><value>Период</value></data>
+  <data name="Home.Filters.Period7" xml:space="preserve"><value>7 дней</value></data>
+  <data name="Home.Filters.Period30" xml:space="preserve"><value>30 дней</value></data>
+  <data name="Home.Filters.Period90" xml:space="preserve"><value>90 дней</value></data>
+  <data name="Home.Filters.PeriodYear" xml:space="preserve"><value>Год</value></data>
+  <data name="Home.Filters.Severity" xml:space="preserve"><value>Критичность</value></data>
+  <data name="Home.Filters.Sector" xml:space="preserve"><value>Сектор</value></data>
+
+  <data name="Home.Kpi.TotalAll" xml:space="preserve"><value>Всего в системе</value></data>
+  <data name="Home.Kpi.TotalFiltered" xml:space="preserve"><value>Под фильтром</value></data>
+  <data name="Home.Kpi.Critical" xml:space="preserve"><value>Критичные</value></data>
+  <data name="Home.Kpi.Published" xml:space="preserve"><value>С публикацией</value></data>
+  <data name="Home.Kpi.Notified" xml:space="preserve"><value>Уведомлено</value></data>
+  <data name="Home.Kpi.AffectedRecords" xml:space="preserve"><value>Записей затронуто</value></data>
+
+  <data name="Home.Chart.MonthlyTitle" xml:space="preserve"><value>Динамика регистрации инцидентов</value></data>
+  <data name="Home.Chart.MonthlySub" xml:space="preserve"><value>За последние 12 месяцев — всего и критичные</value></data>
+  <data name="Home.Chart.LegendAll" xml:space="preserve"><value>Всего</value></data>
+  <data name="Home.Chart.LegendCritical" xml:space="preserve"><value>Критичные</value></data>
+  <data name="Home.Chart.SeverityTitle" xml:space="preserve"><value>Распределение по критичности</value></data>
+  <data name="Home.Chart.SeveritySub" xml:space="preserve"><value>В выбранном периоде</value></data>
+  <data name="Home.Chart.SystemsTitle" xml:space="preserve"><value>Затронутые типы систем</value></data>
+  <data name="Home.Chart.SystemsSub" xml:space="preserve"><value>Где возникают инциденты</value></data>
+  <data name="Home.Chart.PdTypeTitle" xml:space="preserve"><value>Тип ПДн</value></data>
+  <data name="Home.Chart.PdTypeSub" xml:space="preserve"><value>Обычные / специальные / биометрические</value></data>
+  <data name="Home.Chart.SubjectsTitle" xml:space="preserve"><value>Субъекты</value></data>
+  <data name="Home.Chart.SubjectsSub" xml:space="preserve"><value>Кто пострадал</value></data>
+  <data name="Home.Chart.CenterTotal" xml:space="preserve"><value>Всего</value></data>
+
+  <!-- Severity -->
+  <data name="Severity.Low" xml:space="preserve"><value>Низкий</value></data>
+  <data name="Severity.Medium" xml:space="preserve"><value>Средний</value></data>
+  <data name="Severity.High" xml:space="preserve"><value>Высокий</value></data>
+  <data name="Severity.Critical" xml:space="preserve"><value>Критический</value></data>
+
+  <!-- System types -->
+  <data name="SystemType.Db" xml:space="preserve"><value>База данных</value></data>
+  <data name="SystemType.Website" xml:space="preserve"><value>Веб-сайт</value></data>
+  <data name="SystemType.InfoSystem" xml:space="preserve"><value>Информационная система</value></data>
+  <data name="SystemType.InfoSystemShort" xml:space="preserve"><value>Инф. система</value></data>
+  <data name="SystemType.Cloud" xml:space="preserve"><value>Облачный сервис</value></data>
+  <data name="SystemType.CloudShort" xml:space="preserve"><value>Облако</value></data>
+  <data name="SystemType.LocalNetwork" xml:space="preserve"><value>Локальная сеть</value></data>
+  <data name="SystemType.LocalNetworkShort" xml:space="preserve"><value>ЛВС</value></data>
+
+  <!-- Incident types -->
+  <data name="IncType.Unauthorized" xml:space="preserve"><value>Несанкц. доступ</value></data>
+  <data name="IncType.Leak" xml:space="preserve"><value>Утечка данных</value></data>
+  <data name="IncType.Loss" xml:space="preserve"><value>Потеря данных</value></data>
+  <data name="IncType.Destruction" xml:space="preserve"><value>Уничтожение данных</value></data>
+  <data name="IncType.Phishing" xml:space="preserve"><value>Фишинг</value></data>
+  <data name="IncType.Malware" xml:space="preserve"><value>Вредоносное ПО</value></data>
+  <data name="IncType.Insider" xml:space="preserve"><value>Инсайдер</value></data>
+  <data name="IncType.Other" xml:space="preserve"><value>Иное</value></data>
+
+  <!-- PD types -->
+  <data name="PdType.Regular" xml:space="preserve"><value>Обычные</value></data>
+  <data name="PdType.Special" xml:space="preserve"><value>Специальные</value></data>
+  <data name="PdType.Biometric" xml:space="preserve"><value>Биометрические</value></data>
+
+  <!-- Subject categories -->
+  <data name="SubjCat.Employees" xml:space="preserve"><value>Сотрудники</value></data>
+  <data name="SubjCat.Clients" xml:space="preserve"><value>Клиенты</value></data>
+  <data name="SubjCat.Citizens" xml:space="preserve"><value>Граждане</value></data>
+  <data name="SubjCat.SiteUsers" xml:space="preserve"><value>Пользователи сайта</value></data>
+  <data name="SubjCat.SiteUsersShort" xml:space="preserve"><value>Польз. сайта</value></data>
+  <data name="SubjCat.Other" xml:space="preserve"><value>Иные</value></data>
+
+  <!-- Sectors -->
+  <data name="Sector.IT" xml:space="preserve"><value>Информационные технологии</value></data>
+  <data name="Sector.FIN" xml:space="preserve"><value>Финансы</value></data>
+  <data name="Sector.EDU" xml:space="preserve"><value>Образование</value></data>
+  <data name="Sector.HLTH" xml:space="preserve"><value>Здравоохранение</value></data>
+  <data name="Sector.CONS" xml:space="preserve"><value>Строительство</value></data>
+  <data name="Sector.TRD" xml:space="preserve"><value>Торговля</value></data>
+  <data name="Sector.LOG" xml:space="preserve"><value>Логистика</value></data>
+  <data name="Sector.AGRO" xml:space="preserve"><value>Сельское хозяйство</value></data>
+  <data name="Sector.MFG" xml:space="preserve"><value>Производство</value></data>
+  <data name="Sector.TEL" xml:space="preserve"><value>Телекоммуникации</value></data>
+  <data name="Sector.ENER" xml:space="preserve"><value>Энергетика</value></data>
+  <data name="Sector.TOUR" xml:space="preserve"><value>Туризм</value></data>
+  <data name="Sector.REAL" xml:space="preserve"><value>Недвижимость</value></data>
+  <data name="Sector.SERV" xml:space="preserve"><value>Услуги</value></data>
+  <data name="Sector.GOV" xml:space="preserve"><value>Государственный сектор</value></data>
+  <data name="Sector.MEDIA" xml:space="preserve"><value>Медиа и развлечения</value></data>
+  <data name="Sector.INS" xml:space="preserve"><value>Страхование</value></data>
+  <data name="Sector.BANK" xml:space="preserve"><value>Банковская деятельность</value></data>
+  <data name="Sector.AUTO" xml:space="preserve"><value>Автомобильная отрасль</value></data>
+  <data name="Sector.FOOD" xml:space="preserve"><value>Пищевая промышленность</value></data>
+  <data name="Sector.OTHER" xml:space="preserve"><value>Другое</value></data>
+
+  <!-- Incidents index -->
+  <data name="Inc.Hero.Badge" xml:space="preserve"><value>Учёт инцидентов</value></data>
+  <data name="Inc.Hero.Title" xml:space="preserve"><value>Мои инциденты</value></data>
+  <data name="Inc.Kpi.Total" xml:space="preserve"><value>Всего</value></data>
+  <data name="Inc.Kpi.Critical" xml:space="preserve"><value>Критичные</value></data>
+  <data name="Inc.Kpi.Month" xml:space="preserve"><value>За 30 дней</value></data>
+  <data name="Inc.Kpi.Notified" xml:space="preserve"><value>Уведомлены</value></data>
+  <data name="Inc.Filter.SearchPH" xml:space="preserve"><value>Номер, описание, место…</value></data>
+  <data name="Inc.Filter.SearchLabel" xml:space="preserve"><value>Поиск</value></data>
+  <data name="Inc.Filter.Severity" xml:space="preserve"><value>Критичность</value></data>
+  <data name="Inc.Filter.Period" xml:space="preserve"><value>Период</value></data>
+  <data name="Inc.Empty.None.Title" xml:space="preserve"><value>У вас пока нет инцидентов</value></data>
+  <data name="Inc.Empty.None.Sub" xml:space="preserve"><value>Зарегистрируйте первый инцидент с персональными данными за 3 шага.</value></data>
+  <data name="Inc.Empty.NoMatch.Title" xml:space="preserve"><value>По заданным фильтрам ничего не найдено</value></data>
+  <data name="Inc.Empty.NoMatch.Sub" xml:space="preserve"><value>Попробуйте изменить условия поиска или сбросить фильтры.</value></data>
+  <data name="Inc.Col.NumDate" xml:space="preserve"><value>№ / Дата</value></data>
+  <data name="Inc.Col.Description" xml:space="preserve"><value>Описание</value></data>
+  <data name="Inc.Col.Severity" xml:space="preserve"><value>Критичность</value></data>
+  <data name="Inc.Col.Records" xml:space="preserve"><value>Затронуто записей</value></data>
+  <data name="Inc.Col.Notification" xml:space="preserve"><value>Уведомление</value></data>
+  <data name="Inc.Col.Actions" xml:space="preserve"><value>Действия</value></data>
+  <data name="Inc.Status.Published" xml:space="preserve"><value>опубликованы</value></data>
+  <data name="Inc.Status.Copied" xml:space="preserve"><value>скопированы</value></data>
+  <data name="Inc.Status.Sent" xml:space="preserve"><value>отправлено</value></data>
+  <data name="Inc.Status.None" xml:space="preserve"><value>нет</value></data>
+  <data name="Inc.Badge.New" xml:space="preserve"><value>новый</value></data>
+  <data name="Inc.Banner.SuccessTitle" xml:space="preserve"><value>Инцидент успешно зарегистрирован</value></data>
+  <data name="Inc.Banner.SuccessSub" xml:space="preserve"><value>Новая запись появилась в списке ниже — она подсвечена.</value></data>
+  <data name="Inc.Org.MinJustBadge" xml:space="preserve"><value>Минюст</value></data>
+
+  <!-- Incidents create wizard -->
+  <data name="Create.Breadcrumb" xml:space="preserve"><value>Инцидент · Регистрация</value></data>
+  <data name="Create.Title" xml:space="preserve"><value>Регистрация инцидента</value></data>
+  <data name="Create.Subtitle" xml:space="preserve"><value>Три шага. Данные организации уже подтянуты из Минюста.</value></data>
+  <data name="Create.Step1" xml:space="preserve"><value>Шаг 1</value></data>
+  <data name="Create.Step2" xml:space="preserve"><value>Шаг 2</value></data>
+  <data name="Create.Step3" xml:space="preserve"><value>Шаг 3</value></data>
+  <data name="Create.Step1.Title" xml:space="preserve"><value>Организация</value></data>
+  <data name="Create.Step2.Title" xml:space="preserve"><value>Инцидент</value></data>
+  <data name="Create.Step3.Title" xml:space="preserve"><value>Данные и меры</value></data>
+  <data name="Create.Step1.Header.Sub" xml:space="preserve"><value>Сведения из Министерства юстиции. Недоступны для редактирования.</value></data>
+  <data name="Create.Step1.Badge" xml:space="preserve"><value>Подтверждено Минюстом</value></data>
+  <data name="Create.Step2.Header.Title" xml:space="preserve"><value>Общие сведения об инциденте</value></data>
+  <data name="Create.Step2.Header.Sub" xml:space="preserve"><value>Все поля, отмеченные *, обязательны</value></data>
+  <data name="Create.Step3.Header.Title" xml:space="preserve"><value>Затронутые данные и меры</value></data>
+  <data name="Create.Step3.Header.Sub" xml:space="preserve"><value>Все поля с * обязательны</value></data>
+  <data name="Create.Org.NotFound" xml:space="preserve"><value>Не удалось получить данные организации. Попробуйте позже или обратитесь к администратору.</value></data>
+  <data name="Create.Org.RegNumber" xml:space="preserve"><value>Рег. номер</value></data>
+  <data name="Create.Org.RegDate" xml:space="preserve"><value>Дата регистрации</value></data>
+  <data name="Create.Org.Status" xml:space="preserve"><value>Статус</value></data>
+  <data name="Create.Org.Address" xml:space="preserve"><value>Юридический адрес</value></data>
+  <data name="Create.Org.Director" xml:space="preserve"><value>Руководитель</value></data>
+  <data name="Create.Label.DateOccurrence" xml:space="preserve"><value>Дата возникновения</value></data>
+  <data name="Create.Label.DateDetection" xml:space="preserve"><value>Дата обнаружения</value></data>
+  <data name="Create.Label.IncidentType" xml:space="preserve"><value>Тип инцидента</value></data>
+  <data name="Create.Label.Severity" xml:space="preserve"><value>Критичность</value></data>
+  <data name="Create.Label.Location" xml:space="preserve"><value>Место возникновения</value></data>
+  <data name="Create.Label.AffectedSystem" xml:space="preserve"><value>Затронутая система</value></data>
+  <data name="Create.Label.SystemType" xml:space="preserve"><value>Тип системы</value></data>
+  <data name="Create.Label.Description" xml:space="preserve"><value>Краткое описание</value></data>
+  <data name="Create.Label.SuspectedCause" xml:space="preserve"><value>Предполагаемая причина</value></data>
+  <data name="Create.Label.Records" xml:space="preserve"><value>Записей</value></data>
+  <data name="Create.Label.Subjects" xml:space="preserve"><value>Субъектов (прибл.)</value></data>
+  <data name="Create.Label.PdType" xml:space="preserve"><value>Тип данных</value></data>
+  <data name="Create.Label.SubjectCategory" xml:space="preserve"><value>Категория субъектов</value></data>
+  <data name="Create.Label.PdCategories" xml:space="preserve"><value>Категории ПДн</value></data>
+  <data name="Create.Label.IsCopied" xml:space="preserve"><value>Скопированы / похищены</value></data>
+  <data name="Create.Label.IsPublished" xml:space="preserve"><value>Опубликованы</value></data>
+  <data name="Create.Label.HasRisk" xml:space="preserve"><value>Риск вреда</value></data>
+  <data name="Create.Label.Notified" xml:space="preserve"><value>Субъекты уведомлены</value></data>
+  <data name="Create.Label.NotifSentAt" xml:space="preserve"><value>Дата отправки уведомления</value></data>
+  <data name="Create.Label.ActionsTaken" xml:space="preserve"><value>Меры по устранению</value></data>
+  <data name="Create.Label.Prevention" xml:space="preserve"><value>Меры по предотвращению</value></data>
+  <data name="Create.Label.Investigation" xml:space="preserve"><value>Расследование</value></data>
+  <data name="Create.Note.IsCopied" xml:space="preserve"><value>Подтверждено</value></data>
+  <data name="Create.Note.IsPublished" xml:space="preserve"><value>В открытых источниках</value></data>
+  <data name="Create.Note.HasRisk" xml:space="preserve"><value>Субъектам ПДн</value></data>
+  <data name="Create.Note.Notified" xml:space="preserve"><value>Уведомление отправлено</value></data>
+  <data name="Create.PH.Location" xml:space="preserve"><value>ИС, подразделение, офис…</value></data>
+  <data name="Create.PH.AffectedSystem" xml:space="preserve"><value>CRM, сайт, 1С…</value></data>
+  <data name="Create.PH.Description" xml:space="preserve"><value>Что произошло, как был обнаружен инцидент и его последствия (минимум 10 символов)…</value></data>
+  <data name="Create.PH.Cause" xml:space="preserve"><value>Человеческий фактор, уязвимость ПО, фишинг…</value></data>
+  <data name="Create.PH.PdCategories" xml:space="preserve"><value>ФИО, паспорт, контакты, финансовая информация…</value></data>
+  <data name="Create.PH.ActionsTaken" xml:space="preserve"><value>Блокировка, ротация паролей, отключение сервисов…</value></data>
+  <data name="Create.PH.Prevention" xml:space="preserve"><value>Обновление политик, обучение сотрудников, DLP…</value></data>
+  <data name="Create.PH.Investigation" xml:space="preserve"><value>Ответственные, сроки, выводы…</value></data>
+  <data name="Create.Btn.Register" xml:space="preserve"><value>Зарегистрировать инцидент</value></data>
+  <data name="Create.Btn.Submitting" xml:space="preserve"><value>Регистрирую…</value></data>
+  <data name="Create.Overlay.Title" xml:space="preserve"><value>Регистрируем инцидент…</value></data>
+  <data name="Create.Overlay.Sub" xml:space="preserve"><value>Сохраняем данные, привязываем к организации. Это займёт пару секунд.</value></data>
+  <data name="Create.ServerErrorsHeading" xml:space="preserve"><value>Пожалуйста, исправьте ошибки в форме — некоторые обязательные поля заполнены некорректно.</value></data>
+
+  <!-- Details -->
+  <data name="Details.Title" xml:space="preserve"><value>Карточка инцидента</value></data>
+  <data name="Details.Registered" xml:space="preserve"><value>Зарегистрирован</value></data>
+  <data name="Details.Section.Description" xml:space="preserve"><value>Описание</value></data>
+  <data name="Details.Section.SuspectedCause" xml:space="preserve"><value>Предполагаемая причина</value></data>
+  <data name="Details.Section.Actions" xml:space="preserve"><value>Принятые меры</value></data>
+  <data name="Details.Section.Elimination" xml:space="preserve"><value>Устранение</value></data>
+  <data name="Details.Section.Prevention" xml:space="preserve"><value>Профилактика</value></data>
+  <data name="Details.Section.Investigation" xml:space="preserve"><value>Внутреннее расследование</value></data>
+  <data name="Details.Section.PD" xml:space="preserve"><value>Затронутые данные</value></data>
+  <data name="Details.PD.Records" xml:space="preserve"><value>Записей</value></data>
+  <data name="Details.PD.Subjects" xml:space="preserve"><value>Субъектов</value></data>
+  <data name="Details.PD.Type" xml:space="preserve"><value>Тип данных</value></data>
+  <data name="Details.PD.Categories" xml:space="preserve"><value>Категории данных</value></data>
+  <data name="Details.Section.Timeline" xml:space="preserve"><value>Хронология</value></data>
+  <data name="Details.Timeline.Occurred" xml:space="preserve"><value>Произошёл</value></data>
+  <data name="Details.Timeline.Detected" xml:space="preserve"><value>Обнаружен</value></data>
+  <data name="Details.Timeline.Registered" xml:space="preserve"><value>Зарегистрирован</value></data>
+  <data name="Details.Timeline.NotifSent" xml:space="preserve"><value>Уведомление направлено</value></data>
+  <data name="Details.Section.System" xml:space="preserve"><value>Система</value></data>
+  <data name="Details.System.Location" xml:space="preserve"><value>Место возникновения</value></data>
+  <data name="Details.System.AffectedSystem" xml:space="preserve"><value>Затронутая система</value></data>
+  <data name="Details.System.Type" xml:space="preserve"><value>Тип системы</value></data>
+  <data name="Details.Badge.Copied" xml:space="preserve"><value>Скопированы/похищены</value></data>
+  <data name="Details.Badge.Published" xml:space="preserve"><value>Опубликованы</value></data>
+  <data name="Details.Badge.Risk" xml:space="preserve"><value>Риск вреда</value></data>
+  <data name="Details.Badge.Notified" xml:space="preserve"><value>Субъекты уведомлены</value></data>
+
+  <!-- Profile / UserPage -->
+  <data name="Profile.Title" xml:space="preserve"><value>Мой профиль</value></data>
+  <data name="Profile.Subtitle" xml:space="preserve"><value>Данные пользователя и организации, подтянутые из ЕСИ и Министерства юстиции.</value></data>
+  <data name="Profile.Section.User" xml:space="preserve"><value>Пользователь</value></data>
+  <data name="Profile.Section.Organization" xml:space="preserve"><value>Организация</value></data>
+  <data name="Profile.Org.Sub" xml:space="preserve"><value>Сведения получены из Минюста и сохранены в реестре</value></data>
+  <data name="Profile.PIN" xml:space="preserve"><value>ИНН (ПИН)</value></data>
+  <data name="Profile.Phone" xml:space="preserve"><value>Телефон</value></data>
+  <data name="Profile.Position" xml:space="preserve"><value>Должность</value></data>
+  <data name="Profile.Org.NotFoundTitle" xml:space="preserve"><value>Организация не привязана</value></data>
+  <data name="Profile.Org.NotFoundBody" xml:space="preserve"><value>К вашему аккаунту не привязана организация. Возможно, ЕСИ не передал ИНН организации или сервис Минюста временно недоступен.</value></data>
+  <data name="Profile.Kpi.OrgIncidents" xml:space="preserve"><value>Инцидентов организации</value></data>
+  <data name="Profile.Kpi.RiskLevel" xml:space="preserve"><value>Уровень риска</value></data>
+  <data name="Profile.Kpi.Registered" xml:space="preserve"><value>В реестре</value></data>
+</root>

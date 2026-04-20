@@ -1,6 +1,6 @@
 @model IEnumerable<data_registry_public.Models.Incident>
 @{
-    ViewData["Title"] = "Инциденты";
+    ViewData["Title"] = L["Inc.Hero.Title"].Value;
     var org = ViewBag.CurrentOrg as data_registry_public.Integrations.MinJustOrganizationInfo;
     string? q = ViewBag.FilterQuery as string;
     string? sev = ViewBag.FilterSeverity as string;
@@ -37,9 +37,9 @@
         </div>
 
         <div class="success-body">
-            <div class="success-title">Инцидент успешно зарегистрирован</div>
+            <div class="success-title">@L["Inc.Banner.SuccessTitle"]</div>
             <div class="success-sub">
-                @(successMsg ?? "Новая запись появилась в списке ниже — она подсвечена.")
+                @(successMsg ?? L["Inc.Banner.SuccessSub"].Value)
             </div>
             @if (freshIncident != null)
             {
@@ -54,10 +54,10 @@
             @if (freshIncident != null)
             {
                 <a class="btn-primary btn-sm" asp-action="Details" asp-route-id="@freshIncident.Id">
-                    <i class="bi bi-eye"></i> Открыть
+                    <i class="bi bi-eye"></i> @L["Common.Open"]
                 </a>
             }
-            <button type="button" class="success-close" aria-label="Закрыть" onclick="this.closest('#successBanner').classList.add('is-closing');setTimeout(()=>this.closest('#successBanner').remove(),300);">
+            <button type="button" class="success-close" aria-label="@L["Common.Close"]" onclick="this.closest('#successBanner').classList.add('is-closing');setTimeout(()=>this.closest('#successBanner').remove(),300);">
                 <i class="bi bi-x-lg"></i>
             </button>
         </div>
@@ -79,43 +79,42 @@
         <div class="flex items-center justify-between gap-3">
             <div class="min-w-0">
                 <div class="inline-flex items-center gap-1 rounded-full bg-white/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-white/90">
-                    <i class="bi bi-shield-exclamation"></i> Учёт инцидентов
+                    <i class="bi bi-shield-exclamation"></i> @L["Inc.Hero.Badge"]
                 </div>
-                <h1 class="mt-1 truncate text-lg font-extrabold text-white">Мои инциденты</h1>
+                <h1 class="mt-1 truncate text-lg font-extrabold text-white">@L["Inc.Hero.Title"]</h1>
             </div>
             <a class="btn-accent btn-sm shrink-0" asp-action="Create">
-                <i class="bi bi-plus-lg"></i> Добавить
+                <i class="bi bi-plus-lg"></i> @L["Common.Add"]
             </a>
         </div>
     </section>
 
-    <!-- KPI: 4 красочных узких блока -->
     <div class="grid grid-cols-2 gap-3 md:grid-cols-4 lg:col-span-8 xl:col-span-9">
         <div class="kpi kpi-blue">
             <div class="kpi-icon"><i class="bi bi-stack"></i></div>
             <div class="kpi-body">
-                <div class="kpi-label">Всего</div>
+                <div class="kpi-label">@L["Inc.Kpi.Total"]</div>
                 <div class="kpi-value">@totalOwn</div>
             </div>
         </div>
         <div class="kpi kpi-red">
             <div class="kpi-icon"><i class="bi bi-shield-exclamation"></i></div>
             <div class="kpi-body">
-                <div class="kpi-label">Критичные</div>
+                <div class="kpi-label">@L["Inc.Kpi.Critical"]</div>
                 <div class="kpi-value">@Model.Count(i => i.Incidentseverity == "Critical" || i.Incidentseverity == "High")</div>
             </div>
         </div>
         <div class="kpi kpi-cyan">
             <div class="kpi-icon"><i class="bi bi-calendar3"></i></div>
             <div class="kpi-body">
-                <div class="kpi-label">За 30 дней</div>
+                <div class="kpi-label">@L["Inc.Kpi.Month"]</div>
                 <div class="kpi-value">@Model.Count(i => i.DateCreate >= DateTime.Now.AddDays(-30))</div>
             </div>
         </div>
         <div class="kpi kpi-green">
             <div class="kpi-icon"><i class="bi bi-send-check"></i></div>
             <div class="kpi-body">
-                <div class="kpi-label">Уведомлены</div>
+                <div class="kpi-label">@L["Inc.Kpi.Notified"]</div>
                 <div class="kpi-value">@Model.Count(i => i.Aresubjectsnotified == true)</div>
             </div>
         </div>
@@ -137,7 +136,7 @@
                 @if (!string.IsNullOrEmpty(org.Address)) { <span>· @org.Address</span> }
             </div>
         </div>
-        <span class="badge badge-success"><i class="bi bi-check2-circle"></i> Минюст</span>
+        <span class="badge badge-success"><i class="bi bi-check2-circle"></i> @L["Inc.Org.MinJustBadge"]</span>
     </div>
 }
 
@@ -147,37 +146,37 @@
         <form method="get" class="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
             <div class="flex flex-wrap items-end gap-3">
                 <div class="field min-w-[220px] flex-1">
-                    <label class="form-label">Поиск</label>
+                    <label class="form-label">@L["Inc.Filter.SearchLabel"]</label>
                     <div class="relative">
                         <i class="bi bi-search pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-dpaGray-400"></i>
-                        <input name="q" value="@q" type="search" placeholder="Номер, описание, место…"
+                        <input name="q" value="@q" type="search" placeholder="@L["Inc.Filter.SearchPH"]"
                                class="form-control pl-10" />
                     </div>
                 </div>
                 <div class="field w-44">
-                    <label class="form-label">Критичность</label>
+                    <label class="form-label">@L["Inc.Filter.Severity"]</label>
                     <select name="severity" class="form-control">
-                        <option value="">все</option>
-                        <option value="Low" selected="@(sev=="Low")">Низкий</option>
-                        <option value="Medium" selected="@(sev=="Medium")">Средний</option>
-                        <option value="High" selected="@(sev=="High")">Высокий</option>
-                        <option value="Critical" selected="@(sev=="Critical")">Критический</option>
+                        <option value="">@L["Common.All"]</option>
+                        <option value="Low" selected="@(sev=="Low")">@L["Severity.Low"]</option>
+                        <option value="Medium" selected="@(sev=="Medium")">@L["Severity.Medium"]</option>
+                        <option value="High" selected="@(sev=="High")">@L["Severity.High"]</option>
+                        <option value="Critical" selected="@(sev=="Critical")">@L["Severity.Critical"]</option>
                     </select>
                 </div>
                 <div class="field w-40">
-                    <label class="form-label">Период</label>
+                    <label class="form-label">@L["Inc.Filter.Period"]</label>
                     <select name="period" class="form-control">
-                        <option value="">всё время</option>
-                        <option value="7" selected="@(per=="7")">7 дней</option>
-                        <option value="30" selected="@(per=="30")">30 дней</option>
-                        <option value="90" selected="@(per=="90")">90 дней</option>
-                        <option value="year" selected="@(per=="year")">год</option>
+                        <option value="">@L["Common.AllTime"]</option>
+                        <option value="7" selected="@(per=="7")">@L["Home.Filters.Period7"]</option>
+                        <option value="30" selected="@(per=="30")">@L["Home.Filters.Period30"]</option>
+                        <option value="90" selected="@(per=="90")">@L["Home.Filters.Period90"]</option>
+                        <option value="year" selected="@(per=="year")">@L["Home.Filters.PeriodYear"]</option>
                     </select>
                 </div>
             </div>
             <div class="flex gap-2">
-                <button type="submit" class="btn-primary"><i class="bi bi-funnel"></i> Применить</button>
-                <a class="btn-secondary" asp-action="Index"><i class="bi bi-arrow-counterclockwise"></i> Сбросить</a>
+                <button type="submit" class="btn-primary"><i class="bi bi-funnel"></i> @L["Common.Apply"]</button>
+                <a class="btn-secondary" asp-action="Index"><i class="bi bi-arrow-counterclockwise"></i> @L["Common.Reset"]</a>
             </div>
         </form>
     </div>
@@ -190,17 +189,15 @@
                     <i class="bi bi-inbox text-2xl"></i>
                 </div>
                 <div class="text-base font-extrabold text-dpa-800">
-                    @(totalOwn == 0 ? "У вас пока нет инцидентов" : "По заданным фильтрам ничего не найдено")
+                    @(totalOwn == 0 ? L["Inc.Empty.None.Title"] : L["Inc.Empty.NoMatch.Title"])
                 </div>
                 <div class="mt-1 text-sm text-dpaGray-500">
-                    @(totalOwn == 0
-                        ? "Зарегистрируйте первый инцидент с персональными данными за 3 шага."
-                        : "Попробуйте изменить условия поиска или сбросить фильтры.")
+                    @(totalOwn == 0 ? L["Inc.Empty.None.Sub"] : L["Inc.Empty.NoMatch.Sub"])
                 </div>
                 @if (totalOwn == 0)
                 {
                     <a class="btn-primary mt-4" asp-action="Create">
-                        <i class="bi bi-plus-lg"></i> Зарегистрировать инцидент
+                        <i class="bi bi-plus-lg"></i> @L["Nav.RegisterIncident"]
                     </a>
                 }
             </div>
@@ -212,12 +209,12 @@
             <table class="dpa-table">
                 <thead>
                     <tr>
-                        <th>№ / Дата</th>
-                        <th>Описание</th>
-                        <th>Критичность</th>
-                        <th>Затронуто записей</th>
-                        <th>Уведомление</th>
-                        <th class="text-right">Действия</th>
+                        <th>@L["Inc.Col.NumDate"]</th>
+                        <th>@L["Inc.Col.Description"]</th>
+                        <th>@L["Inc.Col.Severity"]</th>
+                        <th>@L["Inc.Col.Records"]</th>
+                        <th>@L["Inc.Col.Notification"]</th>
+                        <th class="text-right">@L["Inc.Col.Actions"]</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -233,11 +230,11 @@
                     };
                     string sevText = item.Incidentseverity switch
                     {
-                        "Critical" => "Критический",
-                        "High" => "Высокий",
-                        "Medium" => "Средний",
-                        "Low" => "Низкий",
-                        _ => "—"
+                        "Critical" => L["Severity.Critical"].Value,
+                        "High" => L["Severity.High"].Value,
+                        "Medium" => L["Severity.Medium"].Value,
+                        "Low" => L["Severity.Low"].Value,
+                        _ => L["Common.Dash"].Value
                     };
                     bool isNew = highlightId == item.Id;
                     <tr class="@(isNew ? "bg-emerald-50/60" : "")">
@@ -247,7 +244,7 @@
                             @if (isNew)
                             {
                                 <div class="mt-1 inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold uppercase text-emerald-700">
-                                    <i class="bi bi-stars"></i> новый
+                                    <i class="bi bi-stars"></i> @L["Inc.Badge.New"]
                                 </div>
                             }
                         </td>
@@ -264,29 +261,29 @@
                             <span class="badge @sevKind">@sevText</span>
                         </td>
                         <td>
-                            <div class="font-semibold text-dpaGray-800">@(item.Affectedrecordscount?.ToString("N0") ?? "—")</div>
+                            <div class="font-semibold text-dpaGray-800">@(item.Affectedrecordscount?.ToString("N0") ?? L["Common.Dash"].Value)</div>
                             @if (item.Isdatapublished == true)
                             {
-                                <div class="mt-1 text-xs text-rose-600"><i class="bi bi-globe"></i> опубликованы</div>
+                                <div class="mt-1 text-xs text-rose-600"><i class="bi bi-globe"></i> @L["Inc.Status.Published"]</div>
                             }
                             else if (item.Isdatacopiedorstolen == true)
                             {
-                                <div class="mt-1 text-xs text-amber-600"><i class="bi bi-clipboard-x"></i> скопированы</div>
+                                <div class="mt-1 text-xs text-amber-600"><i class="bi bi-clipboard-x"></i> @L["Inc.Status.Copied"]</div>
                             }
                         </td>
                         <td>
                             @if (item.Aresubjectsnotified == true)
                             {
-                                <span class="inline-flex items-center gap-1 text-emerald-600"><i class="bi bi-check2-circle"></i> отправлено</span>
+                                <span class="inline-flex items-center gap-1 text-emerald-600"><i class="bi bi-check2-circle"></i> @L["Inc.Status.Sent"]</span>
                             }
                             else
                             {
-                                <span class="inline-flex items-center gap-1 text-dpaGray-500"><i class="bi bi-dash-circle"></i> нет</span>
+                                <span class="inline-flex items-center gap-1 text-dpaGray-500"><i class="bi bi-dash-circle"></i> @L["Inc.Status.None"]</span>
                             }
                         </td>
                         <td class="text-right">
                             <a class="btn-secondary btn-sm" asp-action="Details" asp-route-id="@item.Id">
-                                <i class="bi bi-eye"></i> Открыть
+                                <i class="bi bi-eye"></i> @L["Common.Open"]
                             </a>
                         </td>
                     </tr>

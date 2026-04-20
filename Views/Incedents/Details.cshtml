@@ -1,13 +1,13 @@
 @model data_registry_public.Models.Incident
 @{
-    ViewData["Title"] = "Инцидент " + (Model.IncidentRegnumber ?? "");
+    ViewData["Title"] = L["Details.Title"].Value + " " + (Model.IncidentRegnumber ?? "");
     string Sev(string? s) => s switch
     {
-        "Critical" => "Критический",
-        "High" => "Высокий",
-        "Medium" => "Средний",
-        "Low" => "Низкий",
-        _ => "—"
+        "Critical" => L["Severity.Critical"].Value,
+        "High" => L["Severity.High"].Value,
+        "Medium" => L["Severity.Medium"].Value,
+        "Low" => L["Severity.Low"].Value,
+        _ => L["Common.Dash"].Value
     };
     string SevBadge(string? s) => s switch
     {
@@ -19,27 +19,27 @@
     };
     string TypeLabel(string? t) => t switch
     {
-        "db" => "База данных",
-        "website" => "Веб-сайт",
-        "infosystem" => "Информационная система",
-        "cloude_service" => "Облачный сервис",
-        "local_network" => "Локальная сеть",
-        _ => t ?? "—"
+        "db" => L["SystemType.Db"].Value,
+        "website" => L["SystemType.Website"].Value,
+        "infosystem" => L["SystemType.InfoSystem"].Value,
+        "cloude_service" => L["SystemType.Cloud"].Value,
+        "local_network" => L["SystemType.LocalNetwork"].Value,
+        _ => t ?? L["Common.Dash"].Value
     };
 }
 
 <div class="mb-6">
     <a class="inline-flex items-center gap-1 text-sm text-dpaGray-500 hover:text-dpa-800" asp-action="Index">
-        <i class="bi bi-arrow-left"></i> Назад к списку
+        <i class="bi bi-arrow-left"></i> @L["Common.BackToList"]
     </a>
 </div>
 
 <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
     <div>
         <div class="font-mono text-[11px] font-semibold uppercase tracking-wider text-dpa-500">@Model.IncidentRegnumber</div>
-        <h1 class="mt-1 text-2xl font-extrabold text-dpa-800 sm:text-3xl">Карточка инцидента</h1>
+        <h1 class="mt-1 text-2xl font-extrabold text-dpa-800 sm:text-3xl">@L["Details.Title"]</h1>
         <div class="mt-1 text-sm text-dpaGray-500">
-            Зарегистрирован @Model.DateCreate?.ToString("dd.MM.yyyy HH:mm")
+            @L["Details.Registered"] @Model.DateCreate?.ToString("dd.MM.yyyy HH:mm")
         </div>
     </div>
     <span class="@SevBadge(Model.Incidentseverity)">
@@ -50,15 +50,15 @@
 <div class="grid gap-4 lg:grid-cols-3">
     <div class="space-y-4 lg:col-span-2">
         <div class="card">
-            <div class="card-header"><div class="text-base font-extrabold text-dpa-800">Описание</div></div>
+            <div class="card-header"><div class="text-base font-extrabold text-dpa-800">@L["Details.Section.Description"]</div></div>
             <div class="card-body">
                 <p class="whitespace-pre-wrap text-dpaGray-800">
-                    @(string.IsNullOrWhiteSpace(Model.IncidentDescription) ? "—" : Model.IncidentDescription)
+                    @(string.IsNullOrWhiteSpace(Model.IncidentDescription) ? L["Common.Dash"].Value : Model.IncidentDescription)
                 </p>
                 @if (!string.IsNullOrEmpty(Model.Suspectedincidentcause))
                 {
                     <div class="mt-4 rounded-xl border border-dpaGray-200 bg-dpaGray-50 p-3 text-sm">
-                        <div class="form-label">Предполагаемая причина</div>
+                        <div class="form-label">@L["Details.Section.SuspectedCause"]</div>
                         <div class="whitespace-pre-wrap text-dpaGray-800">@Model.Suspectedincidentcause</div>
                     </div>
                 }
@@ -66,65 +66,65 @@
         </div>
 
         <div class="card">
-            <div class="card-header"><div class="text-base font-extrabold text-dpa-800">Принятые меры</div></div>
+            <div class="card-header"><div class="text-base font-extrabold text-dpa-800">@L["Details.Section.Actions"]</div></div>
             <div class="card-body grid gap-4 sm:grid-cols-2">
                 <div>
-                    <div class="form-label">Устранение</div>
+                    <div class="form-label">@L["Details.Section.Elimination"]</div>
                     <div class="mt-1 whitespace-pre-wrap text-sm text-dpaGray-800">
-                        @(string.IsNullOrWhiteSpace(Model.Actionstaken) ? "—" : Model.Actionstaken)
+                        @(string.IsNullOrWhiteSpace(Model.Actionstaken) ? L["Common.Dash"].Value : Model.Actionstaken)
                     </div>
                 </div>
                 <div>
-                    <div class="form-label">Профилактика</div>
+                    <div class="form-label">@L["Details.Section.Prevention"]</div>
                     <div class="mt-1 whitespace-pre-wrap text-sm text-dpaGray-800">
-                        @(string.IsNullOrWhiteSpace(Model.Preventionmeasures) ? "—" : Model.Preventionmeasures)
+                        @(string.IsNullOrWhiteSpace(Model.Preventionmeasures) ? L["Common.Dash"].Value : Model.Preventionmeasures)
                     </div>
                 </div>
                 <div class="sm:col-span-2">
-                    <div class="form-label">Внутреннее расследование</div>
+                    <div class="form-label">@L["Details.Section.Investigation"]</div>
                     <div class="mt-1 whitespace-pre-wrap text-sm text-dpaGray-800">
-                        @(string.IsNullOrWhiteSpace(Model.Investigationinfo) ? "—" : Model.Investigationinfo)
+                        @(string.IsNullOrWhiteSpace(Model.Investigationinfo) ? L["Common.Dash"].Value : Model.Investigationinfo)
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="card">
-            <div class="card-header"><div class="text-base font-extrabold text-dpa-800">Затронутые данные</div></div>
+            <div class="card-header"><div class="text-base font-extrabold text-dpa-800">@L["Details.Section.PD"]</div></div>
             <div class="card-body grid gap-4 sm:grid-cols-3">
                 <div>
-                    <div class="form-label">Записей</div>
-                    <div class="mt-1 text-2xl font-extrabold text-dpa-800">@(Model.Affectedrecordscount?.ToString("N0") ?? "—")</div>
+                    <div class="form-label">@L["Details.PD.Records"]</div>
+                    <div class="mt-1 text-2xl font-extrabold text-dpa-800">@(Model.Affectedrecordscount?.ToString("N0") ?? L["Common.Dash"].Value)</div>
                 </div>
                 <div>
-                    <div class="form-label">Субъектов</div>
+                    <div class="form-label">@L["Details.PD.Subjects"]</div>
                     <div class="mt-1 text-2xl font-extrabold text-dpa-800">
-                        @(string.IsNullOrEmpty(Model.Estimateddatasubjectscount) ? "—" : Model.Estimateddatasubjectscount)
+                        @(string.IsNullOrEmpty(Model.Estimateddatasubjectscount) ? L["Common.Dash"].Value : Model.Estimateddatasubjectscount)
                     </div>
                 </div>
                 <div>
-                    <div class="form-label">Тип данных</div>
+                    <div class="form-label">@L["Details.PD.Type"]</div>
                     <div class="mt-1 text-sm font-semibold text-dpaGray-800">
                         @(Model.Personaldatatype switch
                         {
-                            "Regular" => "Обычные",
-                            "Special" => "Специальные",
-                            "Biometric" => "Биометрические",
-                            _ => "—"
+                            "Regular" => L["PdType.Regular"].Value,
+                            "Special" => L["PdType.Special"].Value,
+                            "Biometric" => L["PdType.Biometric"].Value,
+                            _ => L["Common.Dash"].Value
                         })
                     </div>
                 </div>
                 <div class="sm:col-span-3">
-                    <div class="form-label">Категории данных</div>
+                    <div class="form-label">@L["Details.PD.Categories"]</div>
                     <div class="mt-1 text-sm text-dpaGray-800">
-                        @(string.IsNullOrEmpty(Model.Personaldatacategories) ? "—" : Model.Personaldatacategories)
+                        @(string.IsNullOrEmpty(Model.Personaldatacategories) ? L["Common.Dash"].Value : Model.Personaldatacategories)
                     </div>
                 </div>
                 <div class="sm:col-span-3 flex flex-wrap gap-2">
-                    @if (Model.Isdatacopiedorstolen == true) { <span class="badge badge-warning"><i class="bi bi-clipboard-x"></i> Скопированы/похищены</span> }
-                    @if (Model.Isdatapublished == true)     { <span class="badge badge-danger"><i class="bi bi-globe"></i> Опубликованы</span> }
-                    @if (Model.Hasriskofharmtosubjects==true){ <span class="badge badge-warning"><i class="bi bi-exclamation-triangle"></i> Риск вреда</span> }
-                    @if (Model.Aresubjectsnotified == true) { <span class="badge badge-success"><i class="bi bi-send-check"></i> Субъекты уведомлены</span> }
+                    @if (Model.Isdatacopiedorstolen == true) { <span class="badge badge-warning"><i class="bi bi-clipboard-x"></i> @L["Details.Badge.Copied"]</span> }
+                    @if (Model.Isdatapublished == true)     { <span class="badge badge-danger"><i class="bi bi-globe"></i> @L["Details.Badge.Published"]</span> }
+                    @if (Model.Hasriskofharmtosubjects==true){ <span class="badge badge-warning"><i class="bi bi-exclamation-triangle"></i> @L["Details.Badge.Risk"]</span> }
+                    @if (Model.Aresubjectsnotified == true) { <span class="badge badge-success"><i class="bi bi-send-check"></i> @L["Details.Badge.Notified"]</span> }
                 </div>
             </div>
         </div>
@@ -132,27 +132,27 @@
 
     <div class="space-y-4">
         <div class="card">
-            <div class="card-header"><div class="text-base font-extrabold text-dpa-800">Хронология</div></div>
+            <div class="card-header"><div class="text-base font-extrabold text-dpa-800">@L["Details.Section.Timeline"]</div></div>
             <div class="card-body space-y-3 text-sm">
                 <div class="flex items-start gap-3">
                     <div class="mt-0.5 flex h-7 w-7 items-center justify-center rounded-full bg-dpaGray-100 text-dpaGray-600"><i class="bi bi-clock"></i></div>
                     <div>
-                        <div class="form-label">Произошёл</div>
-                        <div class="font-medium text-dpaGray-800">@(Model.DateOccurrence?.ToString("dd.MM.yyyy HH:mm") ?? "—")</div>
+                        <div class="form-label">@L["Details.Timeline.Occurred"]</div>
+                        <div class="font-medium text-dpaGray-800">@(Model.DateOccurrence?.ToString("dd.MM.yyyy HH:mm") ?? L["Common.Dash"].Value)</div>
                     </div>
                 </div>
                 <div class="flex items-start gap-3">
                     <div class="mt-0.5 flex h-7 w-7 items-center justify-center rounded-full bg-amber-100 text-amber-700"><i class="bi bi-eye"></i></div>
                     <div>
-                        <div class="form-label">Обнаружен</div>
-                        <div class="font-medium text-dpaGray-800">@(Model.DateDetection?.ToString("dd.MM.yyyy HH:mm") ?? "—")</div>
+                        <div class="form-label">@L["Details.Timeline.Detected"]</div>
+                        <div class="font-medium text-dpaGray-800">@(Model.DateDetection?.ToString("dd.MM.yyyy HH:mm") ?? L["Common.Dash"].Value)</div>
                     </div>
                 </div>
                 <div class="flex items-start gap-3">
                     <div class="mt-0.5 flex h-7 w-7 items-center justify-center rounded-full bg-dpa-100 text-dpa-800"><i class="bi bi-journal-plus"></i></div>
                     <div>
-                        <div class="form-label">Зарегистрирован</div>
-                        <div class="font-medium text-dpaGray-800">@(Model.DateCreate?.ToString("dd.MM.yyyy HH:mm") ?? "—")</div>
+                        <div class="form-label">@L["Details.Timeline.Registered"]</div>
+                        <div class="font-medium text-dpaGray-800">@(Model.DateCreate?.ToString("dd.MM.yyyy HH:mm") ?? L["Common.Dash"].Value)</div>
                     </div>
                 </div>
                 @if (Model.Notificationsentat.HasValue)
@@ -160,7 +160,7 @@
                     <div class="flex items-start gap-3">
                         <div class="mt-0.5 flex h-7 w-7 items-center justify-center rounded-full bg-emerald-100 text-emerald-700"><i class="bi bi-send"></i></div>
                         <div>
-                            <div class="form-label">Уведомление направлено</div>
+                            <div class="form-label">@L["Details.Timeline.NotifSent"]</div>
                             <div class="font-medium text-dpaGray-800">@Model.Notificationsentat?.ToString("dd.MM.yyyy HH:mm")</div>
                         </div>
                     </div>
@@ -169,18 +169,18 @@
         </div>
 
         <div class="card">
-            <div class="card-header"><div class="text-base font-extrabold text-dpa-800">Система</div></div>
+            <div class="card-header"><div class="text-base font-extrabold text-dpa-800">@L["Details.Section.System"]</div></div>
             <div class="card-body space-y-2 text-sm">
                 <div>
-                    <div class="form-label">Место возникновения</div>
-                    <div class="font-medium text-dpaGray-800">@(string.IsNullOrEmpty(Model.IncidetLocation) ? "—" : Model.IncidetLocation)</div>
+                    <div class="form-label">@L["Details.System.Location"]</div>
+                    <div class="font-medium text-dpaGray-800">@(string.IsNullOrEmpty(Model.IncidetLocation) ? L["Common.Dash"].Value : Model.IncidetLocation)</div>
                 </div>
                 <div>
-                    <div class="form-label">Затронутая система</div>
-                    <div class="font-medium text-dpaGray-800">@(string.IsNullOrEmpty(Model.Affectedinformationsystem) ? "—" : Model.Affectedinformationsystem)</div>
+                    <div class="form-label">@L["Details.System.AffectedSystem"]</div>
+                    <div class="font-medium text-dpaGray-800">@(string.IsNullOrEmpty(Model.Affectedinformationsystem) ? L["Common.Dash"].Value : Model.Affectedinformationsystem)</div>
                 </div>
                 <div>
-                    <div class="form-label">Тип системы</div>
+                    <div class="form-label">@L["Details.System.Type"]</div>
                     <div class="font-medium text-dpaGray-800">@TypeLabel(Model.Systemtype)</div>
                 </div>
             </div>

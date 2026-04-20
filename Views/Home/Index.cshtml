@@ -1,14 +1,10 @@
 ﻿@model data_registry_public.Models.local_models.DashboardViewModel
 @{
-    ViewData["Title"] = "Главная";
+    ViewData["Title"] = L["Home.Title"].Value;
 
     string J(string? s) => System.Text.Json.JsonSerializer.Serialize(s ?? "");
     string IntArr(IEnumerable<int> xs) => "[" + string.Join(",", xs) + "]";
     string StrArr(IEnumerable<string> xs) => "[" + string.Join(",", xs.Select(x => System.Text.Json.JsonSerializer.Serialize(x))) + "]";
-
-    string sectorSelected(string v) => Model.Sector == v ? "selected" : "";
-    string periodSelected(string v) => Model.Period == v ? "selected" : "";
-    string severitySelected(string v) => Model.Severity == v ? "selected" : "";
 }
 
 <!-- ===== Hero + фильтры ===== -->
@@ -21,66 +17,47 @@
         <div class="relative grid gap-4 lg:grid-cols-12 lg:items-end">
             <div class="lg:col-span-5 xl:col-span-6">
                 <div class="inline-flex items-center gap-1 rounded-full bg-white/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-white/90">
-                    <i class="bi bi-speedometer2"></i> Аналитический дашборд
+                    <i class="bi bi-speedometer2"></i> @L["Home.Badge"]
                 </div>
-                <h1 class="mt-2 text-2xl font-extrabold text-white sm:text-3xl">Главная</h1>
-                <p class="mt-1 max-w-xl text-sm text-white/80">
-                    Сводная статистика по всем инцидентам с персональными данными в системе. Данные «Мои инциденты» — в отдельном разделе.
-                </p>
+                <h1 class="mt-2 text-2xl font-extrabold text-white sm:text-3xl">@L["Home.Title"]</h1>
+                <p class="mt-1 max-w-xl text-sm text-white/80">@L["Home.Subtitle"]</p>
             </div>
 
             <!-- Фильтры -->
             <form method="get" class="relative grid gap-2 sm:grid-cols-3 lg:col-span-7 xl:col-span-6 lg:grid-cols-4">
                 <div class="field">
-                    <label class="form-label !text-white/80">Период</label>
+                    <label class="form-label !text-white/80">@L["Home.Filters.Period"]</label>
                     <select name="period" class="form-control !bg-white/95">
-                        <option value="" selected="@(string.IsNullOrEmpty(Model.Period))">Всё время</option>
-                        <option value="7" selected="@(Model.Period=="7")">7 дней</option>
-                        <option value="30" selected="@(Model.Period=="30")">30 дней</option>
-                        <option value="90" selected="@(Model.Period=="90")">90 дней</option>
-                        <option value="year" selected="@(Model.Period=="year")">Год</option>
+                        <option value="" selected="@(string.IsNullOrEmpty(Model.Period))">@L["Common.AllTime"]</option>
+                        <option value="7" selected="@(Model.Period=="7")">@L["Home.Filters.Period7"]</option>
+                        <option value="30" selected="@(Model.Period=="30")">@L["Home.Filters.Period30"]</option>
+                        <option value="90" selected="@(Model.Period=="90")">@L["Home.Filters.Period90"]</option>
+                        <option value="year" selected="@(Model.Period=="year")">@L["Home.Filters.PeriodYear"]</option>
                     </select>
                 </div>
                 <div class="field">
-                    <label class="form-label !text-white/80">Критичность</label>
+                    <label class="form-label !text-white/80">@L["Home.Filters.Severity"]</label>
                     <select name="severity" class="form-control !bg-white/95">
-                        <option value="" selected="@(string.IsNullOrEmpty(Model.Severity))">Все</option>
-                        <option value="Low" selected="@(Model.Severity=="Low")">Низкий</option>
-                        <option value="Medium" selected="@(Model.Severity=="Medium")">Средний</option>
-                        <option value="High" selected="@(Model.Severity=="High")">Высокий</option>
-                        <option value="Critical" selected="@(Model.Severity=="Critical")">Критический</option>
+                        <option value="" selected="@(string.IsNullOrEmpty(Model.Severity))">@L["Common.All"]</option>
+                        <option value="Low" selected="@(Model.Severity=="Low")">@L["Severity.Low"]</option>
+                        <option value="Medium" selected="@(Model.Severity=="Medium")">@L["Severity.Medium"]</option>
+                        <option value="High" selected="@(Model.Severity=="High")">@L["Severity.High"]</option>
+                        <option value="Critical" selected="@(Model.Severity=="Critical")">@L["Severity.Critical"]</option>
                     </select>
                 </div>
                 <div class="field">
-                    <label class="form-label !text-white/80">Сектор</label>
+                    <label class="form-label !text-white/80">@L["Home.Filters.Sector"]</label>
                     <select name="sector" class="form-control !bg-white/95">
-                        <option value="" selected="@(string.IsNullOrEmpty(Model.Sector))">Все</option>
-                        <option value="IT"    selected="@(Model.Sector=="IT")">Информационные технологии</option>
-                        <option value="FIN"   selected="@(Model.Sector=="FIN")">Финансы</option>
-                        <option value="EDU"   selected="@(Model.Sector=="EDU")">Образование</option>
-                        <option value="HLTH"  selected="@(Model.Sector=="HLTH")">Здравоохранение</option>
-                        <option value="CONS"  selected="@(Model.Sector=="CONS")">Строительство</option>
-                        <option value="TRD"   selected="@(Model.Sector=="TRD")">Торговля</option>
-                        <option value="LOG"   selected="@(Model.Sector=="LOG")">Логистика</option>
-                        <option value="AGRO"  selected="@(Model.Sector=="AGRO")">Сельское хозяйство</option>
-                        <option value="MFG"   selected="@(Model.Sector=="MFG")">Производство</option>
-                        <option value="TEL"   selected="@(Model.Sector=="TEL")">Телекоммуникации</option>
-                        <option value="ENER"  selected="@(Model.Sector=="ENER")">Энергетика</option>
-                        <option value="TOUR"  selected="@(Model.Sector=="TOUR")">Туризм</option>
-                        <option value="REAL"  selected="@(Model.Sector=="REAL")">Недвижимость</option>
-                        <option value="SERV"  selected="@(Model.Sector=="SERV")">Услуги</option>
-                        <option value="GOV"   selected="@(Model.Sector=="GOV")">Государственный сектор</option>
-                        <option value="MEDIA" selected="@(Model.Sector=="MEDIA")">Медиа и развлечения</option>
-                        <option value="INS"   selected="@(Model.Sector=="INS")">Страхование</option>
-                        <option value="BANK"  selected="@(Model.Sector=="BANK")">Банковская деятельность</option>
-                        <option value="AUTO"  selected="@(Model.Sector=="AUTO")">Автомобильная отрасль</option>
-                        <option value="FOOD"  selected="@(Model.Sector=="FOOD")">Пищевая промышленность</option>
-                        <option value="OTHER" selected="@(Model.Sector=="OTHER")">Другое</option>
+                        <option value="" selected="@(string.IsNullOrEmpty(Model.Sector))">@L["Common.All"]</option>
+                        @foreach (var code in new[] { "IT","FIN","EDU","HLTH","CONS","TRD","LOG","AGRO","MFG","TEL","ENER","TOUR","REAL","SERV","GOV","MEDIA","INS","BANK","AUTO","FOOD","OTHER" })
+                        {
+                            <option value="@code" selected="@(Model.Sector==code)">@L["Sector." + code]</option>
+                        }
                     </select>
                 </div>
                 <div class="flex gap-2 self-end">
-                    <button type="submit" class="btn-accent flex-1"><i class="bi bi-funnel"></i> Применить</button>
-                    <a class="btn-secondary" asp-action="Index" title="Сбросить"><i class="bi bi-arrow-counterclockwise"></i></a>
+                    <button type="submit" class="btn-accent flex-1"><i class="bi bi-funnel"></i> @L["Common.Apply"]</button>
+                    <a class="btn-secondary" asp-action="Index" title="@L["Common.Reset"]"><i class="bi bi-arrow-counterclockwise"></i></a>
                 </div>
             </form>
         </div>
@@ -92,21 +69,21 @@
     <div class="kpi kpi-blue">
         <div class="kpi-icon"><i class="bi bi-stack"></i></div>
         <div class="kpi-body">
-            <div class="kpi-label">Всего в системе</div>
+            <div class="kpi-label">@L["Home.Kpi.TotalAll"]</div>
             <div class="kpi-value"><span class="count-up" data-target="@Model.TotalAll">0</span></div>
         </div>
     </div>
     <div class="kpi kpi-cyan">
         <div class="kpi-icon"><i class="bi bi-filter-circle"></i></div>
         <div class="kpi-body">
-            <div class="kpi-label">Под фильтром</div>
+            <div class="kpi-label">@L["Home.Kpi.TotalFiltered"]</div>
             <div class="kpi-value"><span class="count-up" data-target="@Model.TotalInPeriod">0</span></div>
         </div>
     </div>
     <div class="kpi kpi-red">
         <div class="kpi-icon"><i class="bi bi-shield-exclamation"></i></div>
         <div class="kpi-body">
-            <div class="kpi-label">Критичные</div>
+            <div class="kpi-label">@L["Home.Kpi.Critical"]</div>
             <div class="kpi-value">
                 <span class="count-up" data-target="@Model.CriticalCount">0</span>
                 <span class="ml-1 text-xs font-semibold text-rose-600">· @Model.CriticalPct.ToString("0.#",System.Globalization.CultureInfo.InvariantCulture)%</span>
@@ -116,14 +93,14 @@
     <div class="kpi kpi-amber">
         <div class="kpi-icon"><i class="bi bi-globe"></i></div>
         <div class="kpi-body">
-            <div class="kpi-label">С публикацией</div>
+            <div class="kpi-label">@L["Home.Kpi.Published"]</div>
             <div class="kpi-value"><span class="count-up" data-target="@Model.PublishedCount">0</span></div>
         </div>
     </div>
     <div class="kpi kpi-green">
         <div class="kpi-icon"><i class="bi bi-send-check"></i></div>
         <div class="kpi-body">
-            <div class="kpi-label">Уведомлено</div>
+            <div class="kpi-label">@L["Home.Kpi.Notified"]</div>
             <div class="kpi-value">
                 <span class="count-up" data-target="@Model.NotifiedCount">0</span>
                 <span class="ml-1 text-xs font-semibold text-emerald-700">· @Model.NotifiedPct.ToString("0.#",System.Globalization.CultureInfo.InvariantCulture)%</span>
@@ -133,7 +110,7 @@
     <div class="kpi kpi-blue">
         <div class="kpi-icon"><i class="bi bi-database"></i></div>
         <div class="kpi-body">
-            <div class="kpi-label">Записей затронуто</div>
+            <div class="kpi-label">@L["Home.Kpi.AffectedRecords"]</div>
             <div class="kpi-value"><span class="count-up" data-target="@Model.AffectedRecordsSum">0</span></div>
         </div>
     </div>
@@ -146,12 +123,12 @@
     <div class="card animate-fade-up delay-2 lg:col-span-8">
         <div class="card-header flex items-center justify-between">
             <div>
-                <div class="text-base font-extrabold text-dpa-800">Динамика регистрации инцидентов</div>
-                <div class="text-xs text-dpaGray-500">За последние 12 месяцев — всего и критичные</div>
+                <div class="text-base font-extrabold text-dpa-800">@L["Home.Chart.MonthlyTitle"]</div>
+                <div class="text-xs text-dpaGray-500">@L["Home.Chart.MonthlySub"]</div>
             </div>
             <div class="hidden items-center gap-3 text-xs sm:flex">
-                <span class="inline-flex items-center gap-1"><span class="h-2.5 w-2.5 rounded-full bg-dpa-600"></span> Всего</span>
-                <span class="inline-flex items-center gap-1"><span class="h-2.5 w-2.5 rounded-full bg-rose-500"></span> Критичные</span>
+                <span class="inline-flex items-center gap-1"><span class="h-2.5 w-2.5 rounded-full bg-dpa-600"></span> @L["Home.Chart.LegendAll"]</span>
+                <span class="inline-flex items-center gap-1"><span class="h-2.5 w-2.5 rounded-full bg-rose-500"></span> @L["Home.Chart.LegendCritical"]</span>
             </div>
         </div>
         <div class="card-body">
@@ -162,47 +139,44 @@
     <!-- Доля по критичности -->
     <div class="card animate-fade-up delay-2 lg:col-span-4">
         <div class="card-header">
-            <div class="text-base font-extrabold text-dpa-800">Распределение по критичности</div>
-            <div class="text-xs text-dpaGray-500">В выбранном периоде</div>
+            <div class="text-base font-extrabold text-dpa-800">@L["Home.Chart.SeverityTitle"]</div>
+            <div class="text-xs text-dpaGray-500">@L["Home.Chart.SeveritySub"]</div>
         </div>
         <div class="card-body">
             <div class="chart-holder h-72 relative">
                 <canvas id="chartSeverity"></canvas>
                 <div class="chart-center">
-                    <div class="text-[11px] uppercase tracking-wider text-dpaGray-500">Всего</div>
+                    <div class="text-[11px] uppercase tracking-wider text-dpaGray-500">@L["Home.Chart.CenterTotal"]</div>
                     <div class="text-3xl font-extrabold text-dpa-800">@Model.TotalInPeriod</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Типы систем -->
     <div class="card animate-fade-up delay-3 lg:col-span-6">
         <div class="card-header">
-            <div class="text-base font-extrabold text-dpa-800">Затронутые типы систем</div>
-            <div class="text-xs text-dpaGray-500">Где возникают инциденты</div>
+            <div class="text-base font-extrabold text-dpa-800">@L["Home.Chart.SystemsTitle"]</div>
+            <div class="text-xs text-dpaGray-500">@L["Home.Chart.SystemsSub"]</div>
         </div>
         <div class="card-body">
             <div class="chart-holder h-64"><canvas id="chartSystems"></canvas></div>
         </div>
     </div>
 
-    <!-- Категории ПДн -->
     <div class="card animate-fade-up delay-3 lg:col-span-3">
         <div class="card-header">
-            <div class="text-base font-extrabold text-dpa-800">Тип ПДн</div>
-            <div class="text-xs text-dpaGray-500">Обычные/специальные/биометрические</div>
+            <div class="text-base font-extrabold text-dpa-800">@L["Home.Chart.PdTypeTitle"]</div>
+            <div class="text-xs text-dpaGray-500">@L["Home.Chart.PdTypeSub"]</div>
         </div>
         <div class="card-body">
             <div class="chart-holder h-64"><canvas id="chartPdType"></canvas></div>
         </div>
     </div>
 
-    <!-- Категории субъектов -->
     <div class="card animate-fade-up delay-3 lg:col-span-3">
         <div class="card-header">
-            <div class="text-base font-extrabold text-dpa-800">Субъекты</div>
-            <div class="text-xs text-dpaGray-500">Кто пострадал</div>
+            <div class="text-base font-extrabold text-dpa-800">@L["Home.Chart.SubjectsTitle"]</div>
+            <div class="text-xs text-dpaGray-500">@L["Home.Chart.SubjectsSub"]</div>
         </div>
         <div class="card-body">
             <div class="chart-holder h-64"><canvas id="chartSubjects"></canvas></div>
@@ -222,7 +196,7 @@
                 function tick(now) {
                     const p = Math.min(1, (now - start) / duration);
                     const eased = 1 - Math.pow(1 - p, 3);
-                    el.textContent = Math.round(target * eased).toLocaleString('ru-RU');
+                    el.textContent = Math.round(target * eased).toLocaleString(document.documentElement.lang || 'ru');
                     if (p < 1) requestAnimationFrame(tick);
                 }
                 requestAnimationFrame(tick);
@@ -273,7 +247,7 @@
                     labels: @Html.Raw(StrArr(Model.MonthlyLabels)),
                     datasets: [
                         {
-                            label: 'Всего',
+                            label: @Html.Raw(J(L["Home.Chart.LegendAll"].Value)),
                             data: @Html.Raw(IntArr(Model.MonthlySeries)),
                             borderColor: brand.blue700,
                             backgroundColor: gradient(ctx, 'rgba(0,76,151,.35)', 'rgba(0,76,151,0)'),
@@ -284,7 +258,7 @@
                             fill: true
                         },
                         {
-                            label: 'Критичные',
+                            label: @Html.Raw(J(L["Home.Chart.LegendCritical"].Value)),
                             data: @Html.Raw(IntArr(Model.MonthlyCriticalSeries)),
                             borderColor: brand.rose,
                             backgroundColor: brand.roseLt,
@@ -314,7 +288,12 @@
             new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Критический', 'Высокий', 'Средний', 'Низкий'],
+                    labels: [
+                        @Html.Raw(J(L["Severity.Critical"].Value)),
+                        @Html.Raw(J(L["Severity.High"].Value)),
+                        @Html.Raw(J(L["Severity.Medium"].Value)),
+                        @Html.Raw(J(L["Severity.Low"].Value))
+                    ],
                     datasets: [{
                         data: [@Model.BySeverity["Critical"], @Model.BySeverity["High"], @Model.BySeverity["Medium"], @Model.BySeverity["Low"]],
                         backgroundColor: [brand.rose, '#F97316', brand.amber, brand.emerald],
@@ -336,10 +315,15 @@
         (function () {
             const ctx = document.getElementById('chartSystems').getContext('2d');
             const rawLabels  = @Html.Raw(StrArr(Model.BySystemType.Keys));
-            const niceLabels = rawLabels.map(x => ({
-                db:'База данных', website:'Веб-сайт', infosystem:'ИС',
-                cloude_service:'Облако', local_network:'ЛВС', unknown:'Не указано'
-            }[x] || x));
+            const sysMap = {
+                db:             @Html.Raw(J(L["SystemType.Db"].Value)),
+                website:        @Html.Raw(J(L["SystemType.Website"].Value)),
+                infosystem:     @Html.Raw(J(L["SystemType.InfoSystemShort"].Value)),
+                cloude_service: @Html.Raw(J(L["SystemType.CloudShort"].Value)),
+                local_network:  @Html.Raw(J(L["SystemType.LocalNetworkShort"].Value)),
+                unknown:        @Html.Raw(J(L["Common.Dash"].Value))
+            };
+            const niceLabels = rawLabels.map(x => sysMap[x] || x);
             new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -370,7 +354,11 @@
             new Chart(ctx, {
                 type: 'polarArea',
                 data: {
-                    labels: ['Обычные', 'Специальные', 'Биометрические'],
+                    labels: [
+                        @Html.Raw(J(L["PdType.Regular"].Value)),
+                        @Html.Raw(J(L["PdType.Special"].Value)),
+                        @Html.Raw(J(L["PdType.Biometric"].Value))
+                    ],
                     datasets: [{
                         data: [@Model.ByPersonalDataType["Regular"], @Model.ByPersonalDataType["Special"], @Model.ByPersonalDataType["Biometric"]],
                         backgroundColor: ['rgba(0,119,200,.75)','rgba(225,29,72,.75)','rgba(16,185,129,.75)'],
@@ -389,10 +377,14 @@
         (function () {
             const ctx = document.getElementById('chartSubjects').getContext('2d');
             const rawLabels  = @Html.Raw(StrArr(Model.BySubjectCategory.Keys));
-            const niceLabels = rawLabels.map(x => ({
-                Employees:'Сотрудники', Clients:'Клиенты', Citizens:'Граждане',
-                SiteUsers:'Польз. сайта', Other:'Иные'
-            }[x] || x));
+            const subjMap = {
+                Employees: @Html.Raw(J(L["SubjCat.Employees"].Value)),
+                Clients:   @Html.Raw(J(L["SubjCat.Clients"].Value)),
+                Citizens:  @Html.Raw(J(L["SubjCat.Citizens"].Value)),
+                SiteUsers: @Html.Raw(J(L["SubjCat.SiteUsersShort"].Value)),
+                Other:     @Html.Raw(J(L["SubjCat.Other"].Value))
+            };
+            const niceLabels = rawLabels.map(x => subjMap[x] || x);
             new Chart(ctx, {
                 type: 'doughnut',
                 data: {

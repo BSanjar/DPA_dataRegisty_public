@@ -1,14 +1,38 @@
+using System.Globalization;
 using data_registry_public.Integrations;
 using data_registry_public.Models;
 using data_registry_public.Models.local_models;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Localization. ResourcesPath ?? ??????, ?.?. MSBuild ???????????? manifest-?????
+// resx ??? ???????? ????? (data_registry_public.SharedResource.resources).
+builder.Services.AddLocalization();
+
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddViewLocalization()
+    .AddDataAnnotationsLocalization();
+
+var supportedCultures = new[]
+{
+    new CultureInfo("ru"),
+    new CultureInfo("en"),
+    new CultureInfo("ky"),
+};
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    options.DefaultRequestCulture = new RequestCulture("ru");
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+    // ????????? ???????????: cookie ? query ?culture= ? Accept-Language
+    options.RequestCultureProviders.Insert(0, new CookieRequestCultureProvider());
+});
 
 
 //????????? ??????????? DpaDb2Context ? ??????????
@@ -111,6 +135,11 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+// RequestLocalization ?????? ???? ????? UseRouting ? ?? UseAuthorization,
+// ????? ??????????? ? ????????????? ???????? ?????????? ????????.
+var locOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
+app.UseRequestLocalization(locOptions);
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -1,4 +1,5 @@
-﻿@{
+﻿@using System.Globalization
+@{
     var ctx = ViewContext.RouteData.Values["controller"]?.ToString()?.ToLowerInvariant();
     string NavClass(string ctrl) =>
         "navlink" + (string.Equals(ctx, ctrl, StringComparison.OrdinalIgnoreCase) ? " navlink-active" : "");
@@ -7,15 +8,27 @@
     string userName = User.Identity?.Name ?? "";
     string userOrg = User.FindFirst("orgName")?.Value ?? "";
     string userInitial = !string.IsNullOrEmpty(userName) ? userName[0].ToString().ToUpper() : "?";
+
+    string currentCulture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+    string currentPath = Context.Request.Path + Context.Request.QueryString;
+
+    (string code, string label, string native, string short_)[] langs = new[]
+    {
+        ("ru", L["Lang.Russian"].Value, "Русский",  "RU"),
+        ("en", L["Lang.English"].Value, "English",  "EN"),
+        ("ky", L["Lang.Kyrgyz"].Value,  "Кыргызча", "KG"),
+    };
+    var currentLang = langs.FirstOrDefault(l => l.code == currentCulture);
+    if (currentLang == default) currentLang = langs[0];
 }
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="@currentCulture">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light" />
     <meta name="theme-color" content="#003971" />
-    <title>@ViewData["Title"] — Реестр владельцев записей</title>
+    <title>@ViewData["Title"] — @L["App.TitleSuffix"]</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -24,7 +37,7 @@
 </head>
 <body class="app-shell">
     <a class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-xl focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-dpa-800 focus:shadow"
-       href="#main">Перейти к содержимому</a>
+       href="#main">@L["App.SkipToContent"]</a>
 
     <header class="app-header">
         <div class="app-container">
@@ -34,23 +47,23 @@
                         <i class="bi bi-shield-lock" aria-hidden="true"></i>
                     </span>
                     <div class="leading-tight">
-                        <div class="text-sm font-extrabold text-dpa-800">DPA · Реестр владельцев записей</div>
-                        <div class="text-[11px] uppercase tracking-wider text-dpaGray-500">АИС учёта персональных данных</div>
+                        <div class="text-sm font-extrabold text-dpa-800">@L["App.Name"]</div>
+                        <div class="text-[11px] uppercase tracking-wider text-dpaGray-500">@L["App.Subtitle"]</div>
                     </div>
                 </a>
 
-                <nav class="ml-4 hidden items-center gap-1 lg:flex" aria-label="Основная навигация">
+                <nav class="ml-4 hidden items-center gap-1 lg:flex" aria-label="@L["Nav.Home"]">
                     <a class="@NavClass("home")" asp-area="" asp-controller="Home" asp-action="Index">
-                        <i class="bi bi-house-door" aria-hidden="true"></i> Главная
+                        <i class="bi bi-house-door" aria-hidden="true"></i> @L["Nav.Home"]
                     </a>
                     @if (isAuth)
                     {
                         <a class="@NavClass("incedents")" asp-area="" asp-controller="Incedents" asp-action="Index">
-                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Мои инциденты
+                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> @L["Nav.MyIncidents"]
                         </a>
                         <a class="btn-register ml-2" asp-controller="Incedents" asp-action="Create">
                             <i class="bi bi-plus-circle-fill" aria-hidden="true"></i>
-                            <span>Зарегистрировать инцидент</span>
+                            <span>@L["Nav.RegisterIncident"]</span>
                         </a>
                     }
                 </nav>
@@ -58,9 +71,51 @@
                 <div class="ml-auto flex items-center gap-2">
                     <button id="navToggle"
                             class="inline-flex items-center justify-center rounded-xl border border-dpaGray-200 bg-white p-2 text-dpaGray-700 shadow-sm hover:bg-dpaGray-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-dpaGray-200 lg:hidden"
-                            type="button" aria-controls="mobileNav" aria-expanded="false" aria-label="Открыть меню">
+                            type="button" aria-controls="mobileNav" aria-expanded="false" aria-label="@L["App.OpenMenu"]">
                         <i class="bi bi-list text-xl" aria-hidden="true"></i>
                     </button>
+
+                    <!-- Language switcher -->
+                    <div id="langDropdownWrap" class="relative hidden lg:block">
+                        <button id="langDropdownBtn" type="button"
+                                class="group flex items-center gap-2 rounded-xl border border-dpaGray-200 bg-white px-3 py-1.5 text-sm font-semibold text-dpa-800 shadow-sm transition hover:border-dpa-400 hover:bg-dpa-50 hover:shadow focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-dpa-200"
+                                aria-haspopup="true" aria-expanded="false" title="@L["Lang.Title"]">
+                            <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-dpa-800 to-dpa-500 text-[11px] font-extrabold text-white shadow-sm">@currentLang.short_</span>
+                            <span class="hidden sm:inline text-dpa-800">@currentLang.native</span>
+                            <i class="bi bi-chevron-down text-xs text-dpaGray-500 transition group-hover:text-dpa-600"></i>
+                        </button>
+                        <div id="langDropdownMenu"
+                             class="invisible absolute right-0 z-50 mt-2 w-72 origin-top-right scale-95 overflow-hidden rounded-2xl border border-dpaGray-200 bg-white opacity-0 shadow-xl transition"
+                             role="menu">
+                            <div class="flex items-center gap-2 border-b border-dpaGray-200 bg-dpa-50/60 px-4 py-2.5">
+                                <i class="bi bi-translate text-dpa-800"></i>
+                                <span class="text-xs font-extrabold uppercase tracking-wider text-dpa-800">@L["Lang.Title"]</span>
+                            </div>
+                            <div class="p-1.5">
+                                @foreach (var (code, label, native, short_) in langs)
+                                {
+                                    <form asp-controller="Language" asp-action="Set" method="post" asp-route-returnUrl="@currentPath" class="m-0">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="culture" value="@code" />
+                                        <button type="submit"
+                                                class="@(code == currentCulture ? "lang-item lang-item-active" : "lang-item")">
+                                            <span class="@(code == currentCulture ? "lang-chip lang-chip-active" : "lang-chip")">@short_</span>
+                                            <span class="min-w-0 flex-1">
+                                                <span class="block text-sm font-semibold @(code == currentCulture ? "text-dpa-800" : "text-dpaGray-800")">@native</span>
+                                                <span class="block text-[11px] text-dpaGray-500">@label</span>
+                                            </span>
+                                            @if (code == currentCulture)
+                                            {
+                                                <span class="lang-check">
+                                                    <i class="bi bi-check2"></i>
+                                                </span>
+                                            }
+                                        </button>
+                                    </form>
+                                }
+                            </div>
+                        </div>
+                    </div>
 
                     @if (isAuth)
                     {
@@ -95,16 +150,16 @@
                                 </div>
                                 <a class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-dpaGray-700 hover:bg-dpa-50 hover:text-dpa-800"
                                    asp-controller="UserPage" asp-action="Index">
-                                    <i class="bi bi-person-vcard"></i> Мой профиль
+                                    <i class="bi bi-person-vcard"></i> @L["Nav.Profile"]
                                 </a>
                                 <a class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-dpaGray-700 hover:bg-dpa-50 hover:text-dpa-800"
                                    asp-controller="Incedents" asp-action="Index">
-                                    <i class="bi bi-collection"></i> Мои инциденты
+                                    <i class="bi bi-collection"></i> @L["Nav.MyIncidents"]
                                 </a>
                                 <div class="my-1 border-t border-dpaGray-100"></div>
                                 <a class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-rose-600 hover:bg-rose-50"
                                    asp-controller="esi" asp-action="Logout">
-                                    <i class="bi bi-box-arrow-right"></i> Выйти
+                                    <i class="bi bi-box-arrow-right"></i> @L["Nav.Logout"]
                                 </a>
                             </div>
                         </div>
@@ -113,13 +168,13 @@
                     {
                         <div class="hidden items-center gap-2 lg:flex">
                             <a class="btn-secondary" href='@Url.Action("Login", "esi")'>
-                                <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> Войти через ЕСИ
+                                <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> @L["Nav.LoginEsi"]
                             </a>
                             <a class="btn-test" href='@Url.Action("LoginTest", "esi")'
-                               title="Быстрый вход тестовым пользователем с эмулятором Минюста">
+                               title="@L["Nav.LoginTest"]">
                                 <i class="bi bi-person-gear" aria-hidden="true"></i>
-                                <span>Тестовый вход</span>
-                                <span class="ml-1 rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-700">dev</span>
+                                <span>@L["Nav.LoginTest"]</span>
+                                <span class="ml-1 rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-700">@L["Nav.DevBadge"]</span>
                             </a>
                         </div>
                     }
@@ -130,15 +185,36 @@
         <div id="mobileNav" class="hidden border-t border-dpaGray-200 bg-white lg:hidden">
             <div class="app-container py-3">
                 <div class="grid gap-2">
-                    <a class="@NavClass("home")" asp-area="" asp-controller="Home" asp-action="Index"><i class="bi bi-house-door"></i> Главная</a>
+                    <a class="@NavClass("home")" asp-area="" asp-controller="Home" asp-action="Index"><i class="bi bi-house-door"></i> @L["Nav.Home"]</a>
                     @if (isAuth)
                     {
-                        <a class="@NavClass("incedents")" asp-area="" asp-controller="Incedents" asp-action="Index"><i class="bi bi-exclamation-triangle"></i> Мои инциденты</a>
+                        <a class="@NavClass("incedents")" asp-area="" asp-controller="Incedents" asp-action="Index"><i class="bi bi-exclamation-triangle"></i> @L["Nav.MyIncidents"]</a>
                         <a class="btn-register mt-1 w-full" asp-controller="Incedents" asp-action="Create">
                             <i class="bi bi-plus-circle-fill"></i>
-                            <span>Зарегистрировать инцидент</span>
+                            <span>@L["Nav.RegisterIncident"]</span>
                         </a>
                     }
+
+                    <!-- Language switcher mobile -->
+                    <div class="mt-2 rounded-xl border border-dpaGray-200 bg-white p-2">
+                        <div class="mb-1 px-1 text-[10px] font-extrabold uppercase tracking-wider text-dpa-800">
+                            <i class="bi bi-translate"></i> @L["Lang.Title"]
+                        </div>
+                        <div class="grid grid-cols-3 gap-1.5">
+                            @foreach (var (code, label, native, short_) in langs)
+                            {
+                                <form asp-controller="Language" asp-action="Set" method="post" asp-route-returnUrl="@currentPath" class="m-0">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="culture" value="@code" />
+                                    <button type="submit"
+                                            class="flex w-full flex-col items-center gap-0.5 rounded-lg border py-1.5 text-xs transition @(code == currentCulture ? "border-dpa-500 bg-dpa-50 text-dpa-800" : "border-dpaGray-200 bg-white text-dpaGray-700 hover:border-dpa-300")">
+                                        <span class="font-extrabold text-sm">@short_</span>
+                                        <span class="text-[10px] text-dpaGray-500">@native</span>
+                                    </button>
+                                </form>
+                            }
+                        </div>
+                    </div>
 
                     @if (isAuth)
                     {
@@ -154,20 +230,20 @@
                                 </div>
                             </div>
                             <div class="mt-2 grid gap-1">
-                                <a class="navlink" asp-controller="UserPage" asp-action="Index"><i class="bi bi-person-vcard"></i> Мой профиль</a>
-                                <a class="navlink text-rose-600" asp-controller="esi" asp-action="Logout"><i class="bi bi-box-arrow-right"></i> Выйти</a>
+                                <a class="navlink" asp-controller="UserPage" asp-action="Index"><i class="bi bi-person-vcard"></i> @L["Nav.Profile"]</a>
+                                <a class="navlink text-rose-600" asp-controller="esi" asp-action="Logout"><i class="bi bi-box-arrow-right"></i> @L["Nav.Logout"]</a>
                             </div>
                         </div>
                     }
                     else
                     {
                         <a class="btn-secondary mt-2" href='@Url.Action("Login", "esi")'>
-                            <i class="bi bi-box-arrow-in-right"></i> Войти через ЕСИ
+                            <i class="bi bi-box-arrow-in-right"></i> @L["Nav.LoginEsi"]
                         </a>
                         <a class="btn-test mt-1" href='@Url.Action("LoginTest", "esi")'>
                             <i class="bi bi-person-gear"></i>
-                            <span>Тестовый вход</span>
-                            <span class="ml-1 rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-700">dev</span>
+                            <span>@L["Nav.LoginTest"]</span>
+                            <span class="ml-1 rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-700">@L["Nav.DevBadge"]</span>
                         </a>
                     }
                 </div>
@@ -175,7 +251,6 @@
         </div>
     </header>
 
-    @* Toast-сообщения *@
     @if (TempData["SuccessMessage"] is string okMsg && !string.IsNullOrEmpty(okMsg))
     {
         <div class="app-container mt-4">
@@ -204,10 +279,10 @@
     <footer class="app-footer">
         <div class="app-container">
             <div class="flex flex-col gap-2 py-6 text-sm text-dpaGray-500 md:flex-row md:items-center md:justify-between">
-                <div>&copy; 2026 — АИС «Реестр владельцев записей»</div>
+                <div>@L["Footer.Copyright"]</div>
                 <div class="flex gap-4">
-                    <a class="hover:text-dpa-800" asp-area="" asp-controller="Home" asp-action="Privacy">Политика</a>
-                    <a class="hover:text-dpa-800" href="#">Поддержка</a>
+                    <a class="hover:text-dpa-800" asp-area="" asp-controller="Home" asp-action="Privacy">@L["Footer.Privacy"]</a>
+                    <a class="hover:text-dpa-800" href="#">@L["Footer.Support"]</a>
                 </div>
             </div>
         </div>
@@ -221,41 +296,22 @@
             var nav = document.getElementById('mobileNav');
             if (btn && nav) btn.addEventListener('click', function () { nav.classList.toggle('hidden'); });
 
-            // User dropdown
-            var uBtn = document.getElementById('userDropdownBtn');
-            var uMenu = document.getElementById('userDropdownMenu');
-            var uWrap = document.getElementById('userDropdownWrap');
-            if (uBtn && uMenu && uWrap) {
-                function show() {
-                    uMenu.classList.remove('invisible', 'opacity-0', 'scale-95');
-                    uMenu.classList.add('visible', 'opacity-100', 'scale-100');
-                    uBtn.setAttribute('aria-expanded', 'true');
-                }
-                function hide() {
-                    uMenu.classList.add('invisible', 'opacity-0', 'scale-95');
-                    uMenu.classList.remove('visible', 'opacity-100', 'scale-100');
-                    uBtn.setAttribute('aria-expanded', 'false');
-                }
-                var hover = false, timer = null;
-                function openWithDelay() { clearTimeout(timer); hover = true; show(); }
-                function closeWithDelay() {
-                    hover = false;
-                    clearTimeout(timer);
-                    timer = setTimeout(function () { if (!hover) hide(); }, 120);
-                }
-                uWrap.addEventListener('mouseenter', openWithDelay);
-                uWrap.addEventListener('mouseleave', closeWithDelay);
-                uBtn.addEventListener('click', function (e) {
-                    e.stopPropagation();
-                    if (uMenu.classList.contains('invisible')) show(); else hide();
-                });
-                document.addEventListener('click', function (e) {
-                    if (!uWrap.contains(e.target)) hide();
-                });
-                document.addEventListener('keydown', function (e) {
-                    if (e.key === 'Escape') hide();
-                });
+            function bindDropdown(wrapId, btnId, menuId) {
+                var wrap = document.getElementById(wrapId);
+                var b = document.getElementById(btnId);
+                var m = document.getElementById(menuId);
+                if (!wrap || !b || !m) return;
+                function show() { m.classList.remove('invisible','opacity-0','scale-95'); m.classList.add('visible','opacity-100','scale-100'); b.setAttribute('aria-expanded','true'); }
+                function hide() { m.classList.add('invisible','opacity-0','scale-95'); m.classList.remove('visible','opacity-100','scale-100'); b.setAttribute('aria-expanded','false'); }
+                var timer = null, hover = false;
+                wrap.addEventListener('mouseenter', function(){ clearTimeout(timer); hover = true; show(); });
+                wrap.addEventListener('mouseleave', function(){ hover = false; clearTimeout(timer); timer = setTimeout(function(){ if(!hover) hide(); }, 120); });
+                b.addEventListener('click', function(e){ e.stopPropagation(); if (m.classList.contains('invisible')) show(); else hide(); });
+                document.addEventListener('click', function(e){ if (!wrap.contains(e.target)) hide(); });
+                document.addEventListener('keydown', function(e){ if (e.key === 'Escape') hide(); });
             }
+            bindDropdown('userDropdownWrap','userDropdownBtn','userDropdownMenu');
+            bindDropdown('langDropdownWrap','langDropdownBtn','langDropdownMenu');
         })();
     </script>
     @await RenderSectionAsync("Scripts", required: false)

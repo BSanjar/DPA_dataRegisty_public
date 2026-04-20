@@ -116,6 +116,35 @@
   .btn-register:hover::after { transform: translateX(120%); }
   .btn-register:active { transform: translateY(0); }
 
+  /* ===== Пункт выбора языка в дропдауне ===== */
+  .lang-item {
+    @apply flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition
+           hover:bg-dpaGray-50;
+  }
+  .lang-item-active {
+    background: linear-gradient(90deg, #E6F1FB 0%, #ffffff 100%);
+    box-shadow: inset 0 0 0 1px rgba(0, 119, 200, .3);
+  }
+  .lang-item-active:hover { background: linear-gradient(90deg, #DDEAF7 0%, #ffffff 100%); }
+
+  .lang-chip {
+    @apply flex h-9 w-11 shrink-0 items-center justify-center rounded-lg text-xs font-extrabold shadow-sm transition
+           bg-dpaGray-100 text-dpaGray-700;
+  }
+  .lang-item:hover .lang-chip:not(.lang-chip-active) {
+    background-color: #E6F1FB;
+    color: #003971;
+  }
+  .lang-chip-active {
+    color: #ffffff !important;
+    background: linear-gradient(135deg, #003971 0%, #004C97 55%, #0077C8 100%);
+    box-shadow: 0 4px 12px -4px rgba(0, 57, 113, .45);
+  }
+  .lang-check {
+    @apply inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 text-white shadow-sm;
+    font-size: .75rem;
+  }
+
   /* ===== Кнопка тестового входа (dev) ===== */
   .btn-test {
     @apply inline-flex items-center justify-center gap-2 rounded-xl border-2 border-dashed border-amber-400
