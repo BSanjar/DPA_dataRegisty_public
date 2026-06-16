@@ -12,14 +12,12 @@
     string currentCulture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
     string currentPath = Context.Request.Path + Context.Request.QueryString;
 
-    (string code, string label, string native, string short_)[] langs = new[]
+    // Только две поддерживаемые локали (как на основном портале DPA)
+    (string code, string label)[] langs = new[]
     {
-        ("ru", L["Lang.Russian"].Value, "Русский",  "RU"),
-        ("en", L["Lang.English"].Value, "English",  "EN"),
-        ("ky", L["Lang.Kyrgyz"].Value,  "Кыргызча", "KG"),
+        ("ky", "KYR"),
+        ("ru", "RU"),
     };
-    var currentLang = langs.FirstOrDefault(l => l.code == currentCulture);
-    if (currentLang == default) currentLang = langs[0];
 }
 <!DOCTYPE html>
 <html lang="@currentCulture">
@@ -39,12 +37,56 @@
     <a class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-xl focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-dpa-800 focus:shadow"
        href="#main">@L["App.SkipToContent"]</a>
 
+    <!-- Утилитарная полоса (по брендбуку основного портала DPA) -->
+    <div class="app-utilbar hidden lg:block">
+        <div class="app-container">
+            <div class="flex h-9 items-center justify-between">
+                <!-- Слева: a11y → официальный сервис -->
+                <div class="flex items-center gap-4">
+                    <button type="button" id="a11yToggle"
+                            class="inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 hover:bg-white/10 transition"
+                            aria-pressed="false" title="@L["Util.A11y"]">
+                        <i class="bi bi-eye-fill"></i>
+                        <span>@L["Util.A11y"]</span>
+                    </button>
+                    <span class="hidden xl:inline-flex items-center gap-1.5">
+                        <i class="bi bi-patch-check-fill text-cyan-300"></i>
+                        <span class="font-semibold uppercase tracking-wider">@L["Util.Official"]</span>
+                    </span>
+                </div>
+                <!-- Справа: телефон, email, локали -->
+                <div class="flex items-center gap-4">
+                    <a href="tel:+996312902121" class="inline-flex items-center gap-1.5 hover:underline">
+                        <i class="bi bi-telephone-fill"></i>
+                        <span>@L["Home.Contacts.Phone"]</span>
+                    </a>
+                    <a href="mailto:info@dpa.gov.kg" class="inline-flex items-center gap-1.5 hover:underline">
+                        <i class="bi bi-envelope-fill"></i>
+                        <span>@L["Home.Contacts.Email"]</span>
+                    </a>
+                    <ul class="nav-locale flex items-center gap-0">
+                        @foreach (var (code, label) in langs)
+                        {
+                            <li class="nav-locale-item">
+                                <form asp-controller="Language" asp-action="Set" method="post" asp-route-returnUrl="@currentPath" class="m-0">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="culture" value="@code" />
+                                    <button type="submit" class="nav-locale-btn @(code == currentCulture ? "is-active" : "")">@label</button>
+                                </form>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <header class="app-header">
         <div class="app-container">
             <div class="flex h-16 items-center gap-3">
                 <a class="flex items-center gap-3" asp-area="" asp-controller="Home" asp-action="Index">
-                    <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-dpa-800 text-white shadow-sm">
-                        <i class="bi bi-shield-lock" aria-hidden="true"></i>
+                    <span class="dpa-brand-mark">
+                        <img src="~/img/dpa-logo.png" alt="DPA" width="44" height="44" />
                     </span>
                     <div class="leading-tight">
                         <div class="text-sm font-extrabold text-dpa-800">@L["App.Name"]</div>
@@ -61,11 +103,12 @@
                         <a class="@NavClass("incedents")" asp-area="" asp-controller="Incedents" asp-action="Index">
                             <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> @L["Nav.MyIncidents"]
                         </a>
-                        <a class="btn-register ml-2" asp-controller="Incedents" asp-action="Create">
-                            <i class="bi bi-plus-circle-fill" aria-hidden="true"></i>
-                            <span>@L["Nav.RegisterIncident"]</span>
-                        </a>
                     }
+                    <!-- CTA «Зарегистрировать инцидент» виден всегда. Если гость — auth-middleware перебросит на ЕСИ. -->
+                    <a class="btn-register ml-2 btn-register-pulse" asp-controller="Incedents" asp-action="Create">
+                        <i class="bi bi-plus-circle-fill" aria-hidden="true"></i>
+                        <span>@L["Nav.RegisterIncident"]</span>
+                    </a>
                 </nav>
 
                 <div class="ml-auto flex items-center gap-2">
@@ -74,48 +117,6 @@
                             type="button" aria-controls="mobileNav" aria-expanded="false" aria-label="@L["App.OpenMenu"]">
                         <i class="bi bi-list text-xl" aria-hidden="true"></i>
                     </button>
-
-                    <!-- Language switcher -->
-                    <div id="langDropdownWrap" class="relative hidden lg:block">
-                        <button id="langDropdownBtn" type="button"
-                                class="group flex items-center gap-2 rounded-xl border border-dpaGray-200 bg-white px-3 py-1.5 text-sm font-semibold text-dpa-800 shadow-sm transition hover:border-dpa-400 hover:bg-dpa-50 hover:shadow focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-dpa-200"
-                                aria-haspopup="true" aria-expanded="false" title="@L["Lang.Title"]">
-                            <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-dpa-800 to-dpa-500 text-[11px] font-extrabold text-white shadow-sm">@currentLang.short_</span>
-                            <span class="hidden sm:inline text-dpa-800">@currentLang.native</span>
-                            <i class="bi bi-chevron-down text-xs text-dpaGray-500 transition group-hover:text-dpa-600"></i>
-                        </button>
-                        <div id="langDropdownMenu"
-                             class="invisible absolute right-0 z-50 mt-2 w-72 origin-top-right scale-95 overflow-hidden rounded-2xl border border-dpaGray-200 bg-white opacity-0 shadow-xl transition"
-                             role="menu">
-                            <div class="flex items-center gap-2 border-b border-dpaGray-200 bg-dpa-50/60 px-4 py-2.5">
-                                <i class="bi bi-translate text-dpa-800"></i>
-                                <span class="text-xs font-extrabold uppercase tracking-wider text-dpa-800">@L["Lang.Title"]</span>
-                            </div>
-                            <div class="p-1.5">
-                                @foreach (var (code, label, native, short_) in langs)
-                                {
-                                    <form asp-controller="Language" asp-action="Set" method="post" asp-route-returnUrl="@currentPath" class="m-0">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="culture" value="@code" />
-                                        <button type="submit"
-                                                class="@(code == currentCulture ? "lang-item lang-item-active" : "lang-item")">
-                                            <span class="@(code == currentCulture ? "lang-chip lang-chip-active" : "lang-chip")">@short_</span>
-                                            <span class="min-w-0 flex-1">
-                                                <span class="block text-sm font-semibold @(code == currentCulture ? "text-dpa-800" : "text-dpaGray-800")">@native</span>
-                                                <span class="block text-[11px] text-dpaGray-500">@label</span>
-                                            </span>
-                                            @if (code == currentCulture)
-                                            {
-                                                <span class="lang-check">
-                                                    <i class="bi bi-check2"></i>
-                                                </span>
-                                            }
-                                        </button>
-                                    </form>
-                                }
-                            </div>
-                        </div>
-                    </div>
 
                     @if (isAuth)
                     {
@@ -167,10 +168,10 @@
                     else
                     {
                         <div class="hidden items-center gap-2 lg:flex">
-                            <a class="btn-secondary" href='@Url.Action("Login", "esi")'>
+                            <a class="btn-secondary" href='@Url.Action("Login", "esi", new { returnUrl = currentPath })'>
                                 <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> @L["Nav.LoginEsi"]
                             </a>
-                            <a class="btn-test" href='@Url.Action("LoginTest", "esi")'
+                            <a class="btn-test" href='@Url.Action("LoginTest", "esi", new { returnUrl = currentPath })'
                                title="@L["Nav.LoginTest"]">
                                 <i class="bi bi-person-gear" aria-hidden="true"></i>
                                 <span>@L["Nav.LoginTest"]</span>
@@ -189,31 +190,30 @@
                     @if (isAuth)
                     {
                         <a class="@NavClass("incedents")" asp-area="" asp-controller="Incedents" asp-action="Index"><i class="bi bi-exclamation-triangle"></i> @L["Nav.MyIncidents"]</a>
-                        <a class="btn-register mt-1 w-full" asp-controller="Incedents" asp-action="Create">
-                            <i class="bi bi-plus-circle-fill"></i>
-                            <span>@L["Nav.RegisterIncident"]</span>
-                        </a>
                     }
+                    <a class="btn-register mt-1 w-full btn-register-pulse" asp-controller="Incedents" asp-action="Create">
+                        <i class="bi bi-plus-circle-fill"></i>
+                        <span>@L["Nav.RegisterIncident"]</span>
+                    </a>
 
-                    <!-- Language switcher mobile -->
-                    <div class="mt-2 rounded-xl border border-dpaGray-200 bg-white p-2">
-                        <div class="mb-1 px-1 text-[10px] font-extrabold uppercase tracking-wider text-dpa-800">
-                            <i class="bi bi-translate"></i> @L["Lang.Title"]
-                        </div>
-                        <div class="grid grid-cols-3 gap-1.5">
-                            @foreach (var (code, label, native, short_) in langs)
+                    <!-- Language + a11y mobile -->
+                    <div class="mt-2 flex items-center justify-between rounded-xl border border-dpaGray-200 bg-white p-2">
+                        <button type="button" id="a11yToggleMob"
+                                class="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-semibold text-dpaGray-700 hover:bg-dpaGray-50">
+                            <i class="bi bi-eye-fill"></i> @L["Util.A11y"]
+                        </button>
+                        <ul class="nav-locale flex items-center gap-0">
+                            @foreach (var (code, label) in langs)
                             {
-                                <form asp-controller="Language" asp-action="Set" method="post" asp-route-returnUrl="@currentPath" class="m-0">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="culture" value="@code" />
-                                    <button type="submit"
-                                            class="flex w-full flex-col items-center gap-0.5 rounded-lg border py-1.5 text-xs transition @(code == currentCulture ? "border-dpa-500 bg-dpa-50 text-dpa-800" : "border-dpaGray-200 bg-white text-dpaGray-700 hover:border-dpa-300")">
-                                        <span class="font-extrabold text-sm">@short_</span>
-                                        <span class="text-[10px] text-dpaGray-500">@native</span>
-                                    </button>
-                                </form>
+                                <li class="nav-locale-item">
+                                    <form asp-controller="Language" asp-action="Set" method="post" asp-route-returnUrl="@currentPath" class="m-0">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="culture" value="@code" />
+                                        <button type="submit" class="nav-locale-btn nav-locale-btn-light @(code == currentCulture ? "is-active" : "")">@label</button>
+                                    </form>
+                                </li>
                             }
-                        </div>
+                        </ul>
                     </div>
 
                     @if (isAuth)
@@ -237,10 +237,10 @@
                     }
                     else
                     {
-                        <a class="btn-secondary mt-2" href='@Url.Action("Login", "esi")'>
+                        <a class="btn-secondary mt-2" href='@Url.Action("Login", "esi", new { returnUrl = currentPath })'>
                             <i class="bi bi-box-arrow-in-right"></i> @L["Nav.LoginEsi"]
                         </a>
-                        <a class="btn-test mt-1" href='@Url.Action("LoginTest", "esi")'>
+                        <a class="btn-test mt-1" href='@Url.Action("LoginTest", "esi", new { returnUrl = currentPath })'>
                             <i class="bi bi-person-gear"></i>
                             <span>@L["Nav.LoginTest"]</span>
                             <span class="ml-1 rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-700">@L["Nav.DevBadge"]</span>
@@ -276,13 +276,61 @@
         </main>
     </div>
 
-    <footer class="app-footer">
+    <footer class="app-footer mt-12">
         <div class="app-container">
-            <div class="flex flex-col gap-2 py-6 text-sm text-dpaGray-500 md:flex-row md:items-center md:justify-between">
+            <div class="grid gap-8 py-10 md:grid-cols-12">
+                <!-- Брендинг + краткое описание -->
+                <div class="md:col-span-5">
+                    <div class="flex items-center gap-3">
+                        <span class="dpa-brand-mark dpa-brand-mark-light">
+                            <img src="~/img/dpa-logo.png" alt="DPA" width="44" height="44" />
+                        </span>
+                        <div class="leading-tight">
+                            <div class="text-sm font-extrabold text-white">DPA · @L["App.TitleSuffix"]</div>
+                            <div class="text-[11px] uppercase tracking-wider text-white/70">@L["App.Subtitle"]</div>
+                        </div>
+                    </div>
+                    <p class="mt-4 max-w-md text-sm leading-relaxed">@L["Footer.Agency"]</p>
+                </div>
+
+                <!-- Разделы -->
+                <div class="md:col-span-3">
+                    <h4>@L["Footer.Sections"]</h4>
+                    <ul class="mt-3 space-y-2 text-sm">
+                        <li><a asp-controller="Home" asp-action="Index">@L["Nav.Home"]</a></li>
+                        @if (isAuth)
+                        {
+                            <li><a asp-controller="Incedents" asp-action="Index">@L["Nav.MyIncidents"]</a></li>
+                        }
+                        <li><a asp-controller="Incedents" asp-action="Create">@L["Nav.RegisterIncident"]</a></li>
+                    </ul>
+                </div>
+
+                <!-- Контакты -->
+                <div class="md:col-span-4">
+                    <h4>@L["Footer.Contacts"]</h4>
+                    <ul class="mt-3 space-y-2 text-sm">
+                        <li class="flex items-center gap-2">
+                            <i class="bi bi-telephone-fill text-white/70"></i>
+                            <a href="tel:+996312902121">@L["Home.Contacts.Phone"]</a>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="bi bi-envelope-fill text-white/70"></i>
+                            <a href="mailto:info@dpa.gov.kg">@L["Home.Contacts.Email"]</a>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="bi bi-geo-alt-fill mt-1 text-white/70"></i>
+                            <span>@L["Home.Contacts.Address"]</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-2 border-t border-white/10 py-5 text-xs text-white/70 md:flex-row md:items-center md:justify-between">
                 <div>@L["Footer.Copyright"]</div>
                 <div class="flex gap-4">
-                    <a class="hover:text-dpa-800" asp-area="" asp-controller="Home" asp-action="Privacy">@L["Footer.Privacy"]</a>
-                    <a class="hover:text-dpa-800" href="#">@L["Footer.Support"]</a>
+                    <a asp-area="" asp-controller="Home" asp-action="Privacy">@L["Footer.Privacy"]</a>
+                    <a href="#">@L["Footer.Support"]</a>
                 </div>
             </div>
         </div>
@@ -291,10 +339,30 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script>
+        // a11y режим — переключение до загрузки CSS, чтоб не моргало
+        (function () {
+            try { if (localStorage.getItem('dpa-a11y') === '1') document.documentElement.classList.add('a11y'); } catch (e) {}
+        })();
+    </script>
+    <script>
         (function () {
             var btn = document.getElementById('navToggle');
             var nav = document.getElementById('mobileNav');
             if (btn && nav) btn.addEventListener('click', function () { nav.classList.toggle('hidden'); });
+
+            // Toggle accessibility mode (desktop + mobile)
+            var a11yButtons = [document.getElementById('a11yToggle'), document.getElementById('a11yToggleMob')].filter(Boolean);
+            function syncA11y() {
+                var on = document.documentElement.classList.contains('a11y');
+                a11yButtons.forEach(b => b.setAttribute('aria-pressed', on ? 'true' : 'false'));
+            }
+            syncA11y();
+            a11yButtons.forEach(b => b.addEventListener('click', function () {
+                document.documentElement.classList.toggle('a11y');
+                var on = document.documentElement.classList.contains('a11y');
+                try { localStorage.setItem('dpa-a11y', on ? '1' : '0'); } catch (e) {}
+                syncA11y();
+            }));
 
             function bindDropdown(wrapId, btnId, menuId) {
                 var wrap = document.getElementById(wrapId);
@@ -311,7 +379,6 @@
                 document.addEventListener('keydown', function(e){ if (e.key === 'Escape') hide(); });
             }
             bindDropdown('userDropdownWrap','userDropdownBtn','userDropdownMenu');
-            bindDropdown('langDropdownWrap','langDropdownBtn','langDropdownMenu');
         })();
     </script>
     @await RenderSectionAsync("Scripts", required: false)

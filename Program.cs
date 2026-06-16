@@ -22,7 +22,6 @@ builder.Services.AddControllersWithViews()
 var supportedCultures = new[]
 {
     new CultureInfo("ru"),
-    new CultureInfo("en"),
     new CultureInfo("ky"),
 };
 builder.Services.Configure<RequestLocalizationOptions>(options =>

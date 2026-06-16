@@ -60,6 +60,14 @@
   <data name="Footer.Copyright" xml:space="preserve"><value>© 2026 — АИС «Реестр владельцев записей»</value></data>
   <data name="Footer.Privacy" xml:space="preserve"><value>Политика</value></data>
   <data name="Footer.Support" xml:space="preserve"><value>Поддержка</value></data>
+  <data name="Footer.Agency" xml:space="preserve"><value>Государственное агентство по защите персональных данных при Кабинете Министров Кыргызской Республики</value></data>
+  <data name="Footer.Sections" xml:space="preserve"><value>Разделы</value></data>
+  <data name="Footer.Contacts" xml:space="preserve"><value>Контакты</value></data>
+  <data name="Footer.Documents" xml:space="preserve"><value>Документы</value></data>
+
+  <data name="Util.A11y" xml:space="preserve"><value>Версия для слабовидящих</value></data>
+  <data name="Util.Contact" xml:space="preserve"><value>Связаться с нами</value></data>
+  <data name="Util.Official" xml:space="preserve"><value>Официальный сервис</value></data>
 
   <!-- Navigation -->
   <data name="Nav.Home" xml:space="preserve"><value>Главная</value></data>
@@ -129,6 +137,56 @@
   <data name="Home.Chart.SubjectsTitle" xml:space="preserve"><value>Субъекты</value></data>
   <data name="Home.Chart.SubjectsSub" xml:space="preserve"><value>Кто пострадал</value></data>
   <data name="Home.Chart.CenterTotal" xml:space="preserve"><value>Всего</value></data>
+
+  <!-- Home (landing) -->
+  <data name="Home.Hero.Badge" xml:space="preserve"><value>Государственное агентство по защите персональных данных</value></data>
+  <data name="Home.Hero.Title" xml:space="preserve"><value>Реестр владельцев записей</value></data>
+  <data name="Home.Hero.Subtitle" xml:space="preserve"><value>Единая площадка для регистрации и сопровождения инцидентов с персональными данными в Кыргызской Республике.</value></data>
+  <data name="Home.Hero.CtaRegister" xml:space="preserve"><value>Зарегистрировать инцидент</value></data>
+  <data name="Home.Hero.CtaLearn" xml:space="preserve"><value>Узнать больше</value></data>
+  <data name="Home.Hero.Mini.Incidents" xml:space="preserve"><value>инцидентов в реестре</value></data>
+  <data name="Home.Hero.Mini.Month" xml:space="preserve"><value>за последний месяц</value></data>
+  <data name="Home.Hero.Mini.Records" xml:space="preserve"><value>затронуто записей</value></data>
+  <data name="Home.Hero.Mini.Notified" xml:space="preserve"><value>субъектов уведомлено</value></data>
+
+  <data name="Home.About.Badge" xml:space="preserve"><value>О реестре</value></data>
+  <data name="Home.About.Title" xml:space="preserve"><value>Защита персональных данных — общая задача</value></data>
+  <data name="Home.About.Sub" xml:space="preserve"><value>Реестр обеспечивает прозрачность работы с инцидентами, помогает организациям выполнить требования закона и оперативно реагировать на угрозы.</value></data>
+  <data name="Home.Card1.Title" xml:space="preserve"><value>Защита прав граждан</value></data>
+  <data name="Home.Card1.Body" xml:space="preserve"><value>Своевременное уведомление субъектов персональных данных при возникновении угрозы и контроль за устранением инцидента.</value></data>
+  <data name="Home.Card2.Title" xml:space="preserve"><value>Прозрачность для бизнеса</value></data>
+  <data name="Home.Card2.Body" xml:space="preserve"><value>Удобная регистрация и сопровождение инцидентов, автоматическое получение реквизитов из реестра юридических лиц.</value></data>
+  <data name="Home.Card3.Title" xml:space="preserve"><value>Контроль и надзор</value></data>
+  <data name="Home.Card3.Body" xml:space="preserve"><value>Единая база инцидентов и аналитика по отраслям для принятия регуляторных решений Агентством по защите ПДн.</value></data>
+
+  <data name="Home.HowTo.Badge" xml:space="preserve"><value>Как это работает</value></data>
+  <data name="Home.HowTo.Title" xml:space="preserve"><value>Регистрация инцидента за три шага</value></data>
+  <data name="Home.HowTo.Sub" xml:space="preserve"><value>Просто, быстро и в соответствии с законодательством Кыргызской Республики.</value></data>
+  <data name="Home.Step1.Title" xml:space="preserve"><value>Авторизация через ЕСИ</value></data>
+  <data name="Home.Step1.Body" xml:space="preserve"><value>Войдите в систему через Единую систему идентификации. Данные вашей организации подтянутся автоматически из Министерства юстиции.</value></data>
+  <data name="Home.Step2.Title" xml:space="preserve"><value>Заполните карточку инцидента</value></data>
+  <data name="Home.Step2.Body" xml:space="preserve"><value>Опишите инцидент в удобной пошаговой форме: что произошло, каков масштаб, какие приняты меры.</value></data>
+  <data name="Home.Step3.Title" xml:space="preserve"><value>Отслеживайте статус</value></data>
+  <data name="Home.Step3.Body" xml:space="preserve"><value>Карточка инцидента сохраняется в реестре, доступна организации и регулирующему органу для дальнейшего контроля.</value></data>
+
+  <data name="Home.Trend.Title" xml:space="preserve"><value>Динамика инцидентов в системе</value></data>
+  <data name="Home.Trend.Sub" xml:space="preserve"><value>Общее число зарегистрированных инцидентов и доля критичных</value></data>
+  <data name="Home.Trend.More" xml:space="preserve"><value>Открыть мои инциденты</value></data>
+
+  <data name="Home.Contacts.Badge" xml:space="preserve"><value>Контакты</value></data>
+  <data name="Home.Contacts.Title" xml:space="preserve"><value>Нужна помощь?</value></data>
+  <data name="Home.Contacts.Sub" xml:space="preserve"><value>Свяжитесь с Агентством по защите персональных данных по любым вопросам, связанным с регистрацией и сопровождением инцидентов.</value></data>
+  <data name="Home.Contacts.Address" xml:space="preserve"><value>г. Бишкек, пр. Чуй, 122</value></data>
+  <data name="Home.Contacts.Phone" xml:space="preserve"><value>+996 (312) 90-21-21</value></data>
+  <data name="Home.Contacts.Email" xml:space="preserve"><value>info@dpa.gov.kg</value></data>
+  <data name="Home.Contacts.Hours" xml:space="preserve"><value>пн–пт, 09:00–18:00</value></data>
+  <data name="Home.Contacts.Cta" xml:space="preserve"><value>Написать в поддержку</value></data>
+
+  <data name="Home.Laws.Badge" xml:space="preserve"><value>Нормативная база</value></data>
+  <data name="Home.Laws.Title" xml:space="preserve"><value>На каких документах основан реестр</value></data>
+  <data name="Home.Laws.Law1" xml:space="preserve"><value>Закон КР «О персональных данных»</value></data>
+  <data name="Home.Laws.Law2" xml:space="preserve"><value>Постановление Кабинета министров о порядке учёта инцидентов</value></data>
+  <data name="Home.Laws.Law3" xml:space="preserve"><value>Регламент работы Государственного агентства по защите ПДн</value></data>
 
   <!-- Severity -->
   <data name="Severity.Low" xml:space="preserve"><value>Низкий</value></data>

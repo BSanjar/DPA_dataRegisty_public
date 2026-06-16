@@ -5,33 +5,71 @@
 @layer base {
   :root {
     color-scheme: light;
-    --dpa-primary: #003971;
-    --dpa-primary-hover: #002d52;
-    --dpa-accent: #0077C8;
-    --dpa-accent-hover: #0066AD;
-    --dpa-text: #525E66;
-    --dpa-text-muted: #A6AFB4;
-    --dpa-border: #DDE2E6;
-    --dpa-bg-subtle: #F6F7F9;
+    /* === Брендбук DPA: токены === */
+    --dpa-primary:        #003971;  /* Pantone 662 C */
+    --dpa-primary-hover:  #002d52;
+    --dpa-blue:           #004C97;  /* Pantone 2945 C */
+    --dpa-accent:         #0077C8;  /* Pantone 3005 C */
+    --dpa-accent-hover:   #0066AD;
+    --dpa-text:           #525E66;
+    --dpa-text-muted:     #A6AFB4;
+    --dpa-border:         #DDE2E6;
+    --dpa-bg:             #FFFFFF;
+    --dpa-bg-subtle:      #F6F7F9;
+    --dpa-bg-soft:        #f9fafb;
+    --dpa-focus-ring:     rgba(0, 119, 200, .25);
+
+    /* Радиусы и тени */
+    --dpa-radius-sm:      .5rem;
+    --dpa-radius-md:      .75rem;
+    --dpa-radius-lg:      1rem;
+    --dpa-shadow-card:    0 4px 16px -8px rgba(0, 57, 113, .12);
+    --dpa-shadow-card-hover: 0 16px 36px -16px rgba(0, 57, 113, .25);
   }
 
   html {
     font-family: 'Raleway', ui-sans-serif, system-ui, Segoe UI, Roboto, sans-serif;
+    font-size: 16px;
   }
 
   body {
     @apply bg-dpaGray-50 text-dpaGray-700;
+    line-height: 1.55;
   }
 
+  /* Брендбук: заголовки — ExtraBold, цвет #525E66 (можно переопределять цветом синего точечно) */
   h1, h2, h3, h4, h5, h6 {
-    @apply font-extrabold text-dpa-800;
+    @apply font-extrabold;
+    color: var(--dpa-text);
     letter-spacing: -0.015em;
+    line-height: 1.25;
   }
 
-  /* Заголовки поля — немного строже */
   label {
     font-weight: 600;
   }
+
+  /* Универсальное фокус-кольцо в брендовом цвете */
+  *:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 .25rem var(--dpa-focus-ring);
+    border-radius: var(--dpa-radius-sm);
+  }
+
+  /* === Утилитарные токен-классы (по брендбуку) === */
+  .dpa-bg-primary { background-color: var(--dpa-primary) !important; }
+  .dpa-bg-accent  { background-color: var(--dpa-accent)  !important; }
+  .dpa-text-primary { color: var(--dpa-primary) !important; }
+  .dpa-text-accent  { color: var(--dpa-accent)  !important; }
+  .dpa-text-muted   { color: var(--dpa-text-muted) !important; }
+  .dpa-border-color { border-color: var(--dpa-border) !important; }
+}
+
+/* === Accessibility mode: режим для слабовидящих === */
+html.a11y { font-size: 18px; }
+html.a11y body { filter: grayscale(.85) contrast(1.05); }
+html.a11y .landing-hero, html.a11y .dpa-hero, html.a11y .btn-register {
+  filter: grayscale(1) contrast(1.1);
 }
 
 @layer components {
@@ -43,12 +81,66 @@
     @apply sticky top-0 z-40 border-b border-dpaGray-200 bg-white/90 backdrop-blur;
   }
 
+  /* Официальный тёмный футер по брендбуку (#003971, текст #DDE2E6) */
   .app-footer {
-    @apply border-t border-dpaGray-200 bg-white;
+    background-color: var(--dpa-primary);
+    color: var(--dpa-border);
+  }
+  .app-footer a { color: var(--dpa-border); }
+  .app-footer a:hover { color: #ffffff; }
+  .app-footer h4 {
+    color: #ffffff;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    font-size: .75rem;
+  }
+
+  /* Тонкая утилитарная полоса над шапкой */
+  .app-utilbar {
+    background-color: var(--dpa-primary);
+    color: rgba(255,255,255,.85);
+    font-size: .75rem;
+  }
+  .app-utilbar a, .app-utilbar button { color: rgba(255,255,255,.9); }
+  .app-utilbar a:hover, .app-utilbar button:hover { color: #ffffff; }
+
+  /* Брендовая плашка-знак вокруг логотипа */
+  .dpa-brand-mark {
+    @apply inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white shadow-sm ring-1 ring-dpaGray-200;
+  }
+  .dpa-brand-mark img { display: block; max-height: 86%; width: auto; }
+  .dpa-brand-mark-light {
+    background-color: rgba(255,255,255,.92);
+    box-shadow: 0 2px 8px -2px rgba(0, 0, 0, .15);
+    --tw-ring-color: rgba(255,255,255,.4);
+  }
+
+  /* Языковые кнопки в utility bar — стилистика основного портала */
+  .nav-locale { @apply list-none p-0 m-0; }
+  .nav-locale-item { @apply m-0 p-0; }
+  .nav-locale-item + .nav-locale-item .nav-locale-btn {
+    border-left: 1px solid rgba(255,255,255,.25);
+  }
+  .nav-locale-btn {
+    @apply inline-flex items-center justify-center px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider;
+    color: rgba(255,255,255,.7);
+    background: transparent;
+    border: 0;
+    transition: color .15s;
+  }
+  .nav-locale-btn:hover { color: #ffffff; }
+  .nav-locale-btn.is-active { color: #ffffff; text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 2px; }
+  /* Светлая версия для мобильного меню */
+  .nav-locale-btn-light { color: var(--dpa-text-muted); }
+  .nav-locale-btn-light:hover { color: var(--dpa-primary); }
+  .nav-locale-btn-light.is-active { color: var(--dpa-primary); }
+  .nav-locale-item + .nav-locale-item .nav-locale-btn-light {
+    border-left-color: var(--dpa-border);
   }
 
   .app-container {
-    @apply mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-8;
+    @apply mx-auto w-full max-w-screen-2xl px-3 sm:px-6 lg:px-8;
   }
 
   /* ===== Cards ===== */
@@ -67,19 +159,25 @@
     @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition;
   }
   .btn-primary {
-    @apply btn bg-dpa-800 text-white shadow-sm
-           hover:bg-dpa-900
-           focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-dpa-200;
+    @apply btn text-white shadow-sm;
+    background-color: var(--dpa-primary);
   }
+  .btn-primary:hover { background-color: var(--dpa-primary-hover); }
   .btn-accent {
-    @apply btn bg-dpa-500 text-white shadow-sm
-           hover:bg-dpa-600
-           focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-dpa-200;
+    @apply btn text-white shadow-sm;
+    background-color: var(--dpa-accent);
   }
+  .btn-accent:hover { background-color: var(--dpa-accent-hover); }
+  /* btn-more — вторичная кнопка по брендбуку */
   .btn-secondary {
-    @apply btn bg-white text-dpaGray-800 ring-1 ring-dpaGray-200
-           hover:bg-dpaGray-50
-           focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-dpaGray-200;
+    @apply btn ring-1;
+    background-image: linear-gradient(135deg, #DDE2E6 0%, #e8ecf0 100%);
+    color: var(--dpa-accent);
+    --tw-ring-color: var(--dpa-text-muted);
+  }
+  .btn-secondary:hover {
+    --tw-ring-color: var(--dpa-accent);
+    box-shadow: 0 4px 12px -6px rgba(0, 119, 200, .35);
   }
   .btn-ghost {
     @apply btn bg-transparent text-dpaGray-700 hover:bg-dpaGray-100;
@@ -115,6 +213,27 @@
   }
   .btn-register:hover::after { transform: translateX(120%); }
   .btn-register:active { transform: translateY(0); }
+
+  /* Пульсирующее «дыхание» — привлекает внимание к CTA */
+  .btn-register-pulse, .hero-btn-pulse {
+    position: relative;
+  }
+  .btn-register-pulse::before, .hero-btn-pulse::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow: 0 0 0 0 rgba(0, 119, 200, .55);
+    animation: dpaCtaPulse 2s ease-out infinite;
+  }
+  .hero-btn-pulse::before {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, .55);
+  }
+  .btn-register-pulse:hover::before, .hero-btn-pulse:hover::before { animation: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .btn-register-pulse::before, .hero-btn-pulse::before { animation: none; }
+  }
 
   /* ===== Пункт выбора языка в дропдауне ===== */
   .lang-item {
@@ -418,6 +537,175 @@
     color: #fff;
   }
 
+  /* ===== Landing hero (главная) ===== */
+  .landing-hero {
+    @apply relative overflow-hidden rounded-2xl sm:rounded-3xl shadow-xl;
+    background-color: #002852;
+    color: #fff;
+  }
+
+  /* Слой 1: брендовая фоновая картинка, позиционирована справа,
+     где находится графический акцент (замок DPA) — он совпадает
+     с пустой правой частью hero и не перекрывается текстом. */
+  .landing-hero-bg {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(90deg,
+          rgba(0,40,82,.96) 0%,
+          rgba(0,57,113,.78) 35%,
+          rgba(0,76,151,.35) 70%,
+          rgba(0,76,151,.10) 100%),
+      url('/img/dpa-hero-bg.png');
+    background-size: cover, cover;
+    background-position: center, right center;
+    background-repeat: no-repeat;
+    pointer-events: none;
+  }
+  /* Слой 2: дополнительное вертикальное затемнение сверху —
+     чтобы белый заголовок не «терялся» на светлых элементах фона. */
+  .landing-hero-shade {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg,
+        rgba(0,28,60,.55) 0%,
+        rgba(0,28,60,.20) 45%,
+        rgba(0,28,60,0)   100%);
+    pointer-events: none;
+  }
+  /* Mobile (без правой графики) — затемняем равномернее */
+  @media (max-width: 640px) {
+    .landing-hero-bg {
+      background:
+        linear-gradient(180deg,
+            rgba(0,28,60,.80) 0%,
+            rgba(0,40,82,.55) 60%,
+            rgba(0,40,82,.40) 100%),
+        url('/img/dpa-hero-bg.png');
+      background-size: cover, cover;
+      background-position: center, center;
+      background-repeat: no-repeat;
+    }
+    .landing-hero-shade { display: none; }
+  }
+
+  .hero-btn {
+    @apply flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold shadow-sm transition sm:inline-flex sm:px-5;
+  }
+  .hero-btn-primary {
+    @apply bg-white text-dpa-800 hover:bg-dpa-50 hover:shadow-lg;
+  }
+  .hero-btn-ghost {
+    @apply bg-white/10 text-white ring-1 ring-white/40 backdrop-blur hover:bg-white/20;
+  }
+
+  /* ===== Стильные мини-статистики в нижней полосе hero ===== */
+  .hero-stats-bar {
+    @apply relative border-t border-white/15 px-3 py-3 sm:px-8 sm:py-4 lg:px-12;
+    background: linear-gradient(180deg, rgba(0,0,0,.18) 0%, rgba(0,0,0,.35) 100%);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+  .hero-stats-grid {
+    @apply grid grid-cols-2 sm:grid-cols-4;
+    /* Тонкие разделители вместо gap'ов */
+    column-gap: 0;
+  }
+  .hero-stat {
+    @apply relative flex items-center gap-3 px-3 py-1.5 transition;
+  }
+  /* Вертикальные разделители между соседями (на десктопе — между всеми, на mobile — только горизонтальный между рядами через нижнюю границу) */
+  .hero-stat + .hero-stat::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 18%; bottom: 18%;
+    width: 1px;
+    background: linear-gradient(180deg, transparent, rgba(255,255,255,.20), transparent);
+  }
+  /* На mobile (2 колонки) — линия только между правой и левой колонкой,
+     горизонтальный разделитель для нижнего ряда */
+  @media (max-width: 639px) {
+    .hero-stat:nth-child(3), .hero-stat:nth-child(4) {
+      border-top: 1px solid rgba(255,255,255,.12);
+      margin-top: 4px; padding-top: 8px;
+    }
+    .hero-stat:nth-child(3)::before { display: none; }
+  }
+  .hero-stat:hover { transform: translateY(-1px); }
+  .hero-stat:hover .hero-stat-icon {
+    background: rgba(255,255,255,.18);
+    color: #fff;
+  }
+
+  .hero-stat-icon {
+    @apply flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-base transition sm:h-10 sm:w-10 sm:text-lg;
+    color: rgba(187, 230, 251, .95);
+    background: linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.18);
+  }
+  .hero-stat-body {
+    @apply flex min-w-0 flex-col leading-tight;
+  }
+  .hero-stat-value {
+    @apply text-lg font-extrabold tabular-nums sm:text-2xl;
+    color: #ffffff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, .25);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+  .hero-stat-label {
+    @apply mt-1 text-[10px] font-semibold uppercase sm:text-[11px];
+    color: rgba(255,255,255,.78);
+    letter-spacing: .08em;
+    line-height: 1.2;
+  }
+
+  /* ===== Info-карточки ===== */
+  .info-card {
+    @apply rounded-2xl border border-dpaGray-200 bg-white p-5 shadow-sm transition sm:p-6;
+  }
+  .info-card:hover {
+    @apply border-dpa-200;
+    box-shadow: var(--dpa-shadow-card-hover);
+    transform: translateY(-4px);
+  }
+  .info-icon {
+    @apply mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl text-2xl shadow-sm;
+  }
+  .info-icon-blue  { background: linear-gradient(135deg, #E6F1FB, #BEE3F8); color: #003971; }
+  .info-icon-cyan  { background: linear-gradient(135deg, #CFFAFE, #A5F3FC); color: #0E7490; }
+  .info-icon-amber { background: linear-gradient(135deg, #FEF3C7, #FDE68A); color: #B45309; }
+  .info-title {
+    @apply text-lg font-extrabold text-dpa-800;
+  }
+  .info-body {
+    @apply mt-2 text-sm text-dpaGray-600 leading-relaxed;
+  }
+
+  /* ===== "Как зарегистрировать" — шаги ===== */
+  .howto-step {
+    @apply relative rounded-2xl border border-dpaGray-200 bg-white p-5 shadow-sm transition sm:p-6;
+  }
+  .howto-step:hover { @apply border-dpa-300 shadow-md; }
+  .howto-num {
+    @apply absolute right-4 top-4 text-3xl font-extrabold text-dpa-100 leading-none;
+  }
+  .howto-icon { @apply mb-3 block text-3xl; }
+  .howto-title { @apply text-base font-extrabold text-dpa-800; }
+  .howto-body { @apply mt-2 text-sm text-dpaGray-600 leading-relaxed; }
+
+  /* ===== Контакты ===== */
+  .contact-row {
+    @apply flex items-center gap-3;
+  }
+  .contact-ico {
+    @apply flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-lg;
+  }
+
+  /* ===== Нормативная база ===== */
+  .law-item {
+    @apply flex items-start gap-2 rounded-lg bg-dpaGray-50 px-3 py-2 text-dpaGray-800;
+  }
+  .law-item i { @apply mt-0.5; }
+
   /* ===== KPI красочные мини-карточки ===== */
   .kpi {
     @apply relative flex items-center gap-3 overflow-hidden rounded-xl border px-3 py-2.5 shadow-sm;
@@ -508,6 +796,13 @@
   60%  { transform: translateX(-3px); }
   80%  { transform: translateX(2px); }
   100% { transform: translateX(0); }
+}
+
+/* CTA-пульсация */
+@keyframes dpaCtaPulse {
+  0%   { box-shadow: 0 0 0 0   rgba(0, 119, 200, .55); }
+  70%  { box-shadow: 0 0 0 14px rgba(0, 119, 200, 0); }
+  100% { box-shadow: 0 0 0 0   rgba(0, 119, 200, 0); }
 }
 
 /* Спиннер */

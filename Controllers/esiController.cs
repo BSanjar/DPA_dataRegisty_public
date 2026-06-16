@@ -44,12 +44,11 @@ namespace data_registry_public.Controllers
 
 
         [HttpGet]
-        public IActionResult Login()
+        public IActionResult Login(string? returnUrl = null)
         {
-
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Index", "UserPage");
+                return SafeRedirect(returnUrl);
             }
 
             // Generate state, code verifier, and code challenge
@@ -57,14 +56,27 @@ namespace data_registry_public.Controllers
             string codeVerifier = GenerateCodeVerifier();
             string codeChallenge = GenerateCodeChallenge(codeVerifier);
 
-            // Store code verifier and state in TempData
+            // Сохраняем в TempData: state, verifier и куда возвращать после auth
             TempData["code_verifier"] = codeVerifier;
             TempData["state"] = state;
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                TempData["returnUrl"] = returnUrl;
+            }
 
-            // Construct the authorization URL
             string authorizeUrl = $"{_appSettings.authorizeUrl}?response_type=code&client_id={_appSettings.clientId}&redirect_uri={_appSettings.redirectUrl}&scope=openid profile email phone&code_challenge={codeChallenge}&code_challenge_method=S256";
 
             return Redirect(authorizeUrl);
+        }
+
+        /// <summary>Безопасный редирект на returnUrl, иначе на UserPage.</summary>
+        private IActionResult SafeRedirect(string? returnUrl)
+        {
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            return RedirectToAction("Index", "UserPage");
         }
 
 
@@ -75,7 +87,7 @@ namespace data_registry_public.Controllers
         /// через эмулятор Минюста.
         /// </summary>
         [HttpGet]
-        public async Task<IActionResult> LoginTest()
+        public async Task<IActionResult> LoginTest(string? returnUrl = null)
         {
             // Фиксированный тестовый пользователь с известным ИНН.
             // Данные организации будут детерминированно сгенерированы эмулятором Минюста.
@@ -115,7 +127,7 @@ namespace data_registry_public.Controllers
             await Authenticate(userModel, link.OrgId);
             _logger.LogInformation("Тестовый вход: {Name} авторизован, org: {Org}", userModel.Name, link.OrgId);
             TempData["SuccessMessage"] = "Вы вошли в тестовом режиме. Данные организации — из эмулятора Минюста.";
-            return RedirectToAction("Index", "UserPage");
+            return SafeRedirect(returnUrl);
         }
 
 
@@ -195,7 +207,8 @@ namespace data_registry_public.Controllers
 
                             await Authenticate(userModel, link.OrgId);
                             _logger.LogInformation("Пользователь {Name} авторизовался через ЕСИ, org: {Org}", userModel.Name, link.OrgId);
-                            return RedirectToAction("Index", "UserPage");
+                            var returnUrl = TempData["returnUrl"] as string;
+                            return SafeRedirect(returnUrl);
                         }
                     }
                 }

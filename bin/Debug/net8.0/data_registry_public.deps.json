@@ -19,6 +19,14 @@
         },
         "runtime": {
           "data_registry_public.dll": {}
+        },
+        "resources": {
+          "en/data_registry_public.resources.dll": {
+            "locale": "en"
+          },
+          "ky/data_registry_public.resources.dll": {
+            "locale": "ky"
+          }
         }
       },
       "Humanizer.Core/2.14.1": {

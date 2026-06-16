@@ -9,6 +9,8 @@ C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записе
 C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\bin\Debug\net8.0\data_registry_public.runtimeconfig.json
 C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\bin\Debug\net8.0\data_registry_public.dll
 C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\bin\Debug\net8.0\data_registry_public.pdb
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\bin\Debug\net8.0\en\data_registry_public.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\bin\Debug\net8.0\ky\data_registry_public.resources.dll
 C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\bin\Debug\net8.0\Humanizer.dll
 C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
 C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
@@ -27,8 +29,11 @@ C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записе
 C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
 C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
 C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\bin\Debug\net8.0\Mono.TextTemplating.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\bin\Debug\net8.0\Newtonsoft.Json.dll
 C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\bin\Debug\net8.0\Npgsql.dll
 C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\bin\Debug\net8.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\bin\Debug\net8.0\Serilog.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\bin\Debug\net8.0\Serilog.Sinks.File.dll
 C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\bin\Debug\net8.0\System.CodeDom.dll
 C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\bin\Debug\net8.0\System.Composition.AttributedModel.dll
 C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\bin\Debug\net8.0\System.Composition.Convention.dll
@@ -89,6 +94,10 @@ C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записе
 C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
 C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\obj\Debug\net8.0\data_registry_public.csproj.AssemblyReference.cache
 C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\obj\Debug\net8.0\rpswa.dswa.cache.json
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\obj\Debug\net8.0\data_registry_public.SharedResource.resources
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\obj\Debug\net8.0\data_registry_public.SharedResource.en.resources
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\obj\Debug\net8.0\data_registry_public.SharedResource.ky.resources
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\obj\Debug\net8.0\data_registry_public.csproj.GenerateResource.cache
 C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\obj\Debug\net8.0\data_registry_public.GeneratedMSBuildEditorConfig.editorconfig
 C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\obj\Debug\net8.0\data_registry_public.AssemblyInfoInputs.cache
 C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\obj\Debug\net8.0\data_registry_public.AssemblyInfo.cs
@@ -97,6 +106,8 @@ C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записе
 C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\obj\Debug\net8.0\data_registry_public.RazorAssemblyInfo.cache
 C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\obj\Debug\net8.0\data_registry_public.RazorAssemblyInfo.cs
 C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\obj\Debug\net8.0\data_registry_public.sourcelink.json
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\obj\Debug\net8.0\en\data_registry_public.resources.dll
+C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\obj\Debug\net8.0\ky\data_registry_public.resources.dll
 C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\obj\Debug\net8.0\rjimswa.dswa.cache.json
 C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
 C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
@@ -113,7 +124,4 @@ C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записе
 C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\obj\Debug\net8.0\data_registry_public.pdb
 C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\obj\Debug\net8.0\data_registry_public.genruntimeconfig.cache
 C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\obj\Debug\net8.0\ref\data_registry_public.dll
-C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\bin\Debug\net8.0\Newtonsoft.Json.dll
 C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
-C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\bin\Debug\net8.0\Serilog.dll
-C:\disk\sanjar\DPA\dpa_estonia\06 Реестр владельцев записей\01 публичная часть\data_registry_public\bin\Debug\net8.0\Serilog.Sinks.File.dll

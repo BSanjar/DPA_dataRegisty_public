@@ -26,6 +26,14 @@
   <data name="Footer.Copyright" xml:space="preserve"><value>© 2026 — АИС «Жазуу ээлеринин реестри»</value></data>
   <data name="Footer.Privacy" xml:space="preserve"><value>Саясат</value></data>
   <data name="Footer.Support" xml:space="preserve"><value>Колдоо</value></data>
+  <data name="Footer.Agency" xml:space="preserve"><value>Кыргыз Республикасынын Министрлер Кабинетинин алдындагы Жеке маалыматтарды коргоо боюнча мамлекеттик агенттиги</value></data>
+  <data name="Footer.Sections" xml:space="preserve"><value>Бөлүмдөр</value></data>
+  <data name="Footer.Contacts" xml:space="preserve"><value>Байланыштар</value></data>
+  <data name="Footer.Documents" xml:space="preserve"><value>Документтер</value></data>
+
+  <data name="Util.A11y" xml:space="preserve"><value>Көрүүсү начарлар үчүн</value></data>
+  <data name="Util.Contact" xml:space="preserve"><value>Биз менен байланышуу</value></data>
+  <data name="Util.Official" xml:space="preserve"><value>Расмий кызмат</value></data>
 
   <data name="Nav.Home" xml:space="preserve"><value>Башкы бет</value></data>
   <data name="Nav.MyIncidents" xml:space="preserve"><value>Менин окуяларым</value></data>
@@ -91,6 +99,55 @@
   <data name="Home.Chart.SubjectsTitle" xml:space="preserve"><value>Субъекттер</value></data>
   <data name="Home.Chart.SubjectsSub" xml:space="preserve"><value>Ким жабыркады</value></data>
   <data name="Home.Chart.CenterTotal" xml:space="preserve"><value>Бардыгы</value></data>
+
+  <data name="Home.Hero.Badge" xml:space="preserve"><value>Жеке маалыматтарды коргоо боюнча мамлекеттик агенттик</value></data>
+  <data name="Home.Hero.Title" xml:space="preserve"><value>Жазуу ээлеринин реестри</value></data>
+  <data name="Home.Hero.Subtitle" xml:space="preserve"><value>Кыргыз Республикасында жеке маалыматтар менен болгон окуяларды каттоо жана коштоо үчүн бирдиктүү аянтча.</value></data>
+  <data name="Home.Hero.CtaRegister" xml:space="preserve"><value>Окуяны каттоо</value></data>
+  <data name="Home.Hero.CtaLearn" xml:space="preserve"><value>Көбүрөөк билүү</value></data>
+  <data name="Home.Hero.Mini.Incidents" xml:space="preserve"><value>реестрдеги окуялар</value></data>
+  <data name="Home.Hero.Mini.Month" xml:space="preserve"><value>акыркы айда</value></data>
+  <data name="Home.Hero.Mini.Records" xml:space="preserve"><value>таасирленген жазуулар</value></data>
+  <data name="Home.Hero.Mini.Notified" xml:space="preserve"><value>субъекттер кабарланды</value></data>
+
+  <data name="Home.About.Badge" xml:space="preserve"><value>Реестр жөнүндө</value></data>
+  <data name="Home.About.Title" xml:space="preserve"><value>Жеке маалыматтарды коргоо — жалпы милдет</value></data>
+  <data name="Home.About.Sub" xml:space="preserve"><value>Реестр окуялар менен иштөөнүн ачыктыгын камсыз кылат, уюмдарга мыйзам талаптарын аткарууга жана коркунучтарга оперативдүү жооп берүүгө жардам берет.</value></data>
+  <data name="Home.Card1.Title" xml:space="preserve"><value>Жарандардын укуктарын коргоо</value></data>
+  <data name="Home.Card1.Body" xml:space="preserve"><value>Коркунуч пайда болгондо жеке маалыматтардын субъекттерин өз убагында кабарлоо жана окуяны жоюуну көзөмөлдөө.</value></data>
+  <data name="Home.Card2.Title" xml:space="preserve"><value>Бизнес үчүн ачыктык</value></data>
+  <data name="Home.Card2.Body" xml:space="preserve"><value>Окуяларды ыңгайлуу каттоо жана коштоо, юстиция реестринен уюмдун маалыматтарын автоматтык алуу.</value></data>
+  <data name="Home.Card3.Title" xml:space="preserve"><value>Көзөмөл жана контроль</value></data>
+  <data name="Home.Card3.Body" xml:space="preserve"><value>Бирдиктүү окуялар базасы жана агенттиктин жөнгө салуу чечимдерин кабыл алуу үчүн тармактар боюнча аналитика.</value></data>
+
+  <data name="Home.HowTo.Badge" xml:space="preserve"><value>Кантип иштейт</value></data>
+  <data name="Home.HowTo.Title" xml:space="preserve"><value>Окуяны үч кадамда каттоо</value></data>
+  <data name="Home.HowTo.Sub" xml:space="preserve"><value>Жөнөкөй, тез жана Кыргыз Республикасынын мыйзамдарына ылайык.</value></data>
+  <data name="Home.Step1.Title" xml:space="preserve"><value>ЕСИ аркылуу авторизация</value></data>
+  <data name="Home.Step1.Body" xml:space="preserve"><value>Бирдиктүү идентификация системасы аркылуу кирүү. Уюмуңуздун маалыматтары Юстиция министрлигинен автоматтык түрдө алынат.</value></data>
+  <data name="Home.Step2.Title" xml:space="preserve"><value>Окуянын картасын толтуруу</value></data>
+  <data name="Home.Step2.Body" xml:space="preserve"><value>Окуяны ыңгайлуу формада сүрөттөңүз: эмне болду, көлөмү жана көрүлгөн чаралар.</value></data>
+  <data name="Home.Step3.Title" xml:space="preserve"><value>Абалын көзөмөлдөө</value></data>
+  <data name="Home.Step3.Body" xml:space="preserve"><value>Окуянын картасы реестрде сакталып, уюмга жана көзөмөлдөөчү органга кошумча текшерүү үчүн жеткиликтүү.</value></data>
+
+  <data name="Home.Trend.Title" xml:space="preserve"><value>Системадагы окуялардын динамикасы</value></data>
+  <data name="Home.Trend.Sub" xml:space="preserve"><value>Каттоого алынган жалпы окуялар жана критикалык окуялардын үлүшү</value></data>
+  <data name="Home.Trend.More" xml:space="preserve"><value>Менин окуяларымды ачуу</value></data>
+
+  <data name="Home.Contacts.Badge" xml:space="preserve"><value>Байланыштар</value></data>
+  <data name="Home.Contacts.Title" xml:space="preserve"><value>Жардам керекпи?</value></data>
+  <data name="Home.Contacts.Sub" xml:space="preserve"><value>Окуяларды каттоо жана коштоо боюнча суроолор боюнча Жеке маалыматтарды коргоо агенттиги менен байланышыңыз.</value></data>
+  <data name="Home.Contacts.Address" xml:space="preserve"><value>Бишкек ш., Чүй пр. 122</value></data>
+  <data name="Home.Contacts.Phone" xml:space="preserve"><value>+996 (312) 90-21-21</value></data>
+  <data name="Home.Contacts.Email" xml:space="preserve"><value>info@dpa.gov.kg</value></data>
+  <data name="Home.Contacts.Hours" xml:space="preserve"><value>дш–жш, 09:00–18:00</value></data>
+  <data name="Home.Contacts.Cta" xml:space="preserve"><value>Колдоого жазуу</value></data>
+
+  <data name="Home.Laws.Badge" xml:space="preserve"><value>Ченемдик база</value></data>
+  <data name="Home.Laws.Title" xml:space="preserve"><value>Реестр кайсы документтерге негизделет</value></data>
+  <data name="Home.Laws.Law1" xml:space="preserve"><value>«Жеке маалыматтар жөнүндө» КР Мыйзамы</value></data>
+  <data name="Home.Laws.Law2" xml:space="preserve"><value>Окуяларды эсепке алуу тартиби тууралуу Министрлер Кабинетинин токтому</value></data>
+  <data name="Home.Laws.Law3" xml:space="preserve"><value>Жеке маалыматтарды коргоо мамлекеттик агенттигинин регламенти</value></data>
 
   <data name="Severity.Low" xml:space="preserve"><value>Төмөн</value></data>
   <data name="Severity.Medium" xml:space="preserve"><value>Орто</value></data>
