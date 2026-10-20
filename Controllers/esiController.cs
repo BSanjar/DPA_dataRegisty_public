@@ -315,7 +315,29 @@ namespace data_registry_public.Controllers
                 var info = await _minJust.GetOrganizationByTinAsync(user.OrganizationTin, useEmulator);
                 if (info == null)
                 {
-                    result.ErrorMessage = $"Не удалось получить сведения об организации по ИНН {user.OrganizationTin} из Минюста.";
+                    // Минюст недоступен или не нашёл субъект. Если организация уже синхронизирована ранее —
+                    // пускаем с сохранёнными реквизитами (без подмены данных), иначе вход невозможен.
+                    var known = await _db.Organizations.AsNoTracking().FirstOrDefaultAsync(o => o.Id == user.OrganizationTin.Trim());
+                    if (known != null)
+                    {
+                        _logger.LogWarning("Минюст не вернул данные по ИНН {Tin}; вход с ранее сохранёнными реквизитами (синхронизация {Synced})",
+                            user.OrganizationTin, known.LastSyncedAt);
+                        var dbUserFallback = await _db.PublicUsers.FirstOrDefaultAsync(u => u.Id == user.Id);
+                        if (dbUserFallback != null)
+                        {
+                            dbUserFallback.Organization = known.Id;
+                            dbUserFallback.OrganizationTin = known.Id;
+                            dbUserFallback.OrganizationName = known.Fullnamegl;
+                            dbUserFallback.UpdatedAt = DateTime.Now;
+                            await _db.SaveChangesAsync();
+                        }
+                        user.OrganizationName = known.Fullnamegl;
+                        result.Success = true;
+                        result.OrgId = known.Id;
+                        return result;
+                    }
+
+                    result.ErrorMessage = $"Не удалось получить сведения об организации по ИНН {user.OrganizationTin} из Минюста. Попробуйте позже или обратитесь в Агентство.";
                     _logger.LogWarning("Минюст не вернул данные по ИНН {Tin}", user.OrganizationTin);
                     return result;
                 }

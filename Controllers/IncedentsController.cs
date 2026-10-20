@@ -315,7 +315,17 @@ namespace data_registry_public.Controllers
                 tin = DevCurrentOrgTin;
             }
 
-            return await _minJust.GetOrganizationByTinAsync(tin);
+            var info = await _minJust.GetOrganizationByTinAsync(tin);
+            if (info != null) return info;
+
+            // Минюст недоступен / не нашёл субъект — берём реквизиты, сохранённые при последней синхронизации.
+            var org = await _db.Organizations.AsNoTracking()
+                .Include(o => o.BusinesssectorNavigation)
+                .FirstOrDefaultAsync(o => o.Id == tin);
+            if (org == null) return null;
+
+            _logger.LogWarning("Минюст не вернул данные по ИНН {Tin}; использованы реквизиты из БД (синхронизация {Synced})", tin, org.LastSyncedAt);
+            return MinJustOrganizationInfo.FromOrganization(org);
         }
 
         /// <summary>

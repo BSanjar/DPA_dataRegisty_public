@@ -33,8 +33,15 @@ namespace data_registry_public.Controllers
             MinJustOrganizationInfo? mj = null;
             if (!string.IsNullOrEmpty(orgTin))
             {
-                org = await _db.Organizations.AsNoTracking().FirstOrDefaultAsync(o => o.Id == orgTin);
+                org = await _db.Organizations.AsNoTracking()
+                    .Include(o => o.BusinesssectorNavigation)
+                    .FirstOrDefaultAsync(o => o.Id == orgTin);
                 mj = await _minJust.GetOrganizationByTinAsync(orgTin);
+                // Минюст не ответил / не нашёл — показываем реквизиты из последней синхронизации.
+                if (mj == null && org != null)
+                {
+                    mj = MinJustOrganizationInfo.FromOrganization(org);
+                }
             }
 
             int totalIncidents = 0;

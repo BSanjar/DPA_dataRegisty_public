@@ -1,48 +1,58 @@
 ﻿using System.Globalization;
 using System.Net.Http.Json;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using data_registry_public.Models.local_models;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 
 namespace data_registry_public.Integrations
 {
     /// <summary>
-    /// Ответ сервиса Минюста по ИНН (упрощённая модель).
-    /// Маппится на JSON с API getSubjectByQueryRequest.
+    /// Ответ сервиса Минюста getSubjectByQueryRequest.
+    /// Запрос: POST { "query": "&lt;ИНН&gt;", "type": "TIN" }.
+    /// Если субъект не найден, сервис отвечает HTTP 200 и subject с пустыми строками.
     /// </summary>
     public class MinJustResponce
     {
-        public int status { get; set; } = 1;
-        public string? message { get; set; }
-
-        [JsonPropertyName("subject")]
-        public MinJustSubject? Subject { get; set; }
-
-        // На некоторых контурах API возвращает поля в корне. Оставляем универсальность.
-        public string? tin { get; set; }
-        public string? name { get; set; }
-        public string? shortname { get; set; }
-        public string? address { get; set; }
-        public string? director { get; set; }
-        public string? directorposition { get; set; }
-        public string? legalform { get; set; }
-        public string? registrationnumber { get; set; }
-        public string? registrationdate { get; set; }
+        public MinJustSubject? subject { get; set; }
     }
 
     public class MinJustSubject
     {
+        public string? fullNameGl { get; set; }
+        public string? shortNameGl { get; set; }
+        public string? fullNameOl { get; set; }
+        public string? shortNameOl { get; set; }
+        public string? foreignPart { get; set; }
+        public string? registrCode { get; set; }
+        public string? statSubCode { get; set; }
         public string? tin { get; set; }
-        public string? name { get; set; }
-        public string? shortname { get; set; }
-        public string? address { get; set; }
-        public string? director { get; set; }
-        public string? directorposition { get; set; }
-        public string? legalform { get; set; }
-        public string? registrationnumber { get; set; }
-        public string? registrationdate { get; set; }
-        public string? status { get; set; }
+        public string? region { get; set; }
+        public string? district { get; set; }
+        public string? city { get; set; }
+        public string? microdistrict { get; set; }
+        public string? street { get; set; }
+        public string? house { get; set; }
+        public string? room { get; set; }
+        public string? phones { get; set; }
+        public string? email1 { get; set; }
+        public string? orderDate { get; set; }
+        public string? category { get; set; }
+        /// <summary>Форма собственности: 1 — частная, 2 — государственная, 3 — муниципальная.</summary>
+        public string? ownership { get; set; }
+        public string? chief { get; set; }
+        /// <summary>Основной вид деятельности.</summary>
+        public string? baseBus { get; set; }
+        public string? baseBusCode { get; set; }
+        public string? description { get; set; }
+        public List<MinJustFounder>? founders { get; set; }
+    }
+
+    public class MinJustFounder
+    {
+        public string? fullName { get; set; }
+        public string? citizenship { get; set; }
+        public string? tin { get; set; }
     }
 
     /// <summary>
@@ -61,81 +71,235 @@ namespace data_registry_public.Integrations
         public string DirectorPosition { get; set; } = string.Empty;
         public string BusinessSector { get; set; } = string.Empty;
         public string BusinessSectorName { get; set; } = string.Empty;
+        /// <summary>Форма собственности (как в Минюсте): Частная / Государственная / Муниципальная.</summary>
+        public string Ownership { get; set; } = string.Empty;
+        /// <summary>Основной вид деятельности (baseBus).</summary>
+        public string MainActivity { get; set; } = string.Empty;
+        public string Phones { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
         public string Status { get; set; } = "Активный";
         public string Source { get; set; } = "MinJust";
+
+        public const string SourceDb = "БД (последняя синхронизация с Минюстом)";
+
+        /// <summary>Реквизиты, сохранённые при последней синхронизации, — запасной вариант, когда Минюст не ответил.</summary>
+        public static MinJustOrganizationInfo FromOrganization(data_registry_public.Models.Organization org) => new()
+        {
+            Tin = org.Id,
+            FullName = org.Fullnamegl ?? org.Id,
+            ShortName = org.ShortName ?? org.Fullnamegl ?? "",
+            LegalForm = org.LegalForm ?? "",
+            RegistrationNumber = org.RegistrationNumber ?? "",
+            RegistrationDate = org.RegistrationDate ?? "",
+            Address = org.Address ?? "",
+            DirectorName = org.DirectorName ?? "",
+            DirectorPosition = org.DirectorPosition ?? "",
+            BusinessSector = org.Businesssector ?? "",
+            BusinessSectorName = org.BusinesssectorNavigation?.SectorRu ?? "",
+            Status = org.Status ?? "Активный",
+            Source = SourceDb
+        };
+    }
+
+    /// <summary>
+    /// Настройки интеграции (секция MinJust).
+    /// Mode: Real — запросы в API Минюста (сервер: тест / прод);
+    ///       Emulator — данные генерируются по ИНН (локальный запуск, appsettings.Development.json).
+    /// </summary>
+    public class MinJustOptions
+    {
+        public const string Real = "Real";
+        public const string Emulator = "Emulator";
+
+        public string Mode { get; set; } = Real;
+        public int TimeoutSeconds { get; set; } = 10;
+        public int CacheMinutes { get; set; } = 10;
+
+        public bool UseEmulator => string.Equals(Mode, Emulator, StringComparison.OrdinalIgnoreCase);
     }
 
     public interface IMinJustService
     {
+        /// <summary>Режим эмулятора (локальный запуск). В реальном режиме данные только из API.</summary>
+        bool IsEmulator { get; }
+
         /// <summary>
-        /// Получить данные организации по ИНН.
+        /// Получить данные организации по ИНН. null — не найдено или сервис недоступен (подробности в логе).
         /// </summary>
         /// <param name="tin">ИНН организации</param>
-        /// <param name="forceEmulator">принудительно использовать эмулятор (для тестовых сценариев)</param>
+        /// <param name="forceEmulator">принудительно использовать эмулятор (тестовый вход)</param>
         Task<MinJustOrganizationInfo?> GetOrganizationByTinAsync(string tin, bool forceEmulator = false);
     }
 
     /// <summary>
-    /// Клиент к API Министерства юстиции (POST JSON).
-    /// Если API недоступен или вернул ошибку — автоматически используется
-    /// локальный эмулятор, детерминированно генерирующий данные по ИНН.
+    /// Клиент к API Министерства юстиции. В режиме Real НЕ подменяет данные эмулятором при ошибке —
+    /// иначе в БД попали бы выдуманные реквизиты организаций. Успешные ответы кэшируются на CacheMinutes.
     /// </summary>
     public class MinJustService : IMinJustService
     {
+        public const string HttpClientName = "minjust";
+
+        private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNameCaseInsensitive = true };
+
         private readonly ILogger<MinJustService> _logger;
         private readonly IHttpClientFactory _httpFactory;
         private readonly AppSettings _appSettings;
+        private readonly MinJustOptions _options;
+        private readonly IMemoryCache _cache;
 
         public MinJustService(
             ILogger<MinJustService> logger,
             IHttpClientFactory httpFactory,
-            IOptions<AppSettings> appSettings)
+            IOptions<AppSettings> appSettings,
+            IOptions<MinJustOptions> options,
+            IMemoryCache cache)
         {
             _logger = logger;
             _httpFactory = httpFactory;
             _appSettings = appSettings.Value;
+            _options = options.Value;
+            _cache = cache;
         }
+
+        public bool IsEmulator => _options.UseEmulator;
 
         public async Task<MinJustOrganizationInfo?> GetOrganizationByTinAsync(string tin, bool forceEmulator = false)
         {
             if (string.IsNullOrWhiteSpace(tin)) return null;
             tin = tin.Trim();
 
-            // === 1. Реальный вызов API Минюста (если не запрошен эмулятор) ===
-            if (!forceEmulator && !string.IsNullOrWhiteSpace(_appSettings.minJustApi))
+            if (forceEmulator || _options.UseEmulator)
             {
-                try
-                {
-                    using var http = _httpFactory.CreateClient();
-                    http.Timeout = TimeSpan.FromSeconds(6);
-
-                    var request = new { query = tin, type = "TIN" };
-                    var response = await http.PostAsJsonAsync(_appSettings.minJustApi, request);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var json = await response.Content.ReadAsStringAsync();
-                        _logger.LogInformation("Ответ Минюста по ИНН {Tin}: {Len} байт", tin, json.Length);
-
-                        var parsed = TryMapFromApi(json, tin);
-                        if (parsed != null)
-                        {
-                            parsed.Source = "MinJust API";
-                            return parsed;
-                        }
-                    }
-                    else
-                    {
-                        _logger.LogWarning("Минюст вернул статус {Status} по ИНН {Tin}", response.StatusCode, tin);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning(ex, "Сбой запроса в Минюст по ИНН {Tin}, переключаюсь на эмулятор", tin);
-                }
+                return Emulate(tin);
             }
 
-            // === 2. Fallback — эмулятор (dev) ===
+            var cacheKey = "minjust:" + tin;
+            if (_cache.TryGetValue(cacheKey, out CachedLookup? cached) && cached is not null)
+            {
+                return cached.Info;
+            }
+
+            var (info, definitive) = await QueryApiAsync(tin);
+            // Кэшируем найденное и «не найдено». Сбои связи не кэшируем — следующий запрос повторит попытку.
+            if (definitive && _options.CacheMinutes > 0)
+            {
+                _cache.Set(cacheKey, new CachedLookup(info), TimeSpan.FromMinutes(_options.CacheMinutes));
+            }
+            return info;
+        }
+
+        private sealed record CachedLookup(MinJustOrganizationInfo? Info);
+
+        /// <summary>definitive = true, если Минюст ответил (нашёл или не нашёл); false — сбой связи / ошибка.</summary>
+        private async Task<(MinJustOrganizationInfo? Info, bool Definitive)> QueryApiAsync(string tin)
+        {
+            if (string.IsNullOrWhiteSpace(_appSettings.minJustApi))
+            {
+                _logger.LogError("Интеграция с Минюстом: не задан AppSettings:minJustApi");
+                return (null, false);
+            }
+
+            try
+            {
+                var http = _httpFactory.CreateClient(HttpClientName);
+                http.Timeout = TimeSpan.FromSeconds(Math.Max(1, _options.TimeoutSeconds));
+
+                var response = await http.PostAsJsonAsync(_appSettings.minJustApi, new { query = tin, type = "TIN" });
+                if (!response.IsSuccessStatusCode)
+                {
+                    _logger.LogWarning("Минюст вернул HTTP {Status} по ИНН {Tin}", (int)response.StatusCode, tin);
+                    return (null, false);
+                }
+
+                var json = await response.Content.ReadAsStringAsync();
+                var parsed = JsonSerializer.Deserialize<MinJustResponce>(json, JsonOptions);
+                var info = Map(parsed?.subject, tin);
+                if (info is null)
+                {
+                    _logger.LogInformation("Минюст: субъект с ИНН {Tin} не найден", tin);
+                    return (null, true);
+                }
+
+                _logger.LogInformation("Минюст: получены данные по ИНН {Tin} ({Name})", tin, info.FullName);
+                return (info, true);
+            }
+            catch (TaskCanceledException)
+            {
+                _logger.LogWarning("Минюст не ответил за {Timeout} с по ИНН {Tin}", _options.TimeoutSeconds, tin);
+                return (null, false);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка запроса в Минюст по ИНН {Tin}", tin);
+                return (null, false);
+            }
+        }
+
+        /// <summary>Ответ API → нормализованный DTO. Пустой subject (все поля "") — «не найдено».</summary>
+        private static MinJustOrganizationInfo? Map(MinJustSubject? s, string requestedTin)
+        {
+            if (s is null) return null;
+
+            var fullName = Clean(s.fullNameGl) ?? Clean(s.fullNameOl);
+            var subjectTin = Clean(s.tin);
+            if (fullName is null && subjectTin is null) return null;
+
+            var ownership = Clean(s.ownership) switch
+            {
+                "1" => "Частная",
+                "2" => "Государственная",
+                "3" => "Муниципальная",
+                var other => other ?? ""
+            };
+
+            return new MinJustOrganizationInfo
+            {
+                Tin = subjectTin ?? requestedTin,
+                FullName = fullName ?? subjectTin ?? requestedTin,
+                ShortName = Clean(s.shortNameGl) ?? Clean(s.shortNameOl) ?? fullName ?? "",
+                LegalForm = Clean(s.category) ?? "",
+                RegistrationNumber = Clean(s.registrCode) ?? Clean(s.statSubCode) ?? "",
+                RegistrationDate = Clean(s.orderDate) ?? "",
+                Address = BuildAddress(s),
+                DirectorName = Clean(s.chief) ?? "",
+                DirectorPosition = Clean(s.chief) is null ? "" : "Руководитель",
+                // Код сектора из нашего справочника по данным Минюста определить нельзя, кроме гос. / муниципальных.
+                BusinessSector = Clean(s.ownership) is "2" or "3" ? "GOV" : "",
+                Ownership = ownership,
+                MainActivity = Clean(s.baseBus) ?? "",
+                Phones = Clean(s.phones) ?? "",
+                Email = Clean(s.email1) ?? "",
+                Status = "Активный",
+                Source = "MinJust API"
+            };
+        }
+
+        private static string BuildAddress(MinJustSubject s)
+        {
+            var parts = new List<string>();
+            void Add(string? value, string? prefix = null)
+            {
+                var v = Clean(value);
+                if (v is null) return;
+                parts.Add(prefix is null ? v : $"{prefix} {v}");
+            }
+
+            Add(s.region);
+            Add(s.district);
+            Add(s.city);
+            Add(s.microdistrict);
+            Add(s.street);
+            Add(s.house, "д.");
+            Add(s.room, "кв./оф.");
+            return string.Join(", ", parts);
+        }
+
+        private static string? Clean(string? value) => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+
+        // === Эмулятор (детерминированный, только для локального запуска / тестового входа) ===
+
+        private static MinJustOrganizationInfo? Emulate(string tin)
+        {
             if (tin.Length < 8 || !tin.All(char.IsDigit))
             {
                 return null;
@@ -144,41 +308,6 @@ namespace data_registry_public.Integrations
             emu.Source = "MinJust Emulator (dev)";
             return emu;
         }
-
-        /// <summary>Пытается распарсить разные форматы ответа API.</summary>
-        private static MinJustOrganizationInfo? TryMapFromApi(string json, string tin)
-        {
-            try
-            {
-                var opts = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                var parsed = JsonSerializer.Deserialize<MinJustResponce>(json, opts);
-                if (parsed == null) return null;
-
-                var subj = parsed.Subject;
-                string? name = subj?.name ?? parsed.name;
-                if (string.IsNullOrWhiteSpace(name)) return null;
-
-                return new MinJustOrganizationInfo
-                {
-                    Tin = subj?.tin ?? parsed.tin ?? tin,
-                    FullName = name,
-                    ShortName = subj?.shortname ?? parsed.shortname ?? name,
-                    LegalForm = subj?.legalform ?? parsed.legalform ?? "",
-                    RegistrationNumber = subj?.registrationnumber ?? parsed.registrationnumber ?? "",
-                    RegistrationDate = subj?.registrationdate ?? parsed.registrationdate ?? "",
-                    Address = subj?.address ?? parsed.address ?? "",
-                    DirectorName = subj?.director ?? parsed.director ?? "",
-                    DirectorPosition = subj?.directorposition ?? parsed.directorposition ?? "",
-                    Status = subj?.status ?? "Активный",
-                };
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        // === Эмулятор (детерминированный) ============================
 
         private static MinJustOrganizationInfo BuildEmulatedInfo(string tin)
         {
@@ -199,6 +328,7 @@ namespace data_registry_public.Integrations
                     DirectorPosition = "Генеральный директор",
                     BusinessSector = "IT",
                     BusinessSectorName = "Информационные технологии",
+                    Ownership = "Частная",
                     Status = "Активный",
                 };
             }
