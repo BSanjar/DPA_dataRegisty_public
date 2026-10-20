@@ -27,4 +27,15 @@ RUN dotnet publish "./data_registry_public.csproj" -c $BUILD_CONFIGURATION -o /a
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+# Логи (Serilog): /logs/registry_public/{auth,integration,system,errors}/*_yyyyMMdd.log, хранятся 90 дней.
+# Приложение работает под $APP_UID — папку создаём заранее и отдаём ему.
+# Монтировать общий для обеих частей каталог /logs, иначе логи пропадут при пересоздании контейнера:
+#   -v /logs:/logs   → на хосте /logs/registry_public и /logs/registry_local
+# Время в логах и в приложении — бишкекское (TZ), а не UTC контейнера.
+USER root
+RUN mkdir -p /logs/registry_public && chown -R $APP_UID /logs
+USER $APP_UID
+ENV TZ=Asia/Bishkek
+ENV Logging__Directory=/logs/registry_public
+VOLUME ["/logs"]
 ENTRYPOINT ["dotnet", "data_registry_public.dll"]

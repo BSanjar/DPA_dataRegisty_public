@@ -3,3 +3,5 @@ bin/
 obj/
 node_modules/
 *.user
+# Логи приложения (Logging:Directory по умолчанию)
+logs/

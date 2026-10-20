@@ -1,12 +1,11 @@
 using System.Diagnostics;
 using System.Globalization;
-using data_registry_local.Models;
 using data_registry_public.Models;
 using data_registry_public.Models.local_models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace data_registry_local.Controllers
+namespace data_registry_public.Controllers
 {
     public class HomeController : Controller
     {
@@ -25,7 +24,7 @@ namespace data_registry_local.Controllers
         public async Task<IActionResult> Index(string? period, string? severity, string? sector)
         {
             var all = _db.Incidents.AsNoTracking();
-            var query = all.AsQueryable();
+            var query = all;
 
             // === фильтры ===
             DateTime since = DateTime.MinValue;
@@ -55,7 +54,20 @@ namespace data_registry_local.Controllers
                     i.OrganizationNavigation.Businesssector == sector);
             }
 
-            var incidents = await query.ToListAsync();
+            // Для статистики — только нужные колонки (без длинных текстов инцидентов).
+            var incidents = await query
+                .Select(i => new
+                {
+                    i.DateCreate,
+                    i.Incidentseverity,
+                    i.Isdatapublished,
+                    i.Aresubjectsnotified,
+                    i.Affectedrecordscount,
+                    i.Systemtype,
+                    i.Personaldatatype,
+                    i.Datasubjectcategory
+                })
+                .ToListAsync();
 
             var vm = new DashboardViewModel
             {
@@ -120,10 +132,11 @@ namespace data_registry_local.Controllers
                 vm.MonthlyCriticalSeries.Add(critical);
             }
 
-            vm.RecentIncidents = incidents
+            // Последние инциденты — отдельным коротким запросом (8 строк).
+            vm.RecentIncidents = await query
                 .OrderByDescending(i => i.DateCreate)
                 .Take(8)
-                .ToList();
+                .ToListAsync();
 
             return View(vm);
         }

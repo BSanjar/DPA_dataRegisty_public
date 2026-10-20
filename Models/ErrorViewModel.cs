@@ -1,4 +1,4 @@
-namespace data_registry_local.Models
+namespace data_registry_public.Models
 {
     public class ErrorViewModel
     {

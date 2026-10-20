@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using data_registry_public.Integrations;
 using data_registry_public.Models;
 using data_registry_public.Models.local_models;
@@ -6,12 +6,30 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Serilog;
+using data_registry_public.Infrastructure.Hosting;
+using data_registry_public.Infrastructure.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Localization. ResourcesPath ?? ??????, ?.?. MSBuild ???????????? manifest-?????
-// resx ??? ???????? ????? (data_registry_public.SharedResource.resources).
+// === Логирование (Serilog, как в Abilling) ===
+// /logs/registry_public/auth        — вход через ЕСИ, регистрация, привязка организации, выход; действия пользователей (инциденты)
+// /logs/registry_public/integration — запросы и ответы Минюста, ЕСИ (токен, userinfo — без секретов и персональных данных)
+// /logs/registry_public/system      — старт/остановка, миграции при запуске, проблемные HTTP-запросы (5xx, > 5 с), прочее
+// /logs/registry_public/errors      — копия ЛЮБОЙ записи уровня Error/Fatal из всех категорий
+// Корень — Logging:Directory (локально {ContentRoot}/logs/registry_public), файл на день, хранение — 90 дней.
+// Пользователь в логах — внутренний id (public_users.id), а не ФИО/ПИН: минимум персональных данных.
+const string Ns = "data_registry_public.";
+AppLogging.ResolveUser = principal => principal.FindFirst("id")?.Value;
+var logDirectory = builder.AddAppLogging("registry_public", new Dictionary<string, string>
+{
+    [Ns + "Controllers.esiController"] = LogCategories.Auth,
+    [Ns + "Integrations."] = LogCategories.Integration,
+    [Ns + "Controllers.IncedentsController"] = LogCategories.Auth,
+    [Ns + "Controllers.UserPageController"] = LogCategories.Auth,
+});
+
+// Локализация. ResourcesPath не задаём: MSBuild встраивает resx как manifest-ресурсы
+// корневого пространства имён (data_registry_public.SharedResource.resources).
 builder.Services.AddLocalization();
 
 // Add services to the container.
@@ -29,42 +47,32 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
     options.DefaultRequestCulture = new RequestCulture("ru");
     options.SupportedCultures = supportedCultures;
     options.SupportedUICultures = supportedCultures;
-    // ????????? ???????????: cookie ? query ?culture= ? Accept-Language
+    // Порядок определения языка: cookie → query ?culture= → Accept-Language
     options.RequestCultureProviders.Insert(0, new CookieRequestCultureProvider());
 });
 
 
-//????????? ??????????? DpaDb2Context ? ??????????
-builder.Services.AddDbContext<AppDbContext>(
-    options =>
-    {
-        options
-        .UseLoggerFactory(LoggerFactory.Create(builder => { }))
-        /*.UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()))*/
-        .UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
-    });
+// Контекст БД: строка подключения — из appsettings.{режим}.json (без неё приложение не стартует).
+// Логи EF Core идут в общий Serilog (Warning+: ошибки SQL попадут в errors).
+var connectionString = builder.Configuration.GetRequiredConnectionString(builder.Environment);
+builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options => //CookieAuthenticationOptions
+    .AddCookie(options =>
     {
         options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/esi/Login");
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SameSite = SameSiteMode.Lax;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
     });
 
-//??????????? 
-Log.Logger = new LoggerConfiguration()
-    .WriteTo.File($"logs/{DateTime.Now.ToString("dd-MM-yyyy")}.log", rollingInterval: RollingInterval.Day) // ??????????? ? ????
-     .CreateLogger();
-
-//builder.Services.AddLogging(b => b.AddSerilog());
-
-
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
+builder.Services.AddSingleton<AppFeatures>();
 
 builder.Services.AddHttpClient();
 
-// ?????????? ? ???????? (?????? ? ????????). ????? ??????????? ????????? API
-// ?????????? ???????? MinJustService ?? ???????? ?????????? IMinJustService.
-// MinJust integration: Mode=Real on server (appsettings.json), Mode=Emulator for local run (appsettings.Development.json).
+// Интеграция с Минюстом (данные организаций по ИНН). Режим — MinJust:Mode:
+// Real на сервере (appsettings.json), Emulator при локальном запуске (appsettings.Development.json).
 builder.Services.Configure<MinJustOptions>(builder.Configuration.GetSection("MinJust"));
 builder.Services.AddMemoryCache();
 builder.Services.AddHttpClient(MinJustService.HttpClientName);
@@ -73,17 +81,17 @@ builder.Services.AddScoped<IMinJustService, MinJustService>();
 
 var app = builder.Build();
 
-// Lightweight runtime-migration: ??????? incidents.organization ???????????,
-// ???? ?? ???. ??? ????????? ??????? ????????? ? ???????????? ??? ??????????? ????????.
+// Лёгкая миграция при запуске: недостающие колонки добавляются, если их ещё нет.
+// Повторный запуск безопасен (IF NOT EXISTS / ON CONFLICT DO NOTHING).
 using (var scope = app.Services.CreateScope())
 {
     try
     {
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        db.Database.ExecuteSqlRaw("ALTER TABLE incidents ADD COLUMN IF NOT EXISTS organization varchar");
+        await db.Database.ExecuteSqlRawAsync("ALTER TABLE incidents ADD COLUMN IF NOT EXISTS organization varchar");
 
-        // ?????????????? ???? ? organizations, ???????????????? ?? ???????.
-        db.Database.ExecuteSqlRaw(@"
+        // Реквизиты организаций, заполняемые из Минюста.
+        await db.Database.ExecuteSqlRawAsync(@"
             ALTER TABLE organizations ADD COLUMN IF NOT EXISTS short_name           varchar;
             ALTER TABLE organizations ADD COLUMN IF NOT EXISTS legal_form           varchar;
             ALTER TABLE organizations ADD COLUMN IF NOT EXISTS registration_number  varchar;
@@ -94,61 +102,57 @@ using (var scope = app.Services.CreateScope())
             ALTER TABLE organizations ADD COLUMN IF NOT EXISTS status               varchar;
             ALTER TABLE organizations ADD COLUMN IF NOT EXISTS last_synced_at       timestamp without time zone;");
 
-        // Seed ???????????? ??????????? ???????? ???????????.
-        db.Database.ExecuteSqlRaw(@"
+        // Справочник секторов деятельности организаций.
+        await db.Database.ExecuteSqlRawAsync(@"
             INSERT INTO organization_buisnes_sectors (id, sector_en, sector_ru, sector_kg) VALUES
-                ('IT',    'Information Technology',  '?????????????? ??????????',  '???????? ??????????????'),
-                ('FIN',   'Finance',                 '???????',                    '?????'),
-                ('EDU',   'Education',               '???????????',                '????? ?????'),
-                ('HLTH',  'Healthcare',              '???????????????',            '?????????? ??????'),
-                ('CONS',  'Construction',            '?????????????',              '???????'),
-                ('TRD',   'Trade',                   '????????',                   '?????'),
-                ('LOG',   'Logistics',               '?????????',                  '?????????'),
-                ('AGRO',  'Agriculture',             '???????? ?????????',         '???? ?????'),
-                ('MFG',   'Manufacturing',           '????????????',               '???????'),
-                ('TEL',   'Telecommunications',      '????????????????',           '????????????????'),
-                ('ENER',  'Energy',                  '??????????',                 '??????????'),
-                ('TOUR',  'Tourism',                 '??????',                     '??????'),
-                ('REAL',  'Real Estate',             '????????????',               '????????? ????'),
-                ('SERV',  'Services',                '??????',                     '?????? ????????'),
-                ('GOV',   'Government',              '??????????????? ??????',     '??????????? ??????'),
-                ('MEDIA', 'Media & Entertainment',   '????? ? ???????????',        '????? ???? ????? ????'),
-                ('INS',   'Insurance',               '???????????',                '??????????????'),
-                ('BANK',  'Banking',                 '?????????? ????????????',    '???? ???'),
-                ('AUTO',  'Automotive',              '????????????? ???????',      '???? ??????'),
-                ('FOOD',  'Food & Beverage',         '??????? ??????????????',     '?????-?? ???? ????'),
-                ('OTHER', 'Other / Not specified',   '?????? / ?? ???????',        '????? / ??????????? ????')
+                ('IT',    'Information Technology',  'Информационные технологии',  'Маалымат технологиялары'),
+                ('FIN',   'Finance',                 'Финансы',                    'Каржы'),
+                ('EDU',   'Education',               'Образование',                'Билим берүү'),
+                ('HLTH',  'Healthcare',              'Здравоохранение',            'Саламаттык сактоо'),
+                ('CONS',  'Construction',            'Строительство',              'Курулуш'),
+                ('TRD',   'Trade',                   'Торговля',                   'Соода'),
+                ('LOG',   'Logistics',               'Логистика',                  'Логистика'),
+                ('AGRO',  'Agriculture',             'Сельское хозяйство',         'Айыл чарба'),
+                ('MFG',   'Manufacturing',           'Производство',               'Өндүрүш'),
+                ('TEL',   'Telecommunications',      'Телекоммуникации',           'Телекоммуникация'),
+                ('ENER',  'Energy',                  'Энергетика',                 'Энергетика'),
+                ('TOUR',  'Tourism',                 'Туризм',                     'Туризм'),
+                ('REAL',  'Real Estate',             'Недвижимость',               'Кыймылсыз мүлк'),
+                ('SERV',  'Services',                'Услуги',                     'Кызмат көрсөтүү'),
+                ('GOV',   'Government',              'Государственный сектор',     'Мамлекеттик сектор'),
+                ('MEDIA', 'Media & Entertainment',   'Медиа и развлечения',        'Медиа жана көңүл ачуу'),
+                ('INS',   'Insurance',               'Страхование',                'Камсыздандыруу'),
+                ('BANK',  'Banking',                 'Банковская деятельность',    'Банк иши'),
+                ('AUTO',  'Automotive',              'Автомобильная отрасль',      'Авто тармак'),
+                ('FOOD',  'Food & Beverage',         'Пищевая промышленность',     'Тамак-аш өнөр жайы'),
+                ('OTHER', 'Other / Not specified',   'Другое / Не указано',        'Башка / Көрсөтүлгөн эмес')
             ON CONFLICT (id) DO NOTHING;");
     }
     catch (Exception ex)
     {
-        app.Logger.LogWarning(ex, "?? ??????? ????????? runtime-????????/seed ????????????");
+        app.Logger.LogWarning(ex, "Не удалось выполнить миграцию/заполнение справочников при запуске");
     }
 }
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
-
-app.UseHttpsRedirection();
+// Журнал запросов — самым первым: видит итоговый код ответа (в т.ч. 500 после обработчика ошибок).
+app.UseAppRequestLogging();
+// Прокси-заголовки, обработчик ошибок (не в Development), https — по настройкам Hosting:*.
+app.UseAppHosting();
 app.UseStaticFiles();
 
 app.UseRouting();
 
-// RequestLocalization ?????? ???? ????? UseRouting ? ?? UseAuthorization,
-// ????? ??????????? ? ????????????? ???????? ?????????? ????????.
+// RequestLocalization — после UseRouting и до UseAuthorization,
+// чтобы культура была выставлена до выполнения контроллеров.
 var locOptions = app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value;
 app.UseRequestLocalization(locOptions);
 
 app.UseAuthentication();
+app.UseLogUserContext();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.Run();
+app.RunWithLogging(logDirectory);

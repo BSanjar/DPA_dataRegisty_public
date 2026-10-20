@@ -47,9 +47,15 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<SanctionMaterial> SanctionMaterials { get; set; }
 
+    // Строка подключения сюда больше не зашивается: она задаётся в Program.cs из
+    // ConnectionStrings:DefaultConnection (appsettings.{режим}.json или переменная окружения).
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=192.168.88.24;Port=5432;Database=dataholder_registry;Username=dataholder_registry;Password=dataholder_registry");
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            throw new InvalidOperationException("AppDbContext создаётся только через DI (AddDbContext в Program.cs).");
+        }
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

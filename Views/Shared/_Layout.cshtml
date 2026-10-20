@@ -1,4 +1,5 @@
 ﻿@using System.Globalization
+@inject data_registry_public.Infrastructure.Hosting.AppFeatures Features
 @{
     var ctx = ViewContext.RouteData.Values["controller"]?.ToString()?.ToLowerInvariant();
     string NavClass(string ctrl) =>
@@ -171,12 +172,15 @@
                             <a class="btn-secondary" href='@Url.Action("Login", "esi", new { returnUrl = currentPath })'>
                                 <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> @L["Nav.LoginEsi"]
                             </a>
-                            <a class="btn-test" href='@Url.Action("LoginTest", "esi", new { returnUrl = currentPath })'
-                               title="@L["Nav.LoginTest"]">
-                                <i class="bi bi-person-gear" aria-hidden="true"></i>
-                                <span>@L["Nav.LoginTest"]</span>
-                                <span class="ml-1 rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-700">@L["Nav.DevBadge"]</span>
-                            </a>
+                            @if (Features.EsiTestLogin)
+                            {
+                                <a class="btn-test" href='@Url.Action("LoginTest", "esi", new { returnUrl = currentPath })'
+                                   title="@L["Nav.LoginTest"]">
+                                    <i class="bi bi-person-gear" aria-hidden="true"></i>
+                                    <span>@L["Nav.LoginTest"]</span>
+                                    <span class="ml-1 rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-700">@L["Nav.DevBadge"]</span>
+                                </a>
+                            }
                         </div>
                     }
                 </div>
@@ -240,11 +244,14 @@
                         <a class="btn-secondary mt-2" href='@Url.Action("Login", "esi", new { returnUrl = currentPath })'>
                             <i class="bi bi-box-arrow-in-right"></i> @L["Nav.LoginEsi"]
                         </a>
-                        <a class="btn-test mt-1" href='@Url.Action("LoginTest", "esi", new { returnUrl = currentPath })'>
-                            <i class="bi bi-person-gear"></i>
-                            <span>@L["Nav.LoginTest"]</span>
-                            <span class="ml-1 rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-700">@L["Nav.DevBadge"]</span>
-                        </a>
+                        @if (Features.EsiTestLogin)
+                        {
+                            <a class="btn-test mt-1" href='@Url.Action("LoginTest", "esi", new { returnUrl = currentPath })'>
+                                <i class="bi bi-person-gear"></i>
+                                <span>@L["Nav.LoginTest"]</span>
+                                <span class="ml-1 rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-700">@L["Nav.DevBadge"]</span>
+                            </a>
+                        }
                     }
                 </div>
             </div>

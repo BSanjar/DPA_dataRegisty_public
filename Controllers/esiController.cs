@@ -1,4 +1,4 @@
-﻿using data_registry_local.Models;
+﻿using data_registry_public.Infrastructure.Hosting;
 using data_registry_public.Integrations;
 using data_registry_public.Models;
 using data_registry_public.Models.local_models;
@@ -25,14 +25,17 @@ namespace data_registry_public.Controllers
         private readonly ILogger<esiController> _logger;
         private readonly AppDbContext _db;
         private readonly IMinJustService _minJust;
+        private readonly AppFeatures _features;
 
         public esiController(
             IHttpClientFactory httpClientFactory,
             IOptions<AppSettings> appSettings,
             ILogger<esiController> logger,
             AppDbContext db,
-            IMinJustService minJust)
+            IMinJustService minJust,
+            AppFeatures features)
         {
+            _features = features;
             _httpClientFactory = httpClientFactory;
             _appSettings = appSettings.Value;
             _logger = logger;
@@ -89,6 +92,12 @@ namespace data_registry_public.Controllers
         [HttpGet]
         public async Task<IActionResult> LoginTest(string? returnUrl = null)
         {
+            // Features:EsiTestLogin — только локально и на тестовом сервере.
+            if (!_features.EsiTestLogin)
+            {
+                return NotFound();
+            }
+
             // Фиксированный тестовый пользователь с известным ИНН.
             // Данные организации будут детерминированно сгенерированы эмулятором Минюста.
             var userModel = new PublicUser
@@ -166,6 +175,8 @@ namespace data_registry_public.Controllers
                 // Verify state and retrieve code verifier from TempData
                 if (state != TempData["state"]?.ToString())
                 {
+                    // Проверка state отключена; фиксируем расхождение, чтобы видеть попытки подмены.
+                    _logger.LogWarning("ЕСИ: state в ответе не совпал с выданным при входе");
                     //return RedirectToAction("Login");
                 }
 
@@ -206,7 +217,7 @@ namespace data_registry_public.Controllers
                             }
 
                             await Authenticate(userModel, link.OrgId);
-                            _logger.LogInformation("Пользователь {Name} авторизовался через ЕСИ, org: {Org}", userModel.Name, link.OrgId);
+                            _logger.LogInformation("Вход через ЕСИ: пользователь {UserId} ({Name}), организация {Org}", userId, userModel.Name, link.OrgId);
                             var returnUrl = TempData["returnUrl"] as string;
                             return SafeRedirect(returnUrl);
                         }
@@ -221,7 +232,8 @@ namespace data_registry_public.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Ошибка в методе auth");
-                ViewBag.errorText = "Не удалось авторизоваться, возникла ошибка: " + ex.Message + ", попробуйте еще раз";
+                // Текст исключения пользователю не показываем — подробности в логах (errors).
+                ViewBag.errorText = "Не удалось авторизоваться через ЕСИ. Попробуйте ещё раз.";
                 return View("ErrorPage");
             }
         }
@@ -417,8 +429,8 @@ namespace data_registry_public.Controllers
 
                 await _db.SaveChangesAsync();
 
-                _logger.LogInformation("Организация {Tin} ({Name}) привязана к пользователю {User}",
-                    info.Tin, info.FullName, user.Name);
+                _logger.LogInformation("Организация {Tin} ({Name}) привязана к пользователю {UserId} ({UserName})",
+                    info.Tin, info.FullName, user.Id, user.Name);
 
                 // обновляем модель пользователя в памяти — чтобы корректно лёг claim orgName
                 user.OrganizationName = info.FullName;
@@ -440,9 +452,15 @@ namespace data_registry_public.Controllers
         {
             try
             {
-                if (_db.PublicUsers.Where(a => a.EsiPin == user.EsiPin) != null && _db.PublicUsers.Where(a => a.EsiPin == user.EsiPin).Count() > 0)
+                // Уже зарегистрирован — одним запросом берём id (раньше было три запроса).
+                var existingId = await _db.PublicUsers
+                    .AsNoTracking()
+                    .Where(a => a.EsiPin == user.EsiPin)
+                    .Select(a => a.Id)
+                    .FirstOrDefaultAsync();
+                if (existingId is not null)
                 {
-                    return _db.PublicUsers.FirstOrDefault(a => a.EsiPin == user.EsiPin).Id;
+                    return existingId;
                 }
                 else
                 {
@@ -455,7 +473,8 @@ namespace data_registry_public.Controllers
                     await _db.PublicUsers.AddAsync(user);
                     await _db.SaveChangesAsync();
 
-                    _logger.LogInformation("Пользователь " + user.Name + ", ИНН: " + user.EsiPin + " успешно зарегистрировался в системе");
+                    _logger.LogInformation("Зарегистрирован новый пользователь {UserId} ({Name}, ПИН {Pin})",
+                        user.Id, user.Name, data_registry_public.Infrastructure.Logging.AppLogging.Mask(user.EsiPin));
 
                     return user.Id;
                 }
@@ -470,51 +489,22 @@ namespace data_registry_public.Controllers
 
         public async Task<IActionResult> Logout()
         {
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                _logger.LogInformation("Выход пользователя {UserId}", User.FindFirst("id")?.Value);
+            }
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Home");
         }
 
-
-        private async Task<string> logoutEsi()
-        {
-            using (var client = new HttpClient())
-            {
-
-                // Генерация строкового представления Basic Authentication
-                string authInfo = _appSettings.clientId + ":" + _appSettings.secretKey;
-                authInfo = Convert.ToBase64String(Encoding.Default.GetBytes(authInfo));
-                string authHeader = "Basic " + authInfo;
-
-                // Добавление заголовка Authorization с Basic Authentication к запросу
-                client.DefaultRequestHeaders.Add("Authorization", authHeader);
-
-                var tokenResponse = await client.PostAsync("https://dev-esia.tunduk.kg/connect/token", new FormUrlEncodedContent(new[]
-                {
-                    new KeyValuePair<string, string>("grant_type", "client_credentials"),
-                }));
-
-                var tokenContent = await tokenResponse.Content.ReadAsStringAsync();
-                var tokenData = JsonConvert.DeserializeObject<Dictionary<string, string>>(tokenContent);
-
-
-
-                if (tokenData != null && tokenData.ContainsKey("access_token"))
-                {
-                    return tokenData["access_token"];
-                }
-                else
-                {
-                    throw new Exception("Не удалось получить токен от ЕСИ");
-                }
-            }
-        }
 
 
         private async Task<string> ExchangeCodeForAccessToken(string code, string codeVerifier, string state)
         {
             try
             {
-                using (var client = new HttpClient())
+                // Клиент из IHttpClientFactory: без утечки сокетов при частых входах.
+                var client = _httpClientFactory.CreateClient();
                 {
 
                     // Генерация строкового представления Basic Authentication
@@ -538,10 +528,20 @@ namespace data_registry_public.Controllers
 
                     if (tokenData != null && tokenData.ContainsKey("access_token"))
                     {
+                        using (data_registry_public.Infrastructure.Logging.LogCategories.Push(data_registry_public.Infrastructure.Logging.LogCategories.Integration))
+                        {
+                            _logger.LogInformation("ЕСИ: токен получен (HTTP {Status})", (int)tokenResponse.StatusCode);
+                        }
                         return tokenData["access_token"];
                     }
                     else
                     {
+                        // Тело ответа не пишем (в нём могут быть секреты) — только код и поле error.
+                        using (data_registry_public.Infrastructure.Logging.LogCategories.Push(data_registry_public.Infrastructure.Logging.LogCategories.Integration))
+                        {
+                            _logger.LogWarning("ЕСИ: токен не выдан — HTTP {Status}, error: {Error}",
+                                (int)tokenResponse.StatusCode, tokenData != null && tokenData.TryGetValue("error", out var err) ? err : "-");
+                        }
                         throw new Exception("Не удалось получить токен от ЕСИ");
                     }
                 }
@@ -559,17 +559,23 @@ namespace data_registry_public.Controllers
             var client = _httpClientFactory.CreateClient();
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
 
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             var response = await client.GetAsync(_appSettings.userInfoUrl);
 
-            if (response.IsSuccessStatusCode)
+            using (data_registry_public.Infrastructure.Logging.LogCategories.Push(data_registry_public.Infrastructure.Logging.LogCategories.Integration))
             {
-                var content = await response.Content.ReadAsStringAsync();
-                return content;
-            }
-            else
-            {
-                // Обработка ошибки получения данных пользователя
-                return null;
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    _logger.LogInformation("ЕСИ: данные пользователя получены за {Elapsed} мс", sw.ElapsedMilliseconds);
+                    return content;
+                }
+                else
+                {
+                    // Обработка ошибки получения данных пользователя
+                    _logger.LogWarning("ЕСИ: userinfo вернул HTTP {Status} за {Elapsed} мс", (int)response.StatusCode, sw.ElapsedMilliseconds);
+                    return null;
+                }
             }
         }
 

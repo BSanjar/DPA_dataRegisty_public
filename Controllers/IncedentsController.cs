@@ -277,6 +277,8 @@ namespace data_registry_public.Controllers
             {
                 await _db.Incidents.AddAsync(incident);
                 await _db.SaveChangesAsync();
+                _logger.LogInformation("Инцидент {Id} зарегистрирован: организация {Org}, тяжесть {Severity}, субъектов ~{Subjects}",
+                    incident.Id, org?.Tin ?? "-", model.IncidentSeverity ?? "-", model.EstimatedDataSubjectsCount);
             }
             catch (Exception ex)
             {

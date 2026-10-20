@@ -199,28 +199,33 @@ namespace data_registry_public.Integrations
                 return (null, false);
             }
 
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             try
             {
                 var http = _httpFactory.CreateClient(HttpClientName);
                 http.Timeout = TimeSpan.FromSeconds(Math.Max(1, _options.TimeoutSeconds));
 
-                var response = await http.PostAsJsonAsync(_appSettings.minJustApi, new { query = tin, type = "TIN" });
+                var request = new { query = tin, type = "TIN" };
+                _logger.LogInformation("Минюст → POST {Url} {Request}", _appSettings.minJustApi, JsonSerializer.Serialize(request));
+                var response = await http.PostAsJsonAsync(_appSettings.minJustApi, request);
+                var json = await response.Content.ReadAsStringAsync();
+                _logger.LogInformation("Минюст ← HTTP {Status} за {Elapsed} мс: {Response}",
+                    (int)response.StatusCode, sw.ElapsedMilliseconds, data_registry_public.Infrastructure.Logging.AppLogging.Body(json));
                 if (!response.IsSuccessStatusCode)
                 {
-                    _logger.LogWarning("Минюст вернул HTTP {Status} по ИНН {Tin}", (int)response.StatusCode, tin);
+                    _logger.LogWarning("Минюст вернул HTTP {Status} по ИНН {Tin} за {Elapsed} мс", (int)response.StatusCode, tin, sw.ElapsedMilliseconds);
                     return (null, false);
                 }
 
-                var json = await response.Content.ReadAsStringAsync();
                 var parsed = JsonSerializer.Deserialize<MinJustResponce>(json, JsonOptions);
                 var info = Map(parsed?.subject, tin);
                 if (info is null)
                 {
-                    _logger.LogInformation("Минюст: субъект с ИНН {Tin} не найден", tin);
+                    _logger.LogInformation("Минюст: субъект с ИНН {Tin} не найден ({Elapsed} мс)", tin, sw.ElapsedMilliseconds);
                     return (null, true);
                 }
 
-                _logger.LogInformation("Минюст: получены данные по ИНН {Tin} ({Name})", tin, info.FullName);
+                _logger.LogInformation("Минюст: получены данные по ИНН {Tin} ({Name}) за {Elapsed} мс", tin, info.FullName, sw.ElapsedMilliseconds);
                 return (info, true);
             }
             catch (TaskCanceledException)
@@ -230,7 +235,7 @@ namespace data_registry_public.Integrations
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Ошибка запроса в Минюст по ИНН {Tin}", tin);
+                _logger.LogError(ex, "Ошибка запроса в Минюст по ИНН {Tin} ({Elapsed} мс)", tin, sw.ElapsedMilliseconds);
                 return (null, false);
             }
         }
