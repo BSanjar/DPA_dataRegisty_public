@@ -2,6 +2,7 @@
 using data_registry_public.Integrations;
 using data_registry_public.Models;
 using data_registry_public.Models.local_models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
@@ -64,6 +65,19 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.Cookie.HttpOnly = true;
         options.Cookie.SameSite = SameSiteMode.Lax;
         options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+        // Тестовый вход выключен (Test/Production) — ранее выданные тестовые сессии больше не действуют.
+        options.Events.OnValidatePrincipal = async context =>
+        {
+            var features = context.HttpContext.RequestServices.GetRequiredService<AppFeatures>();
+            var principal = context.Principal;
+            var isTestSession = principal?.HasClaim(data_registry_public.Controllers.esiController.TestLoginClaim, "true") == true
+                                || principal?.FindFirst("pin")?.Value == data_registry_public.Controllers.esiController.TestUserPin;
+            if (isTestSession && !features.EsiTestLogin)
+            {
+                context.RejectPrincipal();
+                await context.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            }
+        };
     });
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));

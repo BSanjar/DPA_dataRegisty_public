@@ -37,11 +37,13 @@ namespace data_registry_public.Controllers
                     .Include(o => o.BusinesssectorNavigation)
                     .FirstOrDefaultAsync(o => o.Id == orgTin);
                 mj = await _minJust.GetOrganizationByTinAsync(orgTin);
-                // Минюст не ответил / не нашёл — показываем реквизиты из последней синхронизации.
+                // Минюст не ответил / не нашёл — показываем реквизиты из последней синхронизации,
+                // а если их нет — хотя бы ИНН организации (название в карточке заменится на «ИНН …»).
                 if (mj == null && org != null)
                 {
                     mj = MinJustOrganizationInfo.FromOrganization(org);
                 }
+                mj ??= new MinJustOrganizationInfo { Tin = orgTin };
             }
 
             int totalIncidents = 0;

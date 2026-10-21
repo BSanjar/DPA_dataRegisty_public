@@ -118,6 +118,16 @@ namespace data_registry_public.Controllers
                     return Fail("ЕСИ не передала данные пользователя. Попробуйте ещё раз.");
                 }
 
+                // Без организации вход невозможен: пользователя не регистрируем и не авторизуем.
+                // Повторное «Войти через ЕСИ» снова откроет форму ЕСИ (Esi:Prompt = login).
+                if (string.IsNullOrWhiteSpace(info.OrganizationTin))
+                {
+                    _logger.LogWarning("ЕСИ-вход отклонён: у пользователя (ПИН {Pin}) нет организации в ЕСИ (organization_tin не передан)",
+                        AppLogging.Mask(info.Pin));
+                    return Fail("Вход не выполнен: к вашей учётной записи в ЕСИ не привязана организация. " +
+                                "Войдите в ЕСИ как представитель организации или обратитесь в Агентство.");
+                }
+
                 var userModel = MapUser(info);
                 var userId = await RegisterOrUpdateUserAsync(userModel);
                 if (string.IsNullOrEmpty(userId))
@@ -189,7 +199,7 @@ namespace data_registry_public.Controllers
                 return Fail("Вход не выполнен: " + (link.ErrorMessage ?? "не удалось сохранить организацию."));
             }
 
-            await Authenticate(userModel, link.OrgId);
+            await Authenticate(userModel, link.OrgId, isTestLogin: true);
             _logger.LogInformation("Тестовый вход: {Name} авторизован, org: {Org}", userModel.Name, link.OrgId);
             TempData["SuccessMessage"] = "Вы вошли в тестовом режиме. Данные организации — из эмулятора Минюста.";
             return SafeRedirect(returnUrl);
@@ -217,7 +227,10 @@ namespace data_registry_public.Controllers
             return RedirectToAction("Index", "UserPage");
         }
 
-        /// <summary>Вход не состоялся: сообщение на главной (через баннер ErrorMessage в шапке).</summary>
+        /// <summary>
+        /// Вход не состоялся: сообщение на главной (баннер ErrorMessage в шапке).
+        /// Сессия на портале до этого момента не создаётся — авторизация только после всех проверок.
+        /// </summary>
         private IActionResult Fail(string message)
         {
             TempData["ErrorMessage"] = message;
@@ -244,7 +257,13 @@ namespace data_registry_public.Controllers
             Email = info.Email
         };
 
-        private async Task Authenticate(PublicUser user, string? orgId = null)
+        /// <summary>Claim тестовой сессии (вход без ЕСИ) — по нему такие сессии сбрасываются на сервере.</summary>
+        public const string TestLoginClaim = "test_login";
+
+        /// <summary>ПИН фиксированного тестового пользователя (сессии, выданные до появления TestLoginClaim).</summary>
+        public const string TestUserPin = "01001202210023";
+
+        private async Task Authenticate(PublicUser user, string? orgId = null, bool isTestLogin = false)
         {
             var claims = new List<Claim>
             {
@@ -260,6 +279,10 @@ namespace data_registry_public.Controllers
             {
                 claims.Add(new Claim("orgId", orgId));
             }
+            if (isTestLogin)
+            {
+                claims.Add(new Claim(TestLoginClaim, "true"));
+            }
 
             var identity = new ClaimsIdentity(claims, "ApplicationCookie",
                 ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
@@ -270,6 +293,37 @@ namespace data_registry_public.Controllers
         /// Пользователь по ПИН: новый — создаём, существующий — обновляем данные из ЕСИ
         /// (ЕСИ — первоисточник ФИО, email, телефона). Возвращает public_users.id или null.
         /// </summary>
+        /// <summary>
+        /// Строка организации по ИНН (создаётся при необходимости) и привязка к ней пользователя.
+        /// Название из ЕСИ записывается, только если своего названия у организации ещё нет.
+        /// Возвращает название организации для сессии (или null).
+        /// </summary>
+        private async Task<string?> LinkUserToOrganizationAsync(PublicUser user, string tin, string? esiOrganizationName)
+        {
+            var org = await _db.Organizations.FirstOrDefaultAsync(o => o.Id == tin);
+            var esiName = string.IsNullOrWhiteSpace(esiOrganizationName) ? null : esiOrganizationName.Trim();
+            if (org == null)
+            {
+                org = new Organization { Id = tin, Fullnamegl = esiName, Risklevel = "Low" };
+                _db.Organizations.Add(org);
+            }
+            else if (string.IsNullOrWhiteSpace(org.Fullnamegl) && esiName != null)
+            {
+                org.Fullnamegl = esiName;
+            }
+
+            var dbUser = await _db.PublicUsers.FirstOrDefaultAsync(u => u.Id == user.Id);
+            if (dbUser != null)
+            {
+                dbUser.Organization = tin;
+                dbUser.OrganizationTin = tin;
+                dbUser.OrganizationName = org.Fullnamegl;
+                dbUser.UpdatedAt = DateTime.Now;
+            }
+            await _db.SaveChangesAsync();
+            return org.Fullnamegl;
+        }
+
         private async Task<string?> RegisterOrUpdateUserAsync(PublicUser user)
         {
             try
@@ -341,35 +395,32 @@ namespace data_registry_public.Controllers
 
             try
             {
-                // 1. Минюст (реальный API или эмулятор)
-                var info = await _minJust.GetOrganizationByTinAsync(user.OrganizationTin, useEmulator);
+                var tin = user.OrganizationTin.Trim();
+
+                // Тестовый вход: реквизиты эмулятора в общую БД не пишем (dev и тест работают с одной БД) —
+                // только строка организации по ИНН для связи. На экране в Development их покажет эмулятор.
+                if (useEmulator)
+                {
+                    var emulated = await _minJust.GetOrganizationByTinAsync(tin, forceEmulator: true);
+                    await LinkUserToOrganizationAsync(user, tin, esiOrganizationName: null);
+                    user.OrganizationName = emulated?.FullName;
+                    result.Success = true;
+                    result.OrgId = tin;
+                    return result;
+                }
+
+                // 1. Минюст
+                var info = await _minJust.GetOrganizationByTinAsync(tin);
                 if (info == null)
                 {
-                    // Минюст недоступен или не нашёл субъект. Если организация уже синхронизирована ранее —
-                    // пускаем с сохранёнными реквизитами (без подмены данных), иначе вход невозможен.
-                    var tin = user.OrganizationTin.Trim();
-                    var known = await _db.Organizations.AsNoTracking().FirstOrDefaultAsync(o => o.Id == tin);
-                    if (known != null)
-                    {
-                        _logger.LogWarning("Минюст не вернул данные по ИНН {Tin}; вход с ранее сохранёнными реквизитами (синхронизация {Synced})",
-                            user.OrganizationTin, known.LastSyncedAt);
-                        var dbUserFallback = await _db.PublicUsers.FirstOrDefaultAsync(u => u.Id == user.Id);
-                        if (dbUserFallback != null)
-                        {
-                            dbUserFallback.Organization = known.Id;
-                            dbUserFallback.OrganizationTin = known.Id;
-                            dbUserFallback.OrganizationName = known.Fullnamegl;
-                            dbUserFallback.UpdatedAt = DateTime.Now;
-                            await _db.SaveChangesAsync();
-                        }
-                        user.OrganizationName = known.Fullnamegl;
-                        result.Success = true;
-                        result.OrgId = known.Id;
-                        return result;
-                    }
-
-                    result.ErrorMessage = $"Не удалось получить сведения об организации по ИНН {user.OrganizationTin} из Минюста. Попробуйте позже или обратитесь в Агентство.";
-                    _logger.LogWarning("Минюст не вернул данные по ИНН {Tin}", user.OrganizationTin);
+                    // Минюст не знает ИНН или недоступен. Организацию подтверждает сама ЕСИ — берём её данные
+                    // (ИНН и название); ранее сохранённые реквизиты Минюста не трогаем.
+                    _logger.LogWarning("Минюст не вернул данные по ИНН {Tin}; организация — по данным ЕСИ ({Name})",
+                        tin, user.OrganizationName ?? "-");
+                    var name = await LinkUserToOrganizationAsync(user, tin, user.OrganizationName);
+                    user.OrganizationName = name;
+                    result.Success = true;
+                    result.OrgId = tin;
                     return result;
                 }
 

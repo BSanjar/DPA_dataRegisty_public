@@ -19,10 +19,8 @@ namespace data_registry_public.Controllers
         /// <summary>
         /// DEV-заглушка ИНН для неавторизованных сценариев.
         /// </summary>
-        private const string DevCurrentOrgTin = "01001202210023";
 
         private const string OwnIncidentsCookie = "dp_own_incidents";
-        private const string CurrentOrgCookie = "dp_current_org";
 
         private readonly AppDbContext _db;
         private readonly IMinJustService _minJust;
@@ -342,7 +340,6 @@ namespace data_registry_public.Controllers
             }
 
             AppendOwnIncidentId(id);
-            StoreCurrentOrgCookie(org);
 
             TempData["SuccessMessage"] =
                 $"Инцидент успешно зарегистрирован. Номер: {regNumber}";
@@ -351,23 +348,28 @@ namespace data_registry_public.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // === Получение организации (dev + будущий auth) ====================
+        // === Организация текущего пользователя ===========================
 
+        /// <summary>
+        /// Организация вошедшего пользователя: ИНН из сессии (claims orgId/orgPin), иначе из его профиля
+        /// (public_users.organization). Никаких заглушек и cookie — иначе на проде можно было бы
+        /// зарегистрировать инцидент от имени чужой (тестовой) организации.
+        /// </summary>
         private async Task<MinJustOrganizationInfo?> ResolveCurrentOrganizationAsync()
         {
             var tin = GetCurrentOrgTin();
-
-            // dev: cookie от предыдущего сеанса
             if (string.IsNullOrWhiteSpace(tin))
             {
-                tin = ReadCurrentOrgFromCookie()?.Tin;
+                var userId = User.FindFirst("id")?.Value;
+                tin = string.IsNullOrEmpty(userId) ? null : await _db.PublicUsers.AsNoTracking()
+                    .Where(u => u.Id == userId)
+                    .Select(u => u.Organization ?? u.OrganizationTin)
+                    .FirstOrDefaultAsync();
             }
-
-            // dev: фиксированная заглушка — чтобы при первом заходе организация
-            // тоже автоматически подтянулась
             if (string.IsNullOrWhiteSpace(tin))
             {
-                tin = DevCurrentOrgTin;
+                _logger.LogWarning("Пользователь {UserId} без организации — регистрация инцидента недоступна", User.FindFirst("id")?.Value);
+                return null;
             }
 
             var info = await _minJust.GetOrganizationByTinAsync(tin);
@@ -418,36 +420,6 @@ namespace data_registry_public.Controllers
                 Expires = DateTimeOffset.Now.AddYears(1),
                 IsEssential = true
             });
-        }
-
-        private void StoreCurrentOrgCookie(MinJustOrganizationInfo org)
-        {
-            var json = JsonSerializer.Serialize(org);
-            Response.Cookies.Append(
-                CurrentOrgCookie,
-                Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(json)),
-                new CookieOptions
-                {
-                    HttpOnly = true,
-                    SameSite = SameSiteMode.Lax,
-                    Expires = DateTimeOffset.Now.AddYears(1),
-                    IsEssential = true
-                });
-        }
-
-        private MinJustOrganizationInfo? ReadCurrentOrgFromCookie()
-        {
-            var raw = Request.Cookies[CurrentOrgCookie];
-            if (string.IsNullOrWhiteSpace(raw)) return null;
-            try
-            {
-                var json = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(raw));
-                return JsonSerializer.Deserialize<MinJustOrganizationInfo>(json);
-            }
-            catch
-            {
-                return null;
-            }
         }
 
         private static string GenerateRegNumber()

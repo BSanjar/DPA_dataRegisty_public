@@ -85,13 +85,9 @@
                         <i class="bi bi-building"></i>
                     </div>
                     <div class="min-w-0 flex-1">
-                        <div class="text-base font-extrabold text-dpa-800">@mj.FullName</div>
+                        <div class="text-base font-extrabold text-dpa-800">@(string.IsNullOrWhiteSpace(mj.FullName) ? $"ИНН {mj.Tin}" : mj.FullName)</div>
                         <div class="text-xs text-dpaGray-500">
-                            ИНН @mj.Tin · @mj.LegalForm
-                            @if (!string.IsNullOrEmpty(mj.BusinessSectorName))
-                            {
-                                <span>· @mj.BusinessSectorName</span>
-                            }
+                            @string.Join(" · ", new[] { $"ИНН {mj.Tin}", mj.LegalForm, mj.BusinessSectorName }.Where(s => !string.IsNullOrWhiteSpace(s)))
                         </div>
                     </div>
                 </div>
@@ -107,7 +103,7 @@
                     </div>
                     <div>
                         <dt class="form-label">@L["Create.Org.Status"]</dt>
-                        <dd><span class="badge badge-success">@mj.Status</span></dd>
+                        <dd>@if (string.IsNullOrEmpty(mj.Status)) { <span class="text-dpaGray-800">@dash</span> } else { <span class="badge badge-success">@mj.Status</span> }</dd>
                     </div>
                     <div class="sm:col-span-2 lg:col-span-3">
                         <dt class="form-label">@L["Create.Org.Address"]</dt>

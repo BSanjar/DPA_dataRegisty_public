@@ -88,13 +88,23 @@
                         <i class="bi bi-building"></i>
                     </div>
                     <div class="min-w-0 flex-1">
-                        <div class="text-base font-extrabold text-dpa-800">@org.FullName</div>
+                        <div class="text-base font-extrabold text-dpa-800">@(string.IsNullOrWhiteSpace(org.FullName) ? $"ИНН {org.Tin}" : org.FullName)</div>
                         <div class="text-xs text-dpaGray-500">
-                            ИНН @org.Tin · @org.LegalForm · @org.BusinessSectorName
+                            @string.Join(" · ", new[] { $"ИНН {org.Tin}", org.LegalForm, org.BusinessSectorName }.Where(s => !string.IsNullOrWhiteSpace(s)))
                         </div>
                     </div>
                 </div>
 
+                @if (string.IsNullOrWhiteSpace(org.RegistrationNumber) && string.IsNullOrWhiteSpace(org.Status)
+                     && string.IsNullOrWhiteSpace(org.Address) && string.IsNullOrWhiteSpace(org.DirectorName))
+                {
+                    @* Минюст не вернул сведения по ИНН (не найден или недоступен) — организация подтверждена ЕСИ. *@
+                    <div class="mt-4 text-sm text-dpaGray-500">
+                        <i class="bi bi-info-circle"></i> Сведения Министерства юстиции по этому ИНН не получены.
+                    </div>
+                }
+                else
+                {
                 <dl class="mt-4 grid gap-x-6 gap-y-3 text-sm sm:grid-cols-2 lg:grid-cols-3">
                     <div class="field">
                         <dt class="form-label">@L["Create.Org.RegNumber"]</dt>
@@ -123,6 +133,7 @@
                         </dd>
                     </div>
                 </dl>
+                }
             </div>
 
             @* Ответственный по инциденту: по умолчанию — вошедший пользователь, но можно указать другого. *@

@@ -25,6 +25,12 @@ namespace data_registry_public.Integrations
         /// <summary>Адрес возврата — должен совпадать с зарегистрированным в ЕСИ символ в символ.</summary>
         public string RedirectUrl { get; set; } = "";
         public string Scope { get; set; } = "openid profile email phone";
+        /// <summary>
+        /// prompt (OpenID Connect): login — ЕСИ каждый раз показывает форму входа, а не подхватывает
+        /// открытую сессию. Иначе после неудачного входа (нет организации) повторное нажатие
+        /// молча возвращало того же пользователя. Пусто — стандартное поведение ЕСИ.
+        /// </summary>
+        public string Prompt { get; set; } = "login";
         public int TimeoutSeconds { get; set; } = 15;
 
         public bool IsConfigured =>
@@ -85,7 +91,7 @@ namespace data_registry_public.Integrations
             var verifier = Base64Url(RandomNumberGenerator.GetBytes(32));
             var challenge = Base64Url(SHA256.HashData(Encoding.ASCII.GetBytes(verifier)));
 
-            var url = QueryHelpers.AddQueryString(_options.AuthorizeUrl, new Dictionary<string, string?>
+            var query = new Dictionary<string, string?>
             {
                 ["response_type"] = "code",
                 ["client_id"] = _options.ClientId,
@@ -94,7 +100,12 @@ namespace data_registry_public.Integrations
                 ["state"] = state,
                 ["code_challenge"] = challenge,
                 ["code_challenge_method"] = "S256"
-            });
+            };
+            if (!string.IsNullOrWhiteSpace(_options.Prompt))
+            {
+                query["prompt"] = _options.Prompt;
+            }
+            var url = QueryHelpers.AddQueryString(_options.AuthorizeUrl, query);
             return new EsiAuthorizeRequest(url, state, verifier);
         }
 
