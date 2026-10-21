@@ -18,12 +18,12 @@
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
 
-  <data name="App.Name" xml:space="preserve"><value>DPA · Жазуу ээлеринин реестри</value></data>
+  <data name="App.Name" xml:space="preserve"><value>Жазуу ээлеринин реестри</value></data>
   <data name="App.Subtitle" xml:space="preserve"><value>Жеке маалыматтарды эсепке алуу АИС</value></data>
   <data name="App.TitleSuffix" xml:space="preserve"><value>Жазуу ээлеринин реестри</value></data>
   <data name="App.SkipToContent" xml:space="preserve"><value>Мазмунга өтүү</value></data>
   <data name="App.OpenMenu" xml:space="preserve"><value>Менюну ачуу</value></data>
-  <data name="Footer.Copyright" xml:space="preserve"><value>© 2026 — АИС «Жазуу ээлеринин реестри»</value></data>
+  <data name="Footer.Copyright" xml:space="preserve"><value>СТС «Жазуу ээлеринин реестри»</value></data>
   <data name="Footer.Privacy" xml:space="preserve"><value>Саясат</value></data>
   <data name="Footer.Support" xml:space="preserve"><value>Колдоо</value></data>
   <data name="Footer.Agency" xml:space="preserve"><value>Кыргыз Республикасынын Министрлер Кабинетинин алдындагы Жеке маалыматтарды коргоо боюнча мамлекеттик агенттиги</value></data>
@@ -36,11 +36,11 @@
   <data name="Util.Official" xml:space="preserve"><value>Расмий кызмат</value></data>
 
   <data name="Nav.Home" xml:space="preserve"><value>Башкы бет</value></data>
-  <data name="Nav.MyIncidents" xml:space="preserve"><value>Менин окуяларым</value></data>
-  <data name="Nav.RegisterIncident" xml:space="preserve"><value>Окуяны каттоо</value></data>
+  <data name="Nav.MyIncidents" xml:space="preserve"><value>Менин инциденттерим</value></data>
+  <data name="Nav.RegisterIncident" xml:space="preserve"><value>Инцидентти каттоо</value></data>
   <data name="Nav.Profile" xml:space="preserve"><value>Менин профилим</value></data>
   <data name="Nav.Logout" xml:space="preserve"><value>Чыгуу</value></data>
-  <data name="Nav.LoginEsi" xml:space="preserve"><value>ЕСИ аркылуу кирүү</value></data>
+  <data name="Nav.LoginEsi" xml:space="preserve"><value>БИС аркылуу кирүү</value></data>
   <data name="Nav.LoginTest" xml:space="preserve"><value>Сыноо кирүү</value></data>
   <data name="Nav.DevBadge" xml:space="preserve"><value>dev</value></data>
 
@@ -62,7 +62,7 @@
   <data name="Common.Open" xml:space="preserve"><value>Ачуу</value></data>
   <data name="Common.Close" xml:space="preserve"><value>Жабуу</value></data>
   <data name="Common.All" xml:space="preserve"><value>Бардыгы</value></data>
-  <data name="Common.AllTime" xml:space="preserve"><value>Бардык убак</value></data>
+  <data name="Common.AllTime" xml:space="preserve"><value>Бардык убакыт</value></data>
   <data name="Common.Yes" xml:space="preserve"><value>Ооба</value></data>
   <data name="Common.No" xml:space="preserve"><value>Жок</value></data>
   <data name="Common.Choose" xml:space="preserve"><value>— тандаңыз —</value></data>
@@ -70,7 +70,7 @@
 
   <data name="Home.Badge" xml:space="preserve"><value>Аналитикалык такта</value></data>
   <data name="Home.Title" xml:space="preserve"><value>Башкы бет</value></data>
-  <data name="Home.Subtitle" xml:space="preserve"><value>Системадагы жеке маалыматтар боюнча бардык окуяларды жалпылоочу статистика. Сиздин окуяларыңыз — өзүнчө бөлүмдө.</value></data>
+  <data name="Home.Subtitle" xml:space="preserve"><value>Системадагы жеке маалыматтар боюнча бардык инциденттерди жалпылоочу статистика. Сиздин инциденттериңиз — өзүнчө бөлүмдө.</value></data>
   <data name="Home.Filters.Period" xml:space="preserve"><value>Мезгил</value></data>
   <data name="Home.Filters.Period7" xml:space="preserve"><value>7 күн</value></data>
   <data name="Home.Filters.Period30" xml:space="preserve"><value>30 күн</value></data>
@@ -84,16 +84,16 @@
   <data name="Home.Kpi.Critical" xml:space="preserve"><value>Критикалык</value></data>
   <data name="Home.Kpi.Published" xml:space="preserve"><value>Жарыяланган</value></data>
   <data name="Home.Kpi.Notified" xml:space="preserve"><value>Кабарланган</value></data>
-  <data name="Home.Kpi.AffectedRecords" xml:space="preserve"><value>Таасирленген жазуулар</value></data>
+  <data name="Home.Kpi.AffectedRecords" xml:space="preserve"><value>Таасир тийген жазуулар</value></data>
 
-  <data name="Home.Chart.MonthlyTitle" xml:space="preserve"><value>Окуяларды каттоо динамикасы</value></data>
+  <data name="Home.Chart.MonthlyTitle" xml:space="preserve"><value>Инциденттерди каттоо динамикасы</value></data>
   <data name="Home.Chart.MonthlySub" xml:space="preserve"><value>Акыркы 12 ай — бардыгы жана критикалык</value></data>
   <data name="Home.Chart.LegendAll" xml:space="preserve"><value>Бардыгы</value></data>
   <data name="Home.Chart.LegendCritical" xml:space="preserve"><value>Критикалык</value></data>
   <data name="Home.Chart.SeverityTitle" xml:space="preserve"><value>Маанилүүлүк боюнча бөлүштүрүү</value></data>
   <data name="Home.Chart.SeveritySub" xml:space="preserve"><value>Тандалган мезгилде</value></data>
-  <data name="Home.Chart.SystemsTitle" xml:space="preserve"><value>Таасирленген системалардын түрү</value></data>
-  <data name="Home.Chart.SystemsSub" xml:space="preserve"><value>Окуялар кайда пайда болот</value></data>
+  <data name="Home.Chart.SystemsTitle" xml:space="preserve"><value>Таасир тийген системалардын түрү</value></data>
+  <data name="Home.Chart.SystemsSub" xml:space="preserve"><value>Инциденттер кайда пайда болот</value></data>
   <data name="Home.Chart.PdTypeTitle" xml:space="preserve"><value>ЖМ түрү</value></data>
   <data name="Home.Chart.PdTypeSub" xml:space="preserve"><value>Кадимки / атайын / биометрикалык</value></data>
   <data name="Home.Chart.SubjectsTitle" xml:space="preserve"><value>Субъекттер</value></data>
@@ -102,52 +102,52 @@
 
   <data name="Home.Hero.Badge" xml:space="preserve"><value>Жеке маалыматтарды коргоо боюнча мамлекеттик агенттик</value></data>
   <data name="Home.Hero.Title" xml:space="preserve"><value>Жазуу ээлеринин реестри</value></data>
-  <data name="Home.Hero.Subtitle" xml:space="preserve"><value>Кыргыз Республикасында жеке маалыматтар менен болгон окуяларды каттоо жана коштоо үчүн бирдиктүү аянтча.</value></data>
-  <data name="Home.Hero.CtaRegister" xml:space="preserve"><value>Окуяны каттоо</value></data>
+  <data name="Home.Hero.Subtitle" xml:space="preserve"><value>Кыргыз Республикасында жеке маалыматтар менен болгон инциденттерди каттоо жана коштоо үчүн бирдиктүү аянтча.</value></data>
+  <data name="Home.Hero.CtaRegister" xml:space="preserve"><value>Инцидентти каттоо</value></data>
   <data name="Home.Hero.CtaLearn" xml:space="preserve"><value>Көбүрөөк билүү</value></data>
-  <data name="Home.Hero.Mini.Incidents" xml:space="preserve"><value>реестрдеги окуялар</value></data>
+  <data name="Home.Hero.Mini.Incidents" xml:space="preserve"><value>реестрдеги инциденттер</value></data>
   <data name="Home.Hero.Mini.Month" xml:space="preserve"><value>акыркы айда</value></data>
-  <data name="Home.Hero.Mini.Records" xml:space="preserve"><value>таасирленген жазуулар</value></data>
+  <data name="Home.Hero.Mini.Records" xml:space="preserve"><value>таасир тийген жазуулар</value></data>
   <data name="Home.Hero.Mini.Notified" xml:space="preserve"><value>субъекттер кабарланды</value></data>
 
   <data name="Home.About.Badge" xml:space="preserve"><value>Реестр жөнүндө</value></data>
   <data name="Home.About.Title" xml:space="preserve"><value>Жеке маалыматтарды коргоо — жалпы милдет</value></data>
-  <data name="Home.About.Sub" xml:space="preserve"><value>Реестр окуялар менен иштөөнүн ачыктыгын камсыз кылат, уюмдарга мыйзам талаптарын аткарууга жана коркунучтарга оперативдүү жооп берүүгө жардам берет.</value></data>
+  <data name="Home.About.Sub" xml:space="preserve"><value>Реестр инциденттер менен иштөөнүн ачыктыгын камсыз кылат, уюмдарга Кыргыз Республикасынын Санариптик кодексинин талаптарын аткарууга жана коркунучтарга оперативдүү жооп берүүгө жардам берет.</value></data>
   <data name="Home.Card1.Title" xml:space="preserve"><value>Жарандардын укуктарын коргоо</value></data>
-  <data name="Home.Card1.Body" xml:space="preserve"><value>Коркунуч пайда болгондо жеке маалыматтардын субъекттерин өз убагында кабарлоо жана окуяны жоюуну көзөмөлдөө.</value></data>
+  <data name="Home.Card1.Body" xml:space="preserve"><value>Коркунуч пайда болгондо жеке маалыматтардын субъекттерин өз убагында кабарлоо жана инцидентти жоюуну көзөмөлдөө.</value></data>
   <data name="Home.Card2.Title" xml:space="preserve"><value>Бизнес үчүн ачыктык</value></data>
-  <data name="Home.Card2.Body" xml:space="preserve"><value>Окуяларды ыңгайлуу каттоо жана коштоо, юстиция реестринен уюмдун маалыматтарын автоматтык алуу.</value></data>
-  <data name="Home.Card3.Title" xml:space="preserve"><value>Көзөмөл жана контроль</value></data>
-  <data name="Home.Card3.Body" xml:space="preserve"><value>Бирдиктүү окуялар базасы жана агенттиктин жөнгө салуу чечимдерин кабыл алуу үчүн тармактар боюнча аналитика.</value></data>
+  <data name="Home.Card2.Body" xml:space="preserve"><value>Инциденттерди ыңгайлуу каттоо жана коштоо, юстиция реестринен уюмдун маалыматтарын автоматтык алуу.</value></data>
+  <data name="Home.Card3.Title" xml:space="preserve"><value>Көзөмөл жана жөнгө салуу</value></data>
+  <data name="Home.Card3.Body" xml:space="preserve"><value>Инциденттердин бирдиктүү базасы жана Жеке маалыматтарды коргоо боюнча мамлекеттик агенттиктин жөнгө салуу чечимдерин кабыл алуусу үчүн тармактык аналитика.</value></data>
 
   <data name="Home.HowTo.Badge" xml:space="preserve"><value>Кантип иштейт</value></data>
-  <data name="Home.HowTo.Title" xml:space="preserve"><value>Окуяны үч кадамда каттоо</value></data>
-  <data name="Home.HowTo.Sub" xml:space="preserve"><value>Жөнөкөй, тез жана Кыргыз Республикасынын мыйзамдарына ылайык.</value></data>
-  <data name="Home.Step1.Title" xml:space="preserve"><value>ЕСИ аркылуу авторизация</value></data>
-  <data name="Home.Step1.Body" xml:space="preserve"><value>Бирдиктүү идентификация системасы аркылуу кирүү. Уюмуңуздун маалыматтары Юстиция министрлигинен автоматтык түрдө алынат.</value></data>
-  <data name="Home.Step2.Title" xml:space="preserve"><value>Окуянын картасын толтуруу</value></data>
-  <data name="Home.Step2.Body" xml:space="preserve"><value>Окуяны ыңгайлуу формада сүрөттөңүз: эмне болду, көлөмү жана көрүлгөн чаралар.</value></data>
+  <data name="Home.HowTo.Title" xml:space="preserve"><value>Инцидентти үч кадамда каттоо</value></data>
+  <data name="Home.HowTo.Sub" xml:space="preserve"><value>Жөнөкөй, тез жана Кыргыз Республикасынын Санариптик кодексине ылайык.</value></data>
+  <data name="Home.Step1.Title" xml:space="preserve"><value>БИС аркылуу авторизация</value></data>
+  <data name="Home.Step1.Body" xml:space="preserve"><value>Бирдиктүү идентификация системасы (БИС) аркылуу кириңиз. Уюмуңуздун маалыматтары Юстиция министрлигинин Юридикалык жактардын бирдиктүү мамлекеттик реестринен автоматтык түрдө алынат.</value></data>
+  <data name="Home.Step2.Title" xml:space="preserve"><value>Инциденттин картасын толтуруу</value></data>
+  <data name="Home.Step2.Body" xml:space="preserve"><value>Инцидентти кадамдуу формада сүрөттөңүз: эмне болду, көлөмү кандай, кандай чаралар көрүлдү. Инцидент аныкталган учурдан тартып 72 сааттын ичинде Агенттикке кабарлоо зарыл (КР Санариптик кодексинин 63-беренесинин 5-бөлүгү).</value></data>
   <data name="Home.Step3.Title" xml:space="preserve"><value>Абалын көзөмөлдөө</value></data>
-  <data name="Home.Step3.Body" xml:space="preserve"><value>Окуянын картасы реестрде сакталып, уюмга жана көзөмөлдөөчү органга кошумча текшерүү үчүн жеткиликтүү.</value></data>
+  <data name="Home.Step3.Body" xml:space="preserve"><value>Инциденттин картасы реестрде сакталып, уюмга жана көзөмөлдөөчү органга кошумча текшерүү үчүн жеткиликтүү.</value></data>
 
-  <data name="Home.Trend.Title" xml:space="preserve"><value>Системадагы окуялардын динамикасы</value></data>
-  <data name="Home.Trend.Sub" xml:space="preserve"><value>Каттоого алынган жалпы окуялар жана критикалык окуялардын үлүшү</value></data>
-  <data name="Home.Trend.More" xml:space="preserve"><value>Менин окуяларымды ачуу</value></data>
+  <data name="Home.Trend.Title" xml:space="preserve"><value>Системадагы инциденттердин динамикасы</value></data>
+  <data name="Home.Trend.Sub" xml:space="preserve"><value>Каттоого алынган жалпы инциденттер жана критикалык инциденттердин үлүшү</value></data>
+  <data name="Home.Trend.More" xml:space="preserve"><value>Менин инциденттеримди ачуу</value></data>
 
   <data name="Home.Contacts.Badge" xml:space="preserve"><value>Байланыштар</value></data>
   <data name="Home.Contacts.Title" xml:space="preserve"><value>Жардам керекпи?</value></data>
-  <data name="Home.Contacts.Sub" xml:space="preserve"><value>Окуяларды каттоо жана коштоо боюнча суроолор боюнча Жеке маалыматтарды коргоо агенттиги менен байланышыңыз.</value></data>
-  <data name="Home.Contacts.Address" xml:space="preserve"><value>Бишкек ш., Чүй пр. 122</value></data>
-  <data name="Home.Contacts.Phone" xml:space="preserve"><value>+996 (312) 90-21-21</value></data>
+  <data name="Home.Contacts.Sub" xml:space="preserve"><value>Инциденттерди каттоо жана коштоо боюнча суроолор менен Жеке маалыматтарды коргоо боюнча мамлекеттик агенттикке кайрылыңыз.</value></data>
+  <data name="Home.Contacts.Address" xml:space="preserve"><value>Бишкек ш., Чүй пр., 265а</value></data>
+  <data name="Home.Contacts.Phone" xml:space="preserve"><value>+(996) 312 641 172</value></data>
   <data name="Home.Contacts.Email" xml:space="preserve"><value>info@dpa.gov.kg</value></data>
-  <data name="Home.Contacts.Hours" xml:space="preserve"><value>дш–жш, 09:00–18:00</value></data>
+  <data name="Home.Contacts.Hours" xml:space="preserve"><value>дүйшөмбү–жума, 09:00–18:00</value></data>
   <data name="Home.Contacts.Cta" xml:space="preserve"><value>Колдоого жазуу</value></data>
 
   <data name="Home.Laws.Badge" xml:space="preserve"><value>Ченемдик база</value></data>
   <data name="Home.Laws.Title" xml:space="preserve"><value>Реестр кайсы документтерге негизделет</value></data>
-  <data name="Home.Laws.Law1" xml:space="preserve"><value>«Жеке маалыматтар жөнүндө» КР Мыйзамы</value></data>
-  <data name="Home.Laws.Law2" xml:space="preserve"><value>Окуяларды эсепке алуу тартиби тууралуу Министрлер Кабинетинин токтому</value></data>
-  <data name="Home.Laws.Law3" xml:space="preserve"><value>Жеке маалыматтарды коргоо мамлекеттик агенттигинин регламенти</value></data>
+  <data name="Home.Laws.Law1" xml:space="preserve"><value>Кыргыз Республикасынын 2025-жылдын 31-июлундагы № 178 Санариптик кодекси: 63-берененин 5-бөлүгү — инциденттер тууралуу 72 сааттын ичинде кабарлоо, 90-берененин 4-бөлүгү — жазуу ээлеринин реестри</value></data>
+  <data name="Home.Laws.Law2" xml:space="preserve"><value>Инциденттерди эсепке алуу тартиби жөнүндө Министрлер Кабинетинин токтому</value></data>
+  <data name="Home.Laws.Law3" xml:space="preserve"><value>Жеке маалыматтарды коргоо боюнча мамлекеттик агенттиктин иш регламенти</value></data>
 
   <data name="Severity.Low" xml:space="preserve"><value>Төмөн</value></data>
   <data name="Severity.Medium" xml:space="preserve"><value>Орто</value></data>
@@ -205,8 +205,8 @@
   <data name="Sector.FOOD" xml:space="preserve"><value>Тамак-аш өнөр жайы</value></data>
   <data name="Sector.OTHER" xml:space="preserve"><value>Башка</value></data>
 
-  <data name="Inc.Hero.Badge" xml:space="preserve"><value>Окуяларды эсепке алуу</value></data>
-  <data name="Inc.Hero.Title" xml:space="preserve"><value>Менин окуяларым</value></data>
+  <data name="Inc.Hero.Badge" xml:space="preserve"><value>Инциденттерди эсепке алуу</value></data>
+  <data name="Inc.Hero.Title" xml:space="preserve"><value>Менин инциденттерим</value></data>
   <data name="Inc.Kpi.Total" xml:space="preserve"><value>Бардыгы</value></data>
   <data name="Inc.Kpi.Critical" xml:space="preserve"><value>Критикалык</value></data>
   <data name="Inc.Kpi.Month" xml:space="preserve"><value>30 күндө</value></data>
@@ -215,14 +215,14 @@
   <data name="Inc.Filter.SearchLabel" xml:space="preserve"><value>Издөө</value></data>
   <data name="Inc.Filter.Severity" xml:space="preserve"><value>Маанилүүлүк</value></data>
   <data name="Inc.Filter.Period" xml:space="preserve"><value>Мезгил</value></data>
-  <data name="Inc.Empty.None.Title" xml:space="preserve"><value>Сизде азырынча окуялар жок</value></data>
-  <data name="Inc.Empty.None.Sub" xml:space="preserve"><value>Биринчи окуяны 3 кадамда каттаңыз.</value></data>
+  <data name="Inc.Empty.None.Title" xml:space="preserve"><value>Сизде азырынча инциденттер жок</value></data>
+  <data name="Inc.Empty.None.Sub" xml:space="preserve"><value>Биринчи инцидентти 3 кадамда каттаңыз.</value></data>
   <data name="Inc.Empty.NoMatch.Title" xml:space="preserve"><value>Тандалган чыпкалар боюнча эч нерсе табылган жок</value></data>
   <data name="Inc.Empty.NoMatch.Sub" xml:space="preserve"><value>Издөө шарттарын өзгөртүп көрүңүз же чыпкаларды тазалаңыз.</value></data>
   <data name="Inc.Col.NumDate" xml:space="preserve"><value>№ / Дата</value></data>
   <data name="Inc.Col.Description" xml:space="preserve"><value>Сүрөттөмө</value></data>
   <data name="Inc.Col.Severity" xml:space="preserve"><value>Маанилүүлүк</value></data>
-  <data name="Inc.Col.Records" xml:space="preserve"><value>Таасирленген жазуулар</value></data>
+  <data name="Inc.Col.Records" xml:space="preserve"><value>Таасир тийген жазуулар</value></data>
   <data name="Inc.Col.Notification" xml:space="preserve"><value>Кабарлама</value></data>
   <data name="Inc.Col.Actions" xml:space="preserve"><value>Аракеттер</value></data>
   <data name="Inc.Status.Published" xml:space="preserve"><value>жарыяланды</value></data>
@@ -230,24 +230,24 @@
   <data name="Inc.Status.Sent" xml:space="preserve"><value>жөнөтүлдү</value></data>
   <data name="Inc.Status.None" xml:space="preserve"><value>жок</value></data>
   <data name="Inc.Badge.New" xml:space="preserve"><value>жаңы</value></data>
-  <data name="Inc.Banner.SuccessTitle" xml:space="preserve"><value>Окуя ийгиликтүү катталды</value></data>
+  <data name="Inc.Banner.SuccessTitle" xml:space="preserve"><value>Инцидент ийгиликтүү катталды</value></data>
   <data name="Inc.Banner.SuccessSub" xml:space="preserve"><value>Жаңы жазуу тизмеде көрсөтүлдү жана белгиленди.</value></data>
   <data name="Inc.Org.MinJustBadge" xml:space="preserve"><value>Юстиция</value></data>
 
-  <data name="Create.Breadcrumb" xml:space="preserve"><value>Окуя · Каттоо</value></data>
-  <data name="Create.Title" xml:space="preserve"><value>Окуяны каттоо</value></data>
+  <data name="Create.Breadcrumb" xml:space="preserve"><value>Инцидент · Каттоо</value></data>
+  <data name="Create.Title" xml:space="preserve"><value>Инцидентти каттоо</value></data>
   <data name="Create.Subtitle" xml:space="preserve"><value>Үч кадам. Уюмдун маалыматтары Юстициядан алынган.</value></data>
   <data name="Create.Step1" xml:space="preserve"><value>1-кадам</value></data>
   <data name="Create.Step2" xml:space="preserve"><value>2-кадам</value></data>
   <data name="Create.Step3" xml:space="preserve"><value>3-кадам</value></data>
   <data name="Create.Step1.Title" xml:space="preserve"><value>Уюм</value></data>
-  <data name="Create.Step2.Title" xml:space="preserve"><value>Окуя</value></data>
+  <data name="Create.Step2.Title" xml:space="preserve"><value>Инцидент</value></data>
   <data name="Create.Step3.Title" xml:space="preserve"><value>Маалыматтар жана чаралар</value></data>
   <data name="Create.Step1.Header.Sub" xml:space="preserve"><value>Юстиция министрлигинин маалыматтары. Өзгөртүлбөйт.</value></data>
   <data name="Create.Step1.Badge" xml:space="preserve"><value>Юстиция ырастады</value></data>
-  <data name="Create.Step2.Header.Title" xml:space="preserve"><value>Окуя жөнүндө жалпы маалымат</value></data>
+  <data name="Create.Step2.Header.Title" xml:space="preserve"><value>Инцидент жөнүндө жалпы маалымат</value></data>
   <data name="Create.Step2.Header.Sub" xml:space="preserve"><value>* белгиленген бардык талаалар милдеттүү</value></data>
-  <data name="Create.Step3.Header.Title" xml:space="preserve"><value>Таасирленген маалыматтар жана чаралар</value></data>
+  <data name="Create.Step3.Header.Title" xml:space="preserve"><value>Таасир тийген маалыматтар жана чаралар</value></data>
   <data name="Create.Step3.Header.Sub" xml:space="preserve"><value>* белгиленген бардык талаалар милдеттүү</value></data>
   <data name="Create.Org.NotFound" xml:space="preserve"><value>Уюмдун маалыматтарын алуу мүмкүн болгон жок. Кийинчерээк кайталаңыз же администраторго кайрылыңыз.</value></data>
   <data name="Create.Org.RegNumber" xml:space="preserve"><value>Катт. номери</value></data>
@@ -257,10 +257,10 @@
   <data name="Create.Org.Director" xml:space="preserve"><value>Жетекчи</value></data>
   <data name="Create.Label.DateOccurrence" xml:space="preserve"><value>Пайда болгон күнү</value></data>
   <data name="Create.Label.DateDetection" xml:space="preserve"><value>Табылган күнү</value></data>
-  <data name="Create.Label.IncidentType" xml:space="preserve"><value>Окуянын түрү</value></data>
+  <data name="Create.Label.IncidentType" xml:space="preserve"><value>Инциденттин түрү</value></data>
   <data name="Create.Label.Severity" xml:space="preserve"><value>Маанилүүлүгү</value></data>
   <data name="Create.Label.Location" xml:space="preserve"><value>Пайда болгон орду</value></data>
-  <data name="Create.Label.AffectedSystem" xml:space="preserve"><value>Таасирленген система</value></data>
+  <data name="Create.Label.AffectedSystem" xml:space="preserve"><value>Таасир тийген система</value></data>
   <data name="Create.Label.SystemType" xml:space="preserve"><value>Системанын түрү</value></data>
   <data name="Create.Label.Description" xml:space="preserve"><value>Кыскача сүрөттөмө</value></data>
   <data name="Create.Label.SuspectedCause" xml:space="preserve"><value>Болжолдуу себеп</value></data>
@@ -283,19 +283,19 @@
   <data name="Create.Note.Notified" xml:space="preserve"><value>Кабарлама жөнөтүлдү</value></data>
   <data name="Create.PH.Location" xml:space="preserve"><value>Маалымат системасы, бөлүм, кеңсе…</value></data>
   <data name="Create.PH.AffectedSystem" xml:space="preserve"><value>CRM, сайт, 1С…</value></data>
-  <data name="Create.PH.Description" xml:space="preserve"><value>Эмне болду, окуя кантип табылды жана анын кесепеттери (минимум 10 символ)…</value></data>
+  <data name="Create.PH.Description" xml:space="preserve"><value>Эмне болду, инцидент кантип табылды жана анын кесепеттери (минимум 10 символ)…</value></data>
   <data name="Create.PH.Cause" xml:space="preserve"><value>Адам фактору, ПОнун алсыздыгы, фишинг…</value></data>
   <data name="Create.PH.PdCategories" xml:space="preserve"><value>АТА, паспорт, байланыштар, каржылык маалымат…</value></data>
   <data name="Create.PH.ActionsTaken" xml:space="preserve"><value>Блоктоо, сырсөздөрдү алмаштыруу, кызматтарды өчүрүү…</value></data>
   <data name="Create.PH.Prevention" xml:space="preserve"><value>Саясатты жаңылоо, кызматкерлерди окутуу, DLP…</value></data>
   <data name="Create.PH.Investigation" xml:space="preserve"><value>Жооптуу, мөөнөттөр, тыянактар…</value></data>
-  <data name="Create.Btn.Register" xml:space="preserve"><value>Окуяны каттоо</value></data>
+  <data name="Create.Btn.Register" xml:space="preserve"><value>Инцидентти каттоо</value></data>
   <data name="Create.Btn.Submitting" xml:space="preserve"><value>Каттап жатам…</value></data>
-  <data name="Create.Overlay.Title" xml:space="preserve"><value>Окуяны каттап жатабыз…</value></data>
+  <data name="Create.Overlay.Title" xml:space="preserve"><value>Инцидентти каттап жатабыз…</value></data>
   <data name="Create.Overlay.Sub" xml:space="preserve"><value>Маалыматтарды сактап, уюмга байланыштырабыз. Бул бир нече секунд.</value></data>
   <data name="Create.ServerErrorsHeading" xml:space="preserve"><value>Сураныч, форманын каталарын оңдоңуз — кээ бир милдеттүү талаалар туура эмес толтурулган.</value></data>
 
-  <data name="Details.Title" xml:space="preserve"><value>Окуянын картасы</value></data>
+  <data name="Details.Title" xml:space="preserve"><value>Инциденттин картасы</value></data>
   <data name="Details.Registered" xml:space="preserve"><value>Катталды</value></data>
   <data name="Details.Section.Description" xml:space="preserve"><value>Сүрөттөмө</value></data>
   <data name="Details.Section.SuspectedCause" xml:space="preserve"><value>Болжолдуу себеп</value></data>
@@ -303,7 +303,7 @@
   <data name="Details.Section.Elimination" xml:space="preserve"><value>Жоюу</value></data>
   <data name="Details.Section.Prevention" xml:space="preserve"><value>Алдын алуу</value></data>
   <data name="Details.Section.Investigation" xml:space="preserve"><value>Ички иликтөө</value></data>
-  <data name="Details.Section.PD" xml:space="preserve"><value>Таасирленген маалыматтар</value></data>
+  <data name="Details.Section.PD" xml:space="preserve"><value>Таасир тийген маалыматтар</value></data>
   <data name="Details.PD.Records" xml:space="preserve"><value>Жазуулар</value></data>
   <data name="Details.PD.Subjects" xml:space="preserve"><value>Субъекттер</value></data>
   <data name="Details.PD.Type" xml:space="preserve"><value>Маалыматтардын түрү</value></data>
@@ -315,7 +315,7 @@
   <data name="Details.Timeline.NotifSent" xml:space="preserve"><value>Кабарлама жөнөтүлдү</value></data>
   <data name="Details.Section.System" xml:space="preserve"><value>Система</value></data>
   <data name="Details.System.Location" xml:space="preserve"><value>Пайда болгон орду</value></data>
-  <data name="Details.System.AffectedSystem" xml:space="preserve"><value>Таасирленген система</value></data>
+  <data name="Details.System.AffectedSystem" xml:space="preserve"><value>Таасир тийген система</value></data>
   <data name="Details.System.Type" xml:space="preserve"><value>Системанын түрү</value></data>
   <data name="Details.Badge.Copied" xml:space="preserve"><value>Көчүрүлдү/уурдалды</value></data>
   <data name="Details.Badge.Published" xml:space="preserve"><value>Жарыяланды</value></data>
@@ -323,7 +323,7 @@
   <data name="Details.Badge.Notified" xml:space="preserve"><value>Субъекттер кабарланды</value></data>
 
   <data name="Profile.Title" xml:space="preserve"><value>Менин профилим</value></data>
-  <data name="Profile.Subtitle" xml:space="preserve"><value>ЕСИ жана Юстиция министрлигинен алынган колдонуучу жана уюмдун маалыматтары.</value></data>
+  <data name="Profile.Subtitle" xml:space="preserve"><value>БИС жана Юстиция министрлигинен алынган колдонуучу жана уюмдун маалыматтары.</value></data>
   <data name="Profile.Section.User" xml:space="preserve"><value>Колдонуучу</value></data>
   <data name="Profile.Section.Organization" xml:space="preserve"><value>Уюм</value></data>
   <data name="Profile.Org.Sub" xml:space="preserve"><value>Маалыматтар Юстициядан алынып, реестрге сакталды</value></data>
@@ -331,8 +331,17 @@
   <data name="Profile.Phone" xml:space="preserve"><value>Телефон</value></data>
   <data name="Profile.Position" xml:space="preserve"><value>Кызмат</value></data>
   <data name="Profile.Org.NotFoundTitle" xml:space="preserve"><value>Уюм байланышпаган</value></data>
-  <data name="Profile.Org.NotFoundBody" xml:space="preserve"><value>Сиздин аккаунтуңузга уюм байланыштырылган эмес. Кыязы, ЕСИ уюмдун ИННин берген жок же Юстиция кызматы убактылуу иштебей жатат.</value></data>
-  <data name="Profile.Kpi.OrgIncidents" xml:space="preserve"><value>Уюмдун окуялары</value></data>
+  <data name="Profile.Org.NotFoundBody" xml:space="preserve"><value>Сиздин аккаунтуңузга уюм байланыштырылган эмес. Кыязы, БИС уюмдун ИННин берген жок же Юстиция министрлигинин кызматы убактылуу иштебей жатат.</value></data>
+  <data name="Profile.Kpi.OrgIncidents" xml:space="preserve"><value>Уюмдун инциденттери</value></data>
   <data name="Profile.Kpi.RiskLevel" xml:space="preserve"><value>Тобокелдик деңгээли</value></data>
   <data name="Profile.Kpi.Registered" xml:space="preserve"><value>Реестрде</value></data>
+  <data name="App.LogoAlt" xml:space="preserve">
+    <value>Жеке маалыматтарды коргоо боюнча мамлекеттик агенттиктин герби</value>
+  </data>
+  <data name="Home.Trend.Empty" xml:space="preserve">
+    <value>Акыркы 6 айда катталган инциденттер азырынча жок.</value>
+  </data>
+  <data name="Home.Trend.ChartUnavailable" xml:space="preserve">
+    <value>График убактылуу жеткиликсиз. Баракты жаңылаңыз.</value>
+  </data>
 </root>

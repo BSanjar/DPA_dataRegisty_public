@@ -52,12 +52,12 @@
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
 
   <!-- App / Layout -->
-  <data name="App.Name" xml:space="preserve"><value>DPA · Реестр владельцев записей</value></data>
+  <data name="App.Name" xml:space="preserve"><value>Реестр владельцев записей</value></data>
   <data name="App.Subtitle" xml:space="preserve"><value>АИС учёта персональных данных</value></data>
   <data name="App.TitleSuffix" xml:space="preserve"><value>Реестр владельцев записей</value></data>
   <data name="App.SkipToContent" xml:space="preserve"><value>Перейти к содержимому</value></data>
   <data name="App.OpenMenu" xml:space="preserve"><value>Открыть меню</value></data>
-  <data name="Footer.Copyright" xml:space="preserve"><value>© 2026 — АИС «Реестр владельцев записей»</value></data>
+  <data name="Footer.Copyright" xml:space="preserve"><value>ЦТС «Реестр владельцев записей»</value></data>
   <data name="Footer.Privacy" xml:space="preserve"><value>Политика</value></data>
   <data name="Footer.Support" xml:space="preserve"><value>Поддержка</value></data>
   <data name="Footer.Agency" xml:space="preserve"><value>Государственное агентство по защите персональных данных при Кабинете Министров Кыргызской Республики</value></data>
@@ -151,21 +151,21 @@
 
   <data name="Home.About.Badge" xml:space="preserve"><value>О реестре</value></data>
   <data name="Home.About.Title" xml:space="preserve"><value>Защита персональных данных — общая задача</value></data>
-  <data name="Home.About.Sub" xml:space="preserve"><value>Реестр обеспечивает прозрачность работы с инцидентами, помогает организациям выполнить требования закона и оперативно реагировать на угрозы.</value></data>
+  <data name="Home.About.Sub" xml:space="preserve"><value>Реестр обеспечивает прозрачность работы с инцидентами, помогает организациям выполнять требования Цифрового кодекса Кыргызской Республики и оперативно реагировать на угрозы.</value></data>
   <data name="Home.Card1.Title" xml:space="preserve"><value>Защита прав граждан</value></data>
   <data name="Home.Card1.Body" xml:space="preserve"><value>Своевременное уведомление субъектов персональных данных при возникновении угрозы и контроль за устранением инцидента.</value></data>
   <data name="Home.Card2.Title" xml:space="preserve"><value>Прозрачность для бизнеса</value></data>
   <data name="Home.Card2.Body" xml:space="preserve"><value>Удобная регистрация и сопровождение инцидентов, автоматическое получение реквизитов из реестра юридических лиц.</value></data>
   <data name="Home.Card3.Title" xml:space="preserve"><value>Контроль и надзор</value></data>
-  <data name="Home.Card3.Body" xml:space="preserve"><value>Единая база инцидентов и аналитика по отраслям для принятия регуляторных решений Агентством по защите ПДн.</value></data>
+  <data name="Home.Card3.Body" xml:space="preserve"><value>Единая база инцидентов и отраслевая аналитика для принятия регуляторных решений Государственным агентством по защите персональных данных.</value></data>
 
   <data name="Home.HowTo.Badge" xml:space="preserve"><value>Как это работает</value></data>
   <data name="Home.HowTo.Title" xml:space="preserve"><value>Регистрация инцидента за три шага</value></data>
-  <data name="Home.HowTo.Sub" xml:space="preserve"><value>Просто, быстро и в соответствии с законодательством Кыргызской Республики.</value></data>
+  <data name="Home.HowTo.Sub" xml:space="preserve"><value>Просто, быстро и в соответствии с Цифровым кодексом Кыргызской Республики.</value></data>
   <data name="Home.Step1.Title" xml:space="preserve"><value>Авторизация через ЕСИ</value></data>
-  <data name="Home.Step1.Body" xml:space="preserve"><value>Войдите в систему через Единую систему идентификации. Данные вашей организации подтянутся автоматически из Министерства юстиции.</value></data>
+  <data name="Home.Step1.Body" xml:space="preserve"><value>Войдите в систему через Единую систему идентификации. Данные вашей организации будут получены автоматически из Единого государственного реестра юридических лиц Министерства юстиции.</value></data>
   <data name="Home.Step2.Title" xml:space="preserve"><value>Заполните карточку инцидента</value></data>
-  <data name="Home.Step2.Body" xml:space="preserve"><value>Опишите инцидент в удобной пошаговой форме: что произошло, каков масштаб, какие приняты меры.</value></data>
+  <data name="Home.Step2.Body" xml:space="preserve"><value>Опишите инцидент в пошаговой форме: что произошло, каков масштаб, какие приняты меры. Уведомить Агентство нужно в течение 72 часов с момента обнаружения инцидента (ч. 5 ст. 63 Цифрового кодекса КР).</value></data>
   <data name="Home.Step3.Title" xml:space="preserve"><value>Отслеживайте статус</value></data>
   <data name="Home.Step3.Body" xml:space="preserve"><value>Карточка инцидента сохраняется в реестре, доступна организации и регулирующему органу для дальнейшего контроля.</value></data>
 
@@ -175,18 +175,18 @@
 
   <data name="Home.Contacts.Badge" xml:space="preserve"><value>Контакты</value></data>
   <data name="Home.Contacts.Title" xml:space="preserve"><value>Нужна помощь?</value></data>
-  <data name="Home.Contacts.Sub" xml:space="preserve"><value>Свяжитесь с Агентством по защите персональных данных по любым вопросам, связанным с регистрацией и сопровождением инцидентов.</value></data>
-  <data name="Home.Contacts.Address" xml:space="preserve"><value>г. Бишкек, пр. Чуй, 122</value></data>
-  <data name="Home.Contacts.Phone" xml:space="preserve"><value>+996 (312) 90-21-21</value></data>
+  <data name="Home.Contacts.Sub" xml:space="preserve"><value>Свяжитесь с Государственным агентством по защите персональных данных по вопросам регистрации и сопровождения инцидентов.</value></data>
+  <data name="Home.Contacts.Address" xml:space="preserve"><value>г. Бишкек, пр. Чуй, 265а</value></data>
+  <data name="Home.Contacts.Phone" xml:space="preserve"><value>+(996) 312 641 172</value></data>
   <data name="Home.Contacts.Email" xml:space="preserve"><value>info@dpa.gov.kg</value></data>
   <data name="Home.Contacts.Hours" xml:space="preserve"><value>пн–пт, 09:00–18:00</value></data>
   <data name="Home.Contacts.Cta" xml:space="preserve"><value>Написать в поддержку</value></data>
 
   <data name="Home.Laws.Badge" xml:space="preserve"><value>Нормативная база</value></data>
   <data name="Home.Laws.Title" xml:space="preserve"><value>На каких документах основан реестр</value></data>
-  <data name="Home.Laws.Law1" xml:space="preserve"><value>Закон КР «О персональных данных»</value></data>
-  <data name="Home.Laws.Law2" xml:space="preserve"><value>Постановление Кабинета министров о порядке учёта инцидентов</value></data>
-  <data name="Home.Laws.Law3" xml:space="preserve"><value>Регламент работы Государственного агентства по защите ПДн</value></data>
+  <data name="Home.Laws.Law1" xml:space="preserve"><value>Цифровой кодекс Кыргызской Республики от 31 июля 2025 года № 178: ч. 5 ст. 63 — уведомление об инцидентах в течение 72 часов, ч. 4 ст. 90 — реестр владельцев записей</value></data>
+  <data name="Home.Laws.Law2" xml:space="preserve"><value>Постановление Кабинета Министров о порядке учёта инцидентов</value></data>
+  <data name="Home.Laws.Law3" xml:space="preserve"><value>Регламент работы Государственного агентства по защите персональных данных</value></data>
 
   <!-- Severity -->
   <data name="Severity.Low" xml:space="preserve"><value>Низкий</value></data>
@@ -384,4 +384,13 @@
   <data name="Profile.Kpi.OrgIncidents" xml:space="preserve"><value>Инцидентов организации</value></data>
   <data name="Profile.Kpi.RiskLevel" xml:space="preserve"><value>Уровень риска</value></data>
   <data name="Profile.Kpi.Registered" xml:space="preserve"><value>В реестре</value></data>
+  <data name="App.LogoAlt" xml:space="preserve">
+    <value>Герб Государственного агентства по защите персональных данных</value>
+  </data>
+  <data name="Home.Trend.Empty" xml:space="preserve">
+    <value>Зарегистрированных инцидентов за последние 6 месяцев пока нет.</value>
+  </data>
+  <data name="Home.Trend.ChartUnavailable" xml:space="preserve">
+    <value>График временно недоступен. Обновите страницу.</value>
+  </data>
 </root>

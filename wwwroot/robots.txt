@@ -1,0 +1,9 @@
+# Реестр владельцев записей — публичная часть.
+# Индексируются главная и политика; личные разделы и вход — нет.
+User-agent: *
+Allow: /$
+Allow: /Home/Privacy
+Disallow: /esi/
+Disallow: /Incidents/
+Disallow: /UserPage
+Disallow: /Language/

@@ -24,7 +24,7 @@ var logDirectory = builder.AddAppLogging("registry_public", new Dictionary<strin
 {
     [Ns + "Controllers.esiController"] = LogCategories.Auth,
     [Ns + "Integrations."] = LogCategories.Integration,
-    [Ns + "Controllers.IncedentsController"] = LogCategories.Auth,
+    [Ns + "Controllers.IncidentsController"] = LogCategories.Auth,
     [Ns + "Controllers.UserPageController"] = LogCategories.Auth,
 });
 
@@ -143,6 +143,19 @@ using (var scope = app.Services.CreateScope())
 app.UseAppRequestLogging();
 // Прокси-заголовки, обработчик ошибок (не в Development), https — по настройкам Hosting:*.
 app.UseAppHosting();
+
+// Старый адрес раздела (/Incedents — опечатка) → /Incidents, чтобы не ломались закладки и ссылки.
+app.Use(async (context, next) =>
+{
+    const string legacy = "/Incedents";
+    var path = context.Request.Path;
+    if (path.StartsWithSegments(legacy, StringComparison.OrdinalIgnoreCase, out var rest))
+    {
+        context.Response.Redirect("/Incidents" + rest + context.Request.QueryString, permanent: true);
+        return;
+    }
+    await next();
+});
 app.UseStaticFiles();
 
 app.UseRouting();

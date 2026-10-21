@@ -51,12 +51,12 @@
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
 
-  <data name="App.Name" xml:space="preserve"><value>DPA · Records Holders Registry</value></data>
+  <data name="App.Name" xml:space="preserve"><value>Record Owners Registry</value></data>
   <data name="App.Subtitle" xml:space="preserve"><value>Personal data accounting AIS</value></data>
   <data name="App.TitleSuffix" xml:space="preserve"><value>Records Holders Registry</value></data>
   <data name="App.SkipToContent" xml:space="preserve"><value>Skip to content</value></data>
   <data name="App.OpenMenu" xml:space="preserve"><value>Open menu</value></data>
-  <data name="Footer.Copyright" xml:space="preserve"><value>© 2026 — AIS "Records Holders Registry"</value></data>
+  <data name="Footer.Copyright" xml:space="preserve"><value>Digital technology system «Record Owners Registry»</value></data>
   <data name="Footer.Privacy" xml:space="preserve"><value>Privacy</value></data>
   <data name="Footer.Support" xml:space="preserve"><value>Support</value></data>
   <data name="Footer.Agency" xml:space="preserve"><value>State Agency for Personal Data Protection under the Cabinet of Ministers of the Kyrgyz Republic</value></data>
@@ -170,8 +170,8 @@
   <data name="Home.Contacts.Badge" xml:space="preserve"><value>Contacts</value></data>
   <data name="Home.Contacts.Title" xml:space="preserve"><value>Need help?</value></data>
   <data name="Home.Contacts.Sub" xml:space="preserve"><value>Reach out to the Personal Data Protection Agency for any questions about incident registration and handling.</value></data>
-  <data name="Home.Contacts.Address" xml:space="preserve"><value>Bishkek, Chuy Ave. 122</value></data>
-  <data name="Home.Contacts.Phone" xml:space="preserve"><value>+996 (312) 90-21-21</value></data>
+  <data name="Home.Contacts.Address" xml:space="preserve"><value>265a Chui Ave., Bishkek</value></data>
+  <data name="Home.Contacts.Phone" xml:space="preserve"><value>+(996) 312 641 172</value></data>
   <data name="Home.Contacts.Email" xml:space="preserve"><value>info@dpa.gov.kg</value></data>
   <data name="Home.Contacts.Hours" xml:space="preserve"><value>Mon–Fri, 09:00–18:00</value></data>
   <data name="Home.Contacts.Cta" xml:space="preserve"><value>Contact support</value></data>
@@ -368,4 +368,13 @@
   <data name="Profile.Kpi.OrgIncidents" xml:space="preserve"><value>Organization incidents</value></data>
   <data name="Profile.Kpi.RiskLevel" xml:space="preserve"><value>Risk level</value></data>
   <data name="Profile.Kpi.Registered" xml:space="preserve"><value>In registry</value></data>
+  <data name="App.LogoAlt" xml:space="preserve">
+    <value>Emblem of the State Agency for Personal Data Protection</value>
+  </data>
+  <data name="Home.Trend.Empty" xml:space="preserve">
+    <value>No incidents registered in the last 6 months yet.</value>
+  </data>
+  <data name="Home.Trend.ChartUnavailable" xml:space="preserve">
+    <value>The chart is temporarily unavailable. Please reload the page.</value>
+  </data>
 </root>

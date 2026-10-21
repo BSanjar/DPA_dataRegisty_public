@@ -12,6 +12,11 @@
     var labels = Model.MonthlyLabels.TakeLast(6).ToList();
     var seriesAll = Model.MonthlySeries.TakeLast(6).ToList();
     var seriesCrit = Model.MonthlyCriticalSeries.TakeLast(6).ToList();
+    var hasTrend = seriesAll.Sum() > 0;
+
+    // Числа сразу в разметке (видны без JS, поисковикам и при печати); скрипт лишь анимирует их от нуля.
+    var ru = System.Globalization.CultureInfo.GetCultureInfo("ru-RU");
+    string N(int v) => v.ToString("N0", ru);
 }
 
 <!-- ============ HERO ============ -->
@@ -33,12 +38,12 @@
             </p>
             <div class="mt-5 flex flex-col gap-2 sm:mt-7 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
                 <!-- Главный CTA — всегда виден. Если гость, [Authorize] перебросит на /esi/Login. -->
-                <a class="hero-btn hero-btn-primary hero-btn-pulse w-full sm:w-auto" asp-controller="Incedents" asp-action="Create">
+                <a class="hero-btn hero-btn-primary hero-btn-pulse w-full sm:w-auto" asp-controller="Incidents" asp-action="Create">
                     <i class="bi bi-plus-circle-fill"></i> @L["Home.Hero.CtaRegister"]
                 </a>
                 @if (!isAuth)
                 {
-                    <a class="hero-btn hero-btn-ghost w-full sm:w-auto" href='@Url.Action("Login", "esi", new { returnUrl = Url.Action("Create", "Incedents") })'>
+                    <a class="hero-btn hero-btn-ghost w-full sm:w-auto" href='@Url.Action("Login", "esi", new { returnUrl = Url.Action("Create", "Incidents") })'>
                         <i class="bi bi-box-arrow-in-right"></i> @L["Nav.LoginEsi"]
                     </a>
                 }
@@ -55,28 +60,28 @@
             <div class="hero-stat">
                 <span class="hero-stat-icon"><i class="bi bi-shield-shaded"></i></span>
                 <div class="hero-stat-body">
-                    <span class="hero-stat-value count-up" data-target="@Model.TotalAll">0</span>
+                    <span class="hero-stat-value count-up" data-target="@Model.TotalAll">@N(Model.TotalAll)</span>
                     <span class="hero-stat-label">@L["Home.Hero.Mini.Incidents"]</span>
                 </div>
             </div>
             <div class="hero-stat">
                 <span class="hero-stat-icon"><i class="bi bi-calendar-event"></i></span>
                 <div class="hero-stat-body">
-                    <span class="hero-stat-value count-up" data-target="@Model.Last30DaysCount">0</span>
+                    <span class="hero-stat-value count-up" data-target="@Model.Last30DaysCount">@N(Model.Last30DaysCount)</span>
                     <span class="hero-stat-label">@L["Home.Hero.Mini.Month"]</span>
                 </div>
             </div>
             <div class="hero-stat">
                 <span class="hero-stat-icon"><i class="bi bi-database-fill-check"></i></span>
                 <div class="hero-stat-body">
-                    <span class="hero-stat-value count-up" data-target="@Model.AffectedRecordsSum">0</span>
+                    <span class="hero-stat-value count-up" data-target="@Model.AffectedRecordsSum">@N(Model.AffectedRecordsSum)</span>
                     <span class="hero-stat-label">@L["Home.Hero.Mini.Records"]</span>
                 </div>
             </div>
             <div class="hero-stat">
                 <span class="hero-stat-icon"><i class="bi bi-send-check-fill"></i></span>
                 <div class="hero-stat-body">
-                    <span class="hero-stat-value count-up" data-target="@Model.NotifiedCount">0</span>
+                    <span class="hero-stat-value count-up" data-target="@Model.NotifiedCount">@N(Model.NotifiedCount)</span>
                     <span class="hero-stat-label">@L["Home.Hero.Mini.Notified"]</span>
                 </div>
             </div>
@@ -145,7 +150,7 @@
     </ol>
 
     <div class="mt-7 flex justify-center">
-        <a class="btn-primary" asp-controller="Incedents" asp-action="Create">
+        <a class="btn-primary" asp-controller="Incidents" asp-action="Create">
             <i class="bi bi-plus-circle-fill"></i> @L["Home.Hero.CtaRegister"]
         </a>
     </div>
@@ -173,7 +178,18 @@
             </form>
         </div>
         <div class="card-body">
-            <div class="chart-holder h-56"><canvas id="chartMonthly"></canvas></div>
+            @if (hasTrend)
+            {
+                <div class="chart-holder h-56"><canvas id="chartMonthly"></canvas></div>
+                <div class="hidden h-56 items-center justify-center text-center text-sm text-dpaGray-500" data-chart-fallback>@L["Home.Trend.ChartUnavailable"]</div>
+            }
+            else
+            {
+                <div class="flex h-56 flex-col items-center justify-center gap-2 text-center text-sm text-dpaGray-500">
+                    <i class="bi bi-graph-up text-3xl text-dpaGray-300" aria-hidden="true"></i>
+                    @L["Home.Trend.Empty"]
+                </div>
+            }
             <div class="mt-3 flex items-center justify-between text-xs text-dpaGray-500">
                 <div class="flex items-center gap-3">
                     <span class="inline-flex items-center gap-1"><span class="h-2.5 w-2.5 rounded-full bg-dpa-600"></span> @L["Home.Chart.LegendAll"]</span>
@@ -181,7 +197,7 @@
                 </div>
                 @if (isAuth)
                 {
-                    <a asp-controller="Incedents" asp-action="Index" class="font-semibold text-dpa-700 hover:text-dpa-800">
+                    <a asp-controller="Incidents" asp-action="Index" class="font-semibold text-dpa-700 hover:text-dpa-800">
                         @L["Home.Trend.More"] <i class="bi bi-arrow-right"></i>
                     </a>
                 }
@@ -202,7 +218,7 @@
             <div class="contact-row">
                 <div class="contact-ico bg-dpa-50 text-dpa-700"><i class="bi bi-telephone-fill"></i></div>
                 <div>
-                    <a href="tel:+996312902121" class="font-semibold text-dpaGray-800 hover:text-dpa-800">@L["Home.Contacts.Phone"]</a>
+                    <a href="tel:+996312641172" class="font-semibold text-dpaGray-800 hover:text-dpa-800">@L["Home.Contacts.Phone"]</a>
                     <div class="text-[11px] text-dpaGray-500">@L["Home.Contacts.Hours"]</div>
                 </div>
             </div>
@@ -235,8 +251,7 @@
             </div>
             <ul class="sm:col-span-8 grid gap-2 text-sm">
                 <li class="law-item"><i class="bi bi-file-earmark-text text-dpa-700"></i><span>@L["Home.Laws.Law1"]</span></li>
-                <li class="law-item"><i class="bi bi-file-earmark-text text-dpa-700"></i><span>@L["Home.Laws.Law2"]</span></li>
-                <li class="law-item"><i class="bi bi-file-earmark-text text-dpa-700"></i><span>@L["Home.Laws.Law3"]</span></li>
+                @* Постановление КМ и регламент агентства вернуть в список, когда будут реквизиты (дата, номер, ссылка). *@
             </ul>
         </div>
     </div>
@@ -258,12 +273,15 @@
                 }
                 requestAnimationFrame(tick);
             }
+            // Без анимации, если пользователь просил меньше движения или нет IntersectionObserver.
+            if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
             const io = new IntersectionObserver(entries => {
                 entries.forEach(e => { if (e.isIntersecting) { animate(e.target); io.unobserve(e.target); } });
             }, { threshold: 0.2 });
             document.querySelectorAll('.count-up').forEach(el => io.observe(el));
         })();
 
+        if (typeof Chart !== 'undefined') {
         Chart.defaults.font.family = 'Raleway, sans-serif';
         Chart.defaults.color = '#525E66';
         Chart.defaults.plugins.legend.display = false;
@@ -274,9 +292,19 @@
         Chart.defaults.plugins.tooltip.cornerRadius = 8;
         Chart.defaults.animation.duration = 900;
         Chart.defaults.animation.easing = 'easeOutQuart';
+        }
 
         (function () {
-            const ctx = document.getElementById('chartMonthly').getContext('2d');
+            const canvas = document.getElementById('chartMonthly');
+            if (!canvas) return; // данных за период нет — вместо графика показан текст
+            if (typeof Chart === 'undefined') {
+                // CDN с Chart.js недоступен — не оставляем пустой блок
+                canvas.parentElement.classList.add('hidden');
+                const fb = document.querySelector('[data-chart-fallback]');
+                if (fb) { fb.classList.remove('hidden'); fb.classList.add('flex'); }
+                return;
+            }
+            const ctx = canvas.getContext('2d');
             function gradient(c1, c2) {
                 const g = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height || 220);
                 g.addColorStop(0, c1); g.addColorStop(1, c2); return g;

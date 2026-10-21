@@ -14,7 +14,7 @@ namespace data_registry_public.Controllers
     /// Фильтрация "свои" — по ИНН организации из claim orgId.
     /// </summary>
     [Authorize]
-    public class IncedentsController : Controller
+    public class IncidentsController : Controller
     {
         /// <summary>
         /// DEV-заглушка ИНН для неавторизованных сценариев.
@@ -26,9 +26,9 @@ namespace data_registry_public.Controllers
 
         private readonly AppDbContext _db;
         private readonly IMinJustService _minJust;
-        private readonly ILogger<IncedentsController> _logger;
+        private readonly ILogger<IncidentsController> _logger;
 
-        public IncedentsController(AppDbContext db, IMinJustService minJust, ILogger<IncedentsController> logger)
+        public IncidentsController(AppDbContext db, IMinJustService minJust, ILogger<IncidentsController> logger)
         {
             _db = db;
             _minJust = minJust;
