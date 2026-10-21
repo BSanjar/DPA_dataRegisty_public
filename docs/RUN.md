@@ -85,6 +85,19 @@ docker run -d --name dpa_registry_public --restart unless-stopped \
 * Время в приложении и логах бишкекское (`TZ=Asia/Bishkek` в образе).
 * Обновление: `docker pull ...`, затем `docker rm -f <имя>` и тот же `docker run`. Данные и логи лежат в томах и сохраняются.
 
+## ЕСИ (публичная часть)
+
+Секция `Esi` в `appsettings.{режим}.json`: адреса `/connect/authorize|token|userinfo`, `ClientId`, `ClientSecret`, `RedirectUrl`, `Scope`.
+Поток: Authorization Code + PKCE (S256), секрет передаётся в Basic, `state` проверяется (защита от подмены ответа).
+
+* Test и Production сейчас ходят в DEV-контур `https://dev-esia.tunduk.kg`, клиент `Record_Owners`.
+* `RedirectUrl` должен совпадать с адресом, зарегистрированным в ЕСИ для клиента, символ в символ (`https://<домен публичной части>/esi/auth`).
+* Боевой контур: заменить адреса на `https://esia.tunduk.kg/...`, `ClientId`/`ClientSecret` на боевые
+  (лучше переменными `Esi__ClientId`, `Esi__ClientSecret`) и `RedirectUrl`.
+* Если ЕСИ не передаёт `organization_tin`, добавить в `Esi:Scope` значение, которое ЕСИ согласует для данных организации (например `organizations`).
+* Ход входа виден в `/logs/registry_public/integration` (токен, userinfo, ошибки ЕСИ) и `/logs/registry_public/auth`.
+* DEV-контур ЕСИ доступен не из любой сети: с рабочей машины разработчика он отвечает 403, проверять вход нужно с сервера.
+
 ## SQL
 
 Скрипты изменений БД лежат в `02 локальная часть/data_registry_local/sql/` и применяются вручную (`psql -f`) по дате в имени.

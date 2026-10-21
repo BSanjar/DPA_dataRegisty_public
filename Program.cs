@@ -69,6 +69,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 builder.Services.AddSingleton<AppFeatures>();
 
+// ЕСИ (Тундук): адреса, клиент и redirect_uri — секция Esi в appsettings.{режим}.json.
+builder.Services.Configure<EsiOptions>(builder.Configuration.GetSection("Esi"));
+builder.Services.AddHttpClient(EsiClient.HttpClientName);
+builder.Services.AddScoped<EsiClient>();
+
 builder.Services.AddHttpClient();
 
 // Интеграция с Минюстом (данные организаций по ИНН). Режим — MinJust:Mode:

@@ -1,93 +1,154 @@
-﻿using data_registry_public.Infrastructure.Hosting;
+﻿using System.Security.Claims;
+using data_registry_public.Infrastructure.Hosting;
+using data_registry_public.Infrastructure.Logging;
 using data_registry_public.Integrations;
 using data_registry_public.Models;
-using data_registry_public.Models.local_models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace data_registry_public.Controllers
 {
+    /// <summary>
+    /// Вход пользователей портала через ЕСИ (Тундук): /esi/Login → ЕСИ → /esi/auth.
+    /// После входа организация пользователя подтягивается из Минюста и привязывается к нему.
+    /// Тестовый вход без ЕСИ — /esi/LoginTest (флаг Features:EsiTestLogin, на проде закрыт).
+    /// </summary>
     [Route("[controller]/[action]")]
     public class esiController : Controller
     {
+        // Ключи TempData между уходом в ЕСИ и возвратом (cookie TempData, защищена DataProtection).
+        private const string StateKey = "esi_state";
+        private const string VerifierKey = "esi_code_verifier";
+        private const string ReturnUrlKey = "esi_return_url";
 
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly AppSettings _appSettings;
+        private readonly EsiClient _esi;
         private readonly ILogger<esiController> _logger;
         private readonly AppDbContext _db;
         private readonly IMinJustService _minJust;
         private readonly AppFeatures _features;
 
-        public esiController(
-            IHttpClientFactory httpClientFactory,
-            IOptions<AppSettings> appSettings,
-            ILogger<esiController> logger,
-            AppDbContext db,
-            IMinJustService minJust,
-            AppFeatures features)
+        public esiController(EsiClient esi, ILogger<esiController> logger, AppDbContext db, IMinJustService minJust, AppFeatures features)
         {
-            _features = features;
-            _httpClientFactory = httpClientFactory;
-            _appSettings = appSettings.Value;
+            _esi = esi;
             _logger = logger;
             _db = db;
             _minJust = minJust;
+            _features = features;
         }
 
-
-
-
+        /// <summary>Уход в ЕСИ: новые state и PKCE, сохранение их до возврата.</summary>
         [HttpGet]
         public IActionResult Login(string? returnUrl = null)
         {
-            if (User.Identity.IsAuthenticated)
+            if (User.Identity?.IsAuthenticated == true)
             {
                 return SafeRedirect(returnUrl);
             }
 
-            // Generate state, code verifier, and code challenge
-            string state = Guid.NewGuid().ToString();
-            string codeVerifier = GenerateCodeVerifier();
-            string codeChallenge = GenerateCodeChallenge(codeVerifier);
-
-            // Сохраняем в TempData: state, verifier и куда возвращать после auth
-            TempData["code_verifier"] = codeVerifier;
-            TempData["state"] = state;
-            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            if (!_esi.IsConfigured)
             {
-                TempData["returnUrl"] = returnUrl;
+                _logger.LogError("ЕСИ: не заданы настройки секции Esi (адреса, ClientId, ClientSecret, RedirectUrl)");
+                TempData["ErrorMessage"] = "Вход через ЕСИ временно недоступен. Попробуйте позже.";
+                return RedirectToAction("Index", "Home");
             }
 
-            string authorizeUrl = $"{_appSettings.authorizeUrl}?response_type=code&client_id={_appSettings.clientId}&redirect_uri={_appSettings.redirectUrl}&scope=openid profile email phone&code_challenge={codeChallenge}&code_challenge_method=S256";
-
-            return Redirect(authorizeUrl);
-        }
-
-        /// <summary>Безопасный редирект на returnUrl, иначе на UserPage.</summary>
-        private IActionResult SafeRedirect(string? returnUrl)
-        {
+            var request = _esi.CreateAuthorizeRequest();
+            TempData[StateKey] = request.State;
+            TempData[VerifierKey] = request.CodeVerifier;
             if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
             {
-                return Redirect(returnUrl);
+                TempData[ReturnUrlKey] = returnUrl;
             }
-            return RedirectToAction("Index", "UserPage");
+
+            return Redirect(request.Url);
         }
-
-
 
         /// <summary>
-        /// Тестовый (эмуляционный) вход без реального ЕСИ.
-        /// Создаёт тестового пользователя и подтягивает организацию
-        /// через эмулятор Минюста.
+        /// Возврат из ЕСИ (redirect_uri). Проверяем state, меняем code на токен, получаем данные пользователя,
+        /// регистрируем/обновляем его, привязываем организацию и входим.
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> auth(string? code, string? state, string? error, string? error_description)
+        {
+            var expectedState = TempData[StateKey] as string;
+            var codeVerifier = TempData[VerifierKey] as string;
+            var returnUrl = TempData[ReturnUrlKey] as string;
+
+            // Пользователь отменил вход или ЕСИ вернула ошибку (параметры error/error_description по стандарту).
+            if (!string.IsNullOrEmpty(error))
+            {
+                using (LogCategories.Push(LogCategories.Integration))
+                {
+                    _logger.LogWarning("ЕСИ вернула ошибку авторизации: {Error} {Description}", error, error_description ?? "");
+                }
+                return Fail(error == "access_denied" ? "Вход через ЕСИ отменён." : "ЕСИ отклонила запрос на вход. Попробуйте ещё раз.");
+            }
+
+            // state защищает от подмены ответа (CSRF): должен совпасть с выданным в Login.
+            if (string.IsNullOrEmpty(expectedState) || string.IsNullOrEmpty(codeVerifier))
+            {
+                _logger.LogWarning("ЕСИ: возврат без начатого входа (нет state/verifier — истёк срок или вход начат в другом браузере)");
+                return Fail("Сеанс входа истёк. Нажмите «Войти через ЕСИ» ещё раз.");
+            }
+            if (!string.Equals(state, expectedState, StringComparison.Ordinal))
+            {
+                _logger.LogWarning("ЕСИ: state в ответе не совпал с выданным при входе — вход отклонён");
+                return Fail("Не удалось подтвердить вход. Нажмите «Войти через ЕСИ» ещё раз.");
+            }
+            if (string.IsNullOrEmpty(code))
+            {
+                _logger.LogWarning("ЕСИ: возврат без кода авторизации");
+                return Fail("Авторизация через ЕСИ не завершена.");
+            }
+
+            try
+            {
+                var ct = HttpContext.RequestAborted;
+                var accessToken = await _esi.ExchangeCodeAsync(code, codeVerifier, ct);
+                if (accessToken is null)
+                {
+                    return Fail("Не удалось получить подтверждение от ЕСИ. Попробуйте ещё раз.");
+                }
+
+                var info = await _esi.GetUserInfoAsync(accessToken, ct);
+                if (info is null || string.IsNullOrWhiteSpace(info.Pin))
+                {
+                    return Fail("ЕСИ не передала данные пользователя. Попробуйте ещё раз.");
+                }
+
+                var userModel = MapUser(info);
+                var userId = await RegisterOrUpdateUserAsync(userModel);
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return Fail("Не удалось зарегистрировать пользователя после ЕСИ.");
+                }
+                userModel.Id = userId;
+
+                // Организация из Минюста и привязка пользователя к ней.
+                var link = await UpsertOrganizationAndLinkUserAsync(userModel);
+                if (!link.Success || string.IsNullOrEmpty(link.OrgId))
+                {
+                    _logger.LogWarning("ЕСИ-вход отменён для {UserId}: {Err}", userId, link.ErrorMessage);
+                    return Fail("Вход не выполнен: " + (link.ErrorMessage ?? "не удалось получить и сохранить данные организации из Минюста."));
+                }
+
+                await Authenticate(userModel, link.OrgId);
+                _logger.LogInformation("Вход через ЕСИ: пользователь {UserId} ({Name}), организация {Org}", userId, userModel.Name, link.OrgId);
+                return SafeRedirect(returnUrl);
+            }
+            catch (Exception ex)
+            {
+                // Текст исключения пользователю не показываем — подробности в логах (errors).
+                _logger.LogError(ex, "ЕСИ: ошибка при завершении входа");
+                return Fail("Не удалось авторизоваться через ЕСИ. Попробуйте ещё раз.");
+            }
+        }
+
+        /// <summary>
+        /// Тестовый (эмуляционный) вход без реального ЕСИ: тестовый пользователь,
+        /// организация — из эмулятора Минюста.
         /// </summary>
         [HttpGet]
         public async Task<IActionResult> LoginTest(string? returnUrl = null)
@@ -98,8 +159,6 @@ namespace data_registry_public.Controllers
                 return NotFound();
             }
 
-            // Фиксированный тестовый пользователь с известным ИНН.
-            // Данные организации будут детерминированно сгенерированы эмулятором Минюста.
             var userModel = new PublicUser
             {
                 Email = "test.user@dpa.local",
@@ -115,22 +174,19 @@ namespace data_registry_public.Controllers
                 PositionName = "Ответственный за ПДн",
             };
 
-            string userId = await registrateNewUser(userModel);
+            var userId = await RegisterOrUpdateUserAsync(userModel);
             if (string.IsNullOrEmpty(userId))
             {
-                TempData["ErrorMessage"] = "Не удалось зарегистрировать тестового пользователя.";
-                return RedirectToAction("Index", "Home");
+                return Fail("Не удалось зарегистрировать тестового пользователя.");
             }
-
             userModel.Id = userId;
 
             // useEmulator = true: обращаемся только к эмулятору Минюста
             var link = await UpsertOrganizationAndLinkUserAsync(userModel, useEmulator: true);
             if (!link.Success || string.IsNullOrEmpty(link.OrgId))
             {
-                TempData["ErrorMessage"] = "Вход не выполнен: " + (link.ErrorMessage ?? "не удалось сохранить организацию.");
                 _logger.LogWarning("Тестовый вход отменён: {Err}", link.ErrorMessage);
-                return RedirectToAction("Index", "Home");
+                return Fail("Вход не выполнен: " + (link.ErrorMessage ?? "не удалось сохранить организацию."));
             }
 
             await Authenticate(userModel, link.OrgId);
@@ -139,164 +195,126 @@ namespace data_registry_public.Controllers
             return SafeRedirect(returnUrl);
         }
 
-
-        private string GenerateCodeVerifier()
+        public async Task<IActionResult> Logout()
         {
-            byte[] randomBytes = new byte[32];
-            using (var rng = RandomNumberGenerator.Create())
+            if (User.Identity?.IsAuthenticated == true)
             {
-                rng.GetBytes(randomBytes);
+                _logger.LogInformation("Выход пользователя {UserId}", User.FindFirst("id")?.Value);
             }
-            return Base64UrlEncode(randomBytes);
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index", "Home");
         }
 
-        private string GenerateCodeChallenge(string codeVerifier)
+        // === Вспомогательное ===============================================
+
+        /// <summary>Безопасный редирект на returnUrl, иначе на UserPage.</summary>
+        private IActionResult SafeRedirect(string? returnUrl)
         {
-            using (var sha256 = SHA256.Create())
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
             {
-                var challengeBytes = sha256.ComputeHash(Encoding.ASCII.GetBytes(codeVerifier));
-                return Base64UrlEncode(challengeBytes);
+                return Redirect(returnUrl);
             }
+            return RedirectToAction("Index", "UserPage");
         }
 
-        private string Base64UrlEncode(byte[] bytes)
+        /// <summary>Вход не состоялся: сообщение на главной (через баннер ErrorMessage в шапке).</summary>
+        private IActionResult Fail(string message)
         {
-            var base64 = Convert.ToBase64String(bytes);
-            return base64.Replace("+", "-").Replace("/", "_").Replace("=", "");
+            TempData["ErrorMessage"] = message;
+            return RedirectToAction("Index", "Home");
         }
 
-
-        [HttpGet]
-        //[Route("signin-esi")]
-        public async Task<IActionResult> auth(string code, string state)
+        private static PublicUser MapUser(EsiUserInfo info) => new()
         {
-            try
-            {
-                // Verify state and retrieve code verifier from TempData
-                if (state != TempData["state"]?.ToString())
-                {
-                    // Проверка state отключена; фиксируем расхождение, чтобы видеть попытки подмены.
-                    _logger.LogWarning("ЕСИ: state в ответе не совпал с выданным при входе");
-                    //return RedirectToAction("Login");
-                }
-
-                string codeVerifier = TempData["code_verifier"]?.ToString();
-
-                // Exchange authorization code for access token
-                string accessToken = await ExchangeCodeForAccessToken(code, codeVerifier, state);
-
-                //User userModel = new User();
-
-                if (accessToken != null)
-                {
-                    var userInfo = await GetUserInfoAsync(accessToken);
-                    if (userInfo != null)
-                    {
-                        var userModel = parseUserInfo(userInfo);
-                        if (userModel != null && userModel.EsiPin != "")
-                        {
-                            string userId = await registrateNewUser(userModel);
-                            if (string.IsNullOrEmpty(userId))
-                            {
-                                TempData["ErrorMessage"] = "Не удалось зарегистрировать пользователя после ЕСИ.";
-                                return RedirectToAction("Index", "Home");
-                            }
-
-                            userModel.Id = userId;
-
-                            // Подтягиваем данные организации из Минюста и привязываем пользователя
-                            var link = await UpsertOrganizationAndLinkUserAsync(userModel);
-                            if (!link.Success || string.IsNullOrEmpty(link.OrgId))
-                            {
-                                // Явно выходим — логин не состоялся
-                                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                                TempData["ErrorMessage"] =
-                                    "Вход не выполнен: " + (link.ErrorMessage ?? "не удалось получить и сохранить данные организации из Минюста.");
-                                _logger.LogWarning("ЕСИ-вход отменён для {Name}: {Err}", userModel.Name, link.ErrorMessage);
-                                return RedirectToAction("Index", "Home");
-                            }
-
-                            await Authenticate(userModel, link.OrgId);
-                            _logger.LogInformation("Вход через ЕСИ: пользователь {UserId} ({Name}), организация {Org}", userId, userModel.Name, link.OrgId);
-                            var returnUrl = TempData["returnUrl"] as string;
-                            return SafeRedirect(returnUrl);
-                        }
-                    }
-                }
-
-
-
-                TempData["ErrorMessage"] = "Авторизация через ЕСИ не завершена.";
-                return RedirectToAction("Index", "Home");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Ошибка в методе auth");
-                // Текст исключения пользователю не показываем — подробности в логах (errors).
-                ViewBag.errorText = "Не удалось авторизоваться через ЕСИ. Попробуйте ещё раз.";
-                return View("ErrorPage");
-            }
-        }
-
-        private PublicUser parseUserInfo(string userInfo)
-        {
-            try
-            {
-                PublicUser user = new PublicUser();
-                dynamic data = JObject.Parse(userInfo);
-
-                user.EsiSub = data.sub;
-                user.EsiEmail = data.email;
-                user.EsiPin = data.pin;
-                user.EsiPhoneNumber = data.phone_number;
-                user.EsiCitizenship = data.citizenship;
-                user.EsiFamilyName = data.family_name;
-                user.EsiGivenName = data.given_name;
-                user.EsiName = data.name;
-                user.EsiGender = data.gender;
-                user.EsiBirthdate = data.birthdate;
-                user.EsiEmailVerified = data.email_verified;
-                user.EsiPhoneNumberVerified = data.phone_number_verified;
-
-                user.OrganizationTin = data.organization_tin;
-                user.OrganizationName = data.organization_name;
-
-                user.Name = data.name;
-                user.Email = data.email;
-
-                return user;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Не удалось парсить ответ ЕСИ на запрос userInfo");
-            }
-        }
+            EsiSub = info.Sub,
+            EsiPin = info.Pin?.Trim(),
+            EsiName = info.Name,
+            EsiFamilyName = info.FamilyName,
+            EsiGivenName = info.GivenName,
+            EsiGender = info.Gender,
+            EsiBirthdate = info.Birthdate,
+            EsiCitizenship = info.Citizenship,
+            EsiEmail = info.Email,
+            EsiEmailVerified = info.EmailVerified,
+            EsiPhoneNumber = info.PhoneNumber,
+            EsiPhoneNumberVerified = info.PhoneNumberVerified,
+            OrganizationTin = info.OrganizationTin?.Trim(),
+            OrganizationName = info.OrganizationName,
+            Name = info.Name,
+            Email = info.Email
+        };
 
         private async Task Authenticate(PublicUser user, string? orgId = null)
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.EsiName ?? user.Name ?? ""),
-                new Claim(ClaimTypes.Email, user.EsiEmail ?? user.Email ?? ""),
-                new Claim(ClaimTypes.DateOfBirth, user.EsiBirthdate ?? ""),
-                new Claim("pin", user.EsiPin ?? ""),
-                new Claim("orgPin", user.OrganizationTin ?? ""),
-                new Claim("orgName", user.OrganizationName ?? ""),
-                new Claim("id", user.Id ?? ""),
+                new(ClaimTypes.Name, user.EsiName ?? user.Name ?? ""),
+                new(ClaimTypes.Email, user.EsiEmail ?? user.Email ?? ""),
+                new(ClaimTypes.DateOfBirth, user.EsiBirthdate ?? ""),
+                new("pin", user.EsiPin ?? ""),
+                new("orgPin", user.OrganizationTin ?? ""),
+                new("orgName", user.OrganizationName ?? ""),
+                new("id", user.Id ?? ""),
             };
             if (!string.IsNullOrEmpty(orgId))
             {
                 claims.Add(new Claim("orgId", orgId));
             }
 
-            ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie",
+            var identity = new ClaimsIdentity(claims, "ApplicationCookie",
                 ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
         }
 
         /// <summary>
-        /// Результат попытки привязки организации к пользователю.
+        /// Пользователь по ПИН: новый — создаём, существующий — обновляем данные из ЕСИ
+        /// (ЕСИ — первоисточник ФИО, email, телефона). Возвращает public_users.id или null.
         /// </summary>
+        private async Task<string?> RegisterOrUpdateUserAsync(PublicUser user)
+        {
+            try
+            {
+                var existing = await _db.PublicUsers.FirstOrDefaultAsync(a => a.EsiPin == user.EsiPin);
+                var now = DateTime.Now;
+                if (existing is not null)
+                {
+                    existing.EsiSub = user.EsiSub ?? existing.EsiSub;
+                    existing.EsiName = user.EsiName ?? existing.EsiName;
+                    existing.EsiFamilyName = user.EsiFamilyName ?? existing.EsiFamilyName;
+                    existing.EsiGivenName = user.EsiGivenName ?? existing.EsiGivenName;
+                    existing.EsiGender = user.EsiGender ?? existing.EsiGender;
+                    existing.EsiBirthdate = user.EsiBirthdate ?? existing.EsiBirthdate;
+                    existing.EsiCitizenship = user.EsiCitizenship ?? existing.EsiCitizenship;
+                    existing.EsiEmail = user.EsiEmail ?? existing.EsiEmail;
+                    existing.EsiEmailVerified = user.EsiEmailVerified ?? existing.EsiEmailVerified;
+                    existing.EsiPhoneNumber = user.EsiPhoneNumber ?? existing.EsiPhoneNumber;
+                    existing.EsiPhoneNumberVerified = user.EsiPhoneNumberVerified ?? existing.EsiPhoneNumberVerified;
+                    existing.Name = user.Name ?? existing.Name;
+                    existing.Email = user.Email ?? existing.Email;
+                    existing.UpdatedAt = now;
+                    await _db.SaveChangesAsync();
+                    return existing.Id;
+                }
+
+                user.Id = Guid.NewGuid().ToString();
+                user.CreatedAt = now;
+                user.UpdatedAt = now;
+                user.Isdeleted = "0";
+                _db.PublicUsers.Add(user);
+                await _db.SaveChangesAsync();
+
+                _logger.LogInformation("Зарегистрирован новый пользователь {UserId} ({Name}, ПИН {Pin})",
+                    user.Id, user.Name, AppLogging.Mask(user.EsiPin));
+                return user.Id;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Не удалось зарегистрировать/обновить пользователя (ПИН {Pin})", AppLogging.Mask(user.EsiPin));
+                return null;
+            }
+        }
+
+        /// <summary>Результат попытки привязки организации к пользователю.</summary>
         private sealed class OrgLinkResult
         {
             public bool Success { get; set; }
@@ -316,8 +334,8 @@ namespace data_registry_public.Controllers
 
             if (string.IsNullOrWhiteSpace(user.OrganizationTin))
             {
-                result.ErrorMessage = "У пользователя не указан ИНН организации (ЕСИ не передал поле organization_tin).";
-                _logger.LogWarning("Вход без OrganizationTin для {Name}", user.Name);
+                result.ErrorMessage = "У пользователя не указан ИНН организации (ЕСИ не передала поле organization_tin).";
+                _logger.LogWarning("Вход без OrganizationTin для {UserId}", user.Id);
                 return result;
             }
 
@@ -329,7 +347,8 @@ namespace data_registry_public.Controllers
                 {
                     // Минюст недоступен или не нашёл субъект. Если организация уже синхронизирована ранее —
                     // пускаем с сохранёнными реквизитами (без подмены данных), иначе вход невозможен.
-                    var known = await _db.Organizations.AsNoTracking().FirstOrDefaultAsync(o => o.Id == user.OrganizationTin.Trim());
+                    var tin = user.OrganizationTin.Trim();
+                    var known = await _db.Organizations.AsNoTracking().FirstOrDefaultAsync(o => o.Id == tin);
                     if (known != null)
                     {
                         _logger.LogWarning("Минюст не вернул данные по ИНН {Tin}; вход с ранее сохранёнными реквизитами (синхронизация {Synced})",
@@ -354,36 +373,26 @@ namespace data_registry_public.Controllers
                     return result;
                 }
 
-                // 2. Валидируем код сектора по справочнику (FK organizations_fk).
-                //    Если код не найден — используем 'OTHER'. Если и OTHER отсутствует — NULL.
+                // 2. Код сектора — только из справочника (FK organizations_fk); неизвестный → 'OTHER' (или NULL).
                 string? safeSector = null;
-                if (!string.IsNullOrWhiteSpace(info.BusinessSector))
+                if (!string.IsNullOrWhiteSpace(info.BusinessSector)
+                    && await _db.OrganizationBuisnesSectors.AsNoTracking().AnyAsync(s => s.Id == info.BusinessSector))
                 {
-                    var exists = await _db.OrganizationBuisnesSectors
-                        .AsNoTracking()
-                        .AnyAsync(s => s.Id == info.BusinessSector);
-                    if (exists)
-                    {
-                        safeSector = info.BusinessSector;
-                    }
+                    safeSector = info.BusinessSector;
                 }
                 if (safeSector == null)
                 {
-                    var otherExists = await _db.OrganizationBuisnesSectors
-                        .AsNoTracking()
-                        .AnyAsync(s => s.Id == "OTHER");
-                    if (otherExists) safeSector = "OTHER";
-                    _logger.LogInformation(
-                        "Сектор '{Code}' не найден в справочнике, использую '{Fallback}'",
+                    if (await _db.OrganizationBuisnesSectors.AsNoTracking().AnyAsync(s => s.Id == "OTHER")) safeSector = "OTHER";
+                    _logger.LogInformation("Сектор '{Code}' не найден в справочнике, использую '{Fallback}'",
                         info.BusinessSector, safeSector ?? "NULL");
                 }
 
-                // 3. Upsert организации (Id = ИНН). При повторном входе обновляются ВСЕ поля.
+                // 3. Upsert организации (Id = ИНН). При повторном входе обновляются все реквизиты.
                 var now = DateTime.Now;
                 var existing = await _db.Organizations.FirstOrDefaultAsync(o => o.Id == info.Tin);
                 if (existing == null)
                 {
-                    await _db.Organizations.AddAsync(new Organization
+                    _db.Organizations.Add(new Organization
                     {
                         Id = info.Tin,
                         Fullnamegl = info.FullName,
@@ -402,16 +411,15 @@ namespace data_registry_public.Controllers
                 }
                 else
                 {
-                    // Обновляем ВСЕ реквизиты организации (актуализация из Минюста)
-                    if (!string.IsNullOrEmpty(info.FullName))           existing.Fullnamegl         = info.FullName;
-                    if (!string.IsNullOrEmpty(info.ShortName))          existing.ShortName          = info.ShortName;
-                    if (!string.IsNullOrEmpty(info.LegalForm))          existing.LegalForm          = info.LegalForm;
+                    if (!string.IsNullOrEmpty(info.FullName)) existing.Fullnamegl = info.FullName;
+                    if (!string.IsNullOrEmpty(info.ShortName)) existing.ShortName = info.ShortName;
+                    if (!string.IsNullOrEmpty(info.LegalForm)) existing.LegalForm = info.LegalForm;
                     if (!string.IsNullOrEmpty(info.RegistrationNumber)) existing.RegistrationNumber = info.RegistrationNumber;
-                    if (!string.IsNullOrEmpty(info.RegistrationDate))   existing.RegistrationDate   = info.RegistrationDate;
-                    if (!string.IsNullOrEmpty(info.Address))            existing.Address            = info.Address;
-                    if (!string.IsNullOrEmpty(info.DirectorName))       existing.DirectorName       = info.DirectorName;
-                    if (!string.IsNullOrEmpty(info.DirectorPosition))   existing.DirectorPosition   = info.DirectorPosition;
-                    if (!string.IsNullOrEmpty(info.Status))             existing.Status             = info.Status;
+                    if (!string.IsNullOrEmpty(info.RegistrationDate)) existing.RegistrationDate = info.RegistrationDate;
+                    if (!string.IsNullOrEmpty(info.Address)) existing.Address = info.Address;
+                    if (!string.IsNullOrEmpty(info.DirectorName)) existing.DirectorName = info.DirectorName;
+                    if (!string.IsNullOrEmpty(info.DirectorPosition)) existing.DirectorPosition = info.DirectorPosition;
+                    if (!string.IsNullOrEmpty(info.Status)) existing.Status = info.Status;
                     // сектор обновляем только если новый код валиден (не обнуляем имеющийся)
                     if (safeSector != null) existing.Businesssector = safeSector;
                     existing.LastSyncedAt = now;
@@ -424,7 +432,7 @@ namespace data_registry_public.Controllers
                     dbUser.Organization = info.Tin;
                     dbUser.OrganizationTin = info.Tin;
                     dbUser.OrganizationName = info.FullName;
-                    dbUser.UpdatedAt = DateTime.Now;
+                    dbUser.UpdatedAt = now;
                 }
 
                 await _db.SaveChangesAsync();
@@ -432,153 +440,18 @@ namespace data_registry_public.Controllers
                 _logger.LogInformation("Организация {Tin} ({Name}) привязана к пользователю {UserId} ({UserName})",
                     info.Tin, info.FullName, user.Id, user.Name);
 
-                // обновляем модель пользователя в памяти — чтобы корректно лёг claim orgName
+                // Модель в памяти — чтобы корректно лёг claim orgName.
                 user.OrganizationName = info.FullName;
-
                 result.Success = true;
                 result.OrgId = info.Tin;
                 return result;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Ошибка при upsert организации для пользователя {Name}", user.Name);
-                result.ErrorMessage = "Ошибка при сохранении организации: " + (ex.InnerException?.Message ?? ex.Message);
+                _logger.LogError(ex, "Ошибка при сохранении организации для пользователя {UserId}", user.Id);
+                result.ErrorMessage = "Ошибка при сохранении организации. Попробуйте позже или обратитесь в Агентство.";
                 return result;
             }
         }
-
-
-        private async Task<string> registrateNewUser(PublicUser user)
-        {
-            try
-            {
-                // Уже зарегистрирован — одним запросом берём id (раньше было три запроса).
-                var existingId = await _db.PublicUsers
-                    .AsNoTracking()
-                    .Where(a => a.EsiPin == user.EsiPin)
-                    .Select(a => a.Id)
-                    .FirstOrDefaultAsync();
-                if (existingId is not null)
-                {
-                    return existingId;
-                }
-                else
-                {
-                    //новый пользователь 
-                    user.Id = Guid.NewGuid().ToString();
-                    user.CreatedAt = DateTime.Now;
-                    user.UpdatedAt = DateTime.Now;
-                    user.Isdeleted = "0";
-
-                    await _db.PublicUsers.AddAsync(user);
-                    await _db.SaveChangesAsync();
-
-                    _logger.LogInformation("Зарегистрирован новый пользователь {UserId} ({Name}, ПИН {Pin})",
-                        user.Id, user.Name, data_registry_public.Infrastructure.Logging.AppLogging.Mask(user.EsiPin));
-
-                    return user.Id;
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Ошибка в методе registrateNewUser");
-                return null;
-            }
-        }
-
-
-        public async Task<IActionResult> Logout()
-        {
-            if (User.Identity?.IsAuthenticated == true)
-            {
-                _logger.LogInformation("Выход пользователя {UserId}", User.FindFirst("id")?.Value);
-            }
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index", "Home");
-        }
-
-
-
-        private async Task<string> ExchangeCodeForAccessToken(string code, string codeVerifier, string state)
-        {
-            try
-            {
-                // Клиент из IHttpClientFactory: без утечки сокетов при частых входах.
-                var client = _httpClientFactory.CreateClient();
-                {
-
-                    // Генерация строкового представления Basic Authentication
-                    string authInfo = _appSettings.clientId + ":" + _appSettings.secretKey;
-                    authInfo = Convert.ToBase64String(Encoding.Default.GetBytes(authInfo));
-                    string authHeader = "Basic " + authInfo;
-
-                    // Добавление заголовка Authorization с Basic Authentication к запросу
-                    client.DefaultRequestHeaders.Add("Authorization", authHeader);
-
-                    var tokenResponse = await client.PostAsync(_appSettings.tokenUrl, new FormUrlEncodedContent(new[]
-                    {
-                    new KeyValuePair<string, string>("grant_type", "authorization_code"),
-                    new KeyValuePair<string, string>("code", code),
-                    new KeyValuePair<string, string>("redirect_uri", _appSettings.redirectUrl),
-                    new KeyValuePair<string, string>("code_verifier", codeVerifier),
-                }));
-
-                    var tokenContent = await tokenResponse.Content.ReadAsStringAsync();
-                    var tokenData = JsonConvert.DeserializeObject<Dictionary<string, string>>(tokenContent);
-
-                    if (tokenData != null && tokenData.ContainsKey("access_token"))
-                    {
-                        using (data_registry_public.Infrastructure.Logging.LogCategories.Push(data_registry_public.Infrastructure.Logging.LogCategories.Integration))
-                        {
-                            _logger.LogInformation("ЕСИ: токен получен (HTTP {Status})", (int)tokenResponse.StatusCode);
-                        }
-                        return tokenData["access_token"];
-                    }
-                    else
-                    {
-                        // Тело ответа не пишем (в нём могут быть секреты) — только код и поле error.
-                        using (data_registry_public.Infrastructure.Logging.LogCategories.Push(data_registry_public.Infrastructure.Logging.LogCategories.Integration))
-                        {
-                            _logger.LogWarning("ЕСИ: токен не выдан — HTTP {Status}, error: {Error}",
-                                (int)tokenResponse.StatusCode, tokenData != null && tokenData.TryGetValue("error", out var err) ? err : "-");
-                        }
-                        throw new Exception("Не удалось получить токен от ЕСИ");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Ошибка в методе ExchangeCodeForAccessToken");
-                return null;
-            }
-        }
-
-
-        private async Task<string> GetUserInfoAsync(string accessToken)
-        {
-            var client = _httpClientFactory.CreateClient();
-            client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
-
-            var sw = System.Diagnostics.Stopwatch.StartNew();
-            var response = await client.GetAsync(_appSettings.userInfoUrl);
-
-            using (data_registry_public.Infrastructure.Logging.LogCategories.Push(data_registry_public.Infrastructure.Logging.LogCategories.Integration))
-            {
-                if (response.IsSuccessStatusCode)
-                {
-                    var content = await response.Content.ReadAsStringAsync();
-                    _logger.LogInformation("ЕСИ: данные пользователя получены за {Elapsed} мс", sw.ElapsedMilliseconds);
-                    return content;
-                }
-                else
-                {
-                    // Обработка ошибки получения данных пользователя
-                    _logger.LogWarning("ЕСИ: userinfo вернул HTTP {Status} за {Elapsed} мс", (int)response.StatusCode, sw.ElapsedMilliseconds);
-                    return null;
-                }
-            }
-        }
-
-
     }
 }
