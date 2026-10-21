@@ -145,6 +145,18 @@ public partial class Incident
     /// </summary>
     public string? Organization { get; set; }
 
+    /// <summary>Ответственное лицо по инциденту: ФИО (по умолчанию — зарегистрировавший пользователь).</summary>
+    public string? ResponsibleName { get; set; }
+
+    /// <summary>Ответственное лицо по инциденту: должность.</summary>
+    public string? ResponsiblePosition { get; set; }
+
+    /// <summary>Ответственное лицо по инциденту: телефон.</summary>
+    public string? ResponsiblePhone { get; set; }
+
+    /// <summary>Ответственное лицо по инциденту: эл. почта.</summary>
+    public string? ResponsibleEmail { get; set; }
+
     public virtual ICollection<IncidentMaterial> IncidentMaterials { get; set; } = new List<IncidentMaterial>();
 
     public virtual IncidentType? IncidentTypeNavigation { get; set; }

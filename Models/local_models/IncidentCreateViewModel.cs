@@ -44,6 +44,24 @@ namespace data_registry_public.Models.local_models
         [Display(Name = "Сфера деятельности (название)")]
         public string? OrganizationSectorName { get; set; }
 
+        // === Шаг 1. Ответственное лицо по инциденту ===
+        // По умолчанию — вошедший пользователь (данные ЕСИ), но можно указать другого сотрудника.
+
+        [Required(ErrorMessage = "Укажите ФИО ответственного")]
+        [StringLength(200, ErrorMessage = "Не длиннее 200 символов")]
+        public string? ResponsibleName { get; set; }
+
+        [StringLength(200, ErrorMessage = "Не длиннее 200 символов")]
+        public string? ResponsiblePosition { get; set; }
+
+        [Required(ErrorMessage = "Укажите телефон ответственного")]
+        [RegularExpression(@"^\+?[\d\s\-()]{7,20}$", ErrorMessage = "Телефон: цифры, пробелы, +, -, скобки (7–20 символов)")]
+        public string? ResponsiblePhone { get; set; }
+
+        [EmailAddress(ErrorMessage = "Некорректный адрес эл. почты")]
+        [StringLength(200, ErrorMessage = "Не длиннее 200 символов")]
+        public string? ResponsibleEmail { get; set; }
+
         // === Шаг 2. Общие сведения об инциденте ===
 
         [Required(ErrorMessage = "Укажите дату возникновения")]

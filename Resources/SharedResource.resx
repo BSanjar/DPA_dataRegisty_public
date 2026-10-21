@@ -393,4 +393,25 @@
   <data name="Home.Trend.ChartUnavailable" xml:space="preserve">
     <value>График временно недоступен. Обновите страницу.</value>
   </data>
+  <data name="Create.Resp.Title" xml:space="preserve">
+    <value>Ответственное лицо по инциденту</value>
+  </data>
+  <data name="Create.Resp.Sub" xml:space="preserve">
+    <value>По умолчанию — вы. Можно указать другого сотрудника организации, с которым Агентство будет держать связь.</value>
+  </data>
+  <data name="Create.Resp.Me" xml:space="preserve">
+    <value>Указать себя</value>
+  </data>
+  <data name="Create.Resp.Name" xml:space="preserve">
+    <value>ФИО</value>
+  </data>
+  <data name="Create.Resp.Position" xml:space="preserve">
+    <value>Должность</value>
+  </data>
+  <data name="Create.Resp.Phone" xml:space="preserve">
+    <value>Телефон</value>
+  </data>
+  <data name="Create.Resp.Email" xml:space="preserve">
+    <value>Эл. почта</value>
+  </data>
 </root>

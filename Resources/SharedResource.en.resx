@@ -377,4 +377,25 @@
   <data name="Home.Trend.ChartUnavailable" xml:space="preserve">
     <value>The chart is temporarily unavailable. Please reload the page.</value>
   </data>
+  <data name="Create.Resp.Title" xml:space="preserve">
+    <value>Person responsible for the incident</value>
+  </data>
+  <data name="Create.Resp.Sub" xml:space="preserve">
+    <value>You by default. You can specify another employee the Agency will contact.</value>
+  </data>
+  <data name="Create.Resp.Me" xml:space="preserve">
+    <value>Use my details</value>
+  </data>
+  <data name="Create.Resp.Name" xml:space="preserve">
+    <value>Full name</value>
+  </data>
+  <data name="Create.Resp.Position" xml:space="preserve">
+    <value>Position</value>
+  </data>
+  <data name="Create.Resp.Phone" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="Create.Resp.Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
 </root>

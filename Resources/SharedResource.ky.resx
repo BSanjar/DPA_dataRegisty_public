@@ -344,4 +344,25 @@
   <data name="Home.Trend.ChartUnavailable" xml:space="preserve">
     <value>График убактылуу жеткиликсиз. Баракты жаңылаңыз.</value>
   </data>
+  <data name="Create.Resp.Title" xml:space="preserve">
+    <value>Инцидент боюнча жооптуу адам</value>
+  </data>
+  <data name="Create.Resp.Sub" xml:space="preserve">
+    <value>Демейки боюнча — сиз. Агенттик байланышта боло турган уюмдун башка кызматкерин көрсөтсөңүз болот.</value>
+  </data>
+  <data name="Create.Resp.Me" xml:space="preserve">
+    <value>Өзүмдү көрсөтүү</value>
+  </data>
+  <data name="Create.Resp.Name" xml:space="preserve">
+    <value>Аты-жөнү</value>
+  </data>
+  <data name="Create.Resp.Position" xml:space="preserve">
+    <value>Кызматы</value>
+  </data>
+  <data name="Create.Resp.Phone" xml:space="preserve">
+    <value>Телефон</value>
+  </data>
+  <data name="Create.Resp.Email" xml:space="preserve">
+    <value>Электрондук почта</value>
+  </data>
 </root>

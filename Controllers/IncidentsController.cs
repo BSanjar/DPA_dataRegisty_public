@@ -166,6 +166,12 @@ namespace data_registry_public.Controllers
                 DateDetection = DateTime.Now,
                 DateOccurrence = DateTime.Now.AddHours(-1),
             };
+            var me = await GetCurrentUserContactAsync();
+            ViewBag.ResponsibleMe = me;
+            model.ResponsibleName = me.Name;
+            model.ResponsiblePosition = me.Position;
+            model.ResponsiblePhone = me.Phone;
+            model.ResponsibleEmail = me.Email;
 
             if (org != null)
             {
@@ -189,6 +195,36 @@ namespace data_registry_public.Controllers
             ViewBag.CurrentOrg = org;
             return View(model);
         }
+
+        /// <summary>Контактные данные вошедшего пользователя — для блока «Ответственное лицо».</summary>
+        public sealed record ContactInfo(string? Name, string? Position, string? Phone, string? Email);
+
+        /// <summary>
+        /// Ответственный по умолчанию — вошедший пользователь: ФИО и email из claims ЕСИ,
+        /// телефон и должность — из его записи public_users. Поля на форме можно изменить.
+        /// </summary>
+        private async Task<ContactInfo> GetCurrentUserContactAsync()
+        {
+            var name = User.Identity?.Name;
+            var email = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value;
+
+            var userId = User.FindFirst("id")?.Value;
+            var user = string.IsNullOrEmpty(userId) ? null : await _db.PublicUsers.AsNoTracking()
+                .Where(u => u.Id == userId)
+                .Select(u => new { u.EsiName, u.Name, u.EsiEmail, u.Email, u.EsiPhoneNumber, u.PositionName })
+                .FirstOrDefaultAsync();
+
+            return new ContactInfo(
+                FirstNonEmpty(name, user?.EsiName, user?.Name),
+                FirstNonEmpty(user?.PositionName),
+                FirstNonEmpty(user?.EsiPhoneNumber),
+                FirstNonEmpty(email, user?.EsiEmail, user?.Email));
+        }
+
+        private static string? FirstNonEmpty(params string?[] values) =>
+            values.FirstOrDefault(v => !string.IsNullOrWhiteSpace(v))?.Trim();
+
+        private static string? Clean(string? value) => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -217,6 +253,7 @@ namespace data_registry_public.Controllers
             if (!ModelState.IsValid)
             {
                 ViewBag.CurrentOrg = org;
+                ViewBag.ResponsibleMe = await GetCurrentUserContactAsync();
                 // подставим данные организации, т.к. на форме они read-only и могут не прийти
                 model.OrganizationTin = org.Tin;
                 model.OrganizationName = org.FullName;
@@ -265,6 +302,10 @@ namespace data_registry_public.Controllers
                 Personaldatatype = model.PersonalDataType,
                 Estimateddatasubjectscount = model.EstimatedDataSubjectsCount,
                 Datasubjectcategory = model.DataSubjectCategory,
+                ResponsibleName = Clean(model.ResponsibleName),
+                ResponsiblePosition = Clean(model.ResponsiblePosition),
+                ResponsiblePhone = Clean(model.ResponsiblePhone),
+                ResponsibleEmail = Clean(model.ResponsibleEmail),
             };
 
             // Сохраняем тип инцидента до появления справочника в UI — в префикс описания.
@@ -276,6 +317,17 @@ namespace data_registry_public.Controllers
             try
             {
                 await _db.Incidents.AddAsync(incident);
+
+                // Контакт организации по инцидентам = последний указанный ответственный (его видит админка).
+                var orgEntity = await _db.Organizations.FirstOrDefaultAsync(o => o.Id == org.Tin);
+                if (orgEntity is not null)
+                {
+                    orgEntity.IncidentContactPerson = incident.ResponsibleName;
+                    orgEntity.IncidentContactPosition = incident.ResponsiblePosition;
+                    orgEntity.IncidentContactPhone = incident.ResponsiblePhone;
+                    orgEntity.IncidentContactEmail = incident.ResponsibleEmail;
+                }
+
                 await _db.SaveChangesAsync();
                 _logger.LogInformation("Инцидент {Id} зарегистрирован: организация {Org}, тяжесть {Severity}, субъектов ~{Subjects}",
                     incident.Id, org?.Tin ?? "-", model.IncidentSeverity ?? "-", model.EstimatedDataSubjectsCount);
@@ -283,8 +335,9 @@ namespace data_registry_public.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Не удалось сохранить инцидент");
-                TempData["ErrorMessage"] = "Не удалось сохранить инцидент: " + ex.Message;
+                TempData["ErrorMessage"] = "Не удалось сохранить инцидент. Попробуйте ещё раз.";
                 ViewBag.CurrentOrg = org;
+                ViewBag.ResponsibleMe = await GetCurrentUserContactAsync();
                 return View("Create", model);
             }
 

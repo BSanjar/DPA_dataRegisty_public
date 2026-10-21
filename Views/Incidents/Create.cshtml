@@ -62,7 +62,7 @@
     </div>
 
     <!-- ========== STEP 1: Organization (read-only) ========== -->
-    <section class="wiz-pane card" data-pane="1">
+    <section class="wiz-pane card" data-pane="1" data-validate-pane>
         <div class="card-header flex flex-wrap items-center justify-between gap-2">
             <div>
                 <div class="text-base font-extrabold text-dpa-800">@L["Create.Step1.Title"]</div>
@@ -123,6 +123,44 @@
                         </dd>
                     </div>
                 </dl>
+            </div>
+
+            @* Ответственный по инциденту: по умолчанию — вошедший пользователь, но можно указать другого. *@
+            var me = ViewBag.ResponsibleMe as data_registry_public.Controllers.IncidentsController.ContactInfo;
+            <div class="card-body border-t border-dpaGray-200" data-responsible
+                 data-me-name="@me?.Name" data-me-position="@me?.Position"
+                 data-me-phone="@me?.Phone" data-me-email="@me?.Email">
+                <div class="flex flex-wrap items-start justify-between gap-2">
+                    <div>
+                        <div class="text-sm font-extrabold text-dpa-800">@L["Create.Resp.Title"]</div>
+                        <div class="text-xs text-dpaGray-500">@L["Create.Resp.Sub"]</div>
+                    </div>
+                    <button type="button" class="btn-secondary !h-8 !px-3 text-xs" data-responsible-me>
+                        <i class="bi bi-person-check"></i> @L["Create.Resp.Me"]
+                    </button>
+                </div>
+                <div class="mt-4 grid gap-4 sm:grid-cols-2">
+                    <div class="field">
+                        <label asp-for="ResponsibleName" class="form-label">@L["Create.Resp.Name"] <span class="text-rose-600">*</span></label>
+                        <input asp-for="ResponsibleName" class="form-control" maxlength="200" autocomplete="name" data-required="true" />
+                        <span class="field-error" asp-validation-for="ResponsibleName"></span>
+                    </div>
+                    <div class="field">
+                        <label asp-for="ResponsiblePosition" class="form-label">@L["Create.Resp.Position"]</label>
+                        <input asp-for="ResponsiblePosition" class="form-control" maxlength="200" autocomplete="organization-title" />
+                        <span class="field-error" asp-validation-for="ResponsiblePosition"></span>
+                    </div>
+                    <div class="field">
+                        <label asp-for="ResponsiblePhone" class="form-label">@L["Create.Resp.Phone"] <span class="text-rose-600">*</span></label>
+                        <input asp-for="ResponsiblePhone" type="tel" class="form-control" maxlength="20" autocomplete="tel" placeholder="+996 555 000 000" data-required="true" data-validate="phone" />
+                        <span class="field-error" asp-validation-for="ResponsiblePhone"></span>
+                    </div>
+                    <div class="field">
+                        <label asp-for="ResponsibleEmail" class="form-label">@L["Create.Resp.Email"]</label>
+                        <input asp-for="ResponsibleEmail" type="email" class="form-control" maxlength="200" autocomplete="email" data-validate="email" />
+                        <span class="field-error" asp-validation-for="ResponsibleEmail"></span>
+                    </div>
+                </div>
             </div>
         }
 
@@ -446,6 +484,12 @@
                 if (minLen > 0 && val.trim().length < minLen) {
                     setError(el, `Минимум ${minLen} символов`); return false;
                 }
+                if (validate === 'phone' && !/^\+?[\d\s\-()]{7,20}$/.test(val.trim())) {
+                    setError(el, 'Телефон: цифры, пробелы, +, -, скобки'); return false;
+                }
+                if (validate === 'email' && !/^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/.test(val.trim())) {
+                    setError(el, 'Некорректный адрес эл. почты'); return false;
+                }
                 if (validate === 'datetime-past') {
                     if (new Date(val) > new Date()) {
                         setError(el, 'Дата не может быть в будущем'); return false;
@@ -503,6 +547,19 @@
             notifiedChk.addEventListener('change', () => {
                 const dt = form.querySelector('[name="NotificationSentAt"]');
                 if (dt) validateField(dt);
+            });
+        }
+
+        // «Указать себя» — вернуть в блок ответственного данные вошедшего пользователя.
+        const resp = document.querySelector('[data-responsible]');
+        const meBtn = document.querySelector('[data-responsible-me]');
+        if (resp && meBtn) {
+            meBtn.addEventListener('click', () => {
+                [['ResponsibleName', 'meName'], ['ResponsiblePosition', 'mePosition'],
+                 ['ResponsiblePhone', 'mePhone'], ['ResponsibleEmail', 'meEmail']].forEach(([name, key]) => {
+                    const input = form.querySelector(`[name="${name}"]`);
+                    if (input) { input.value = resp.dataset[key] || ''; validateField(input); }
+                });
             });
         }
 

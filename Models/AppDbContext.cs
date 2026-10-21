@@ -162,6 +162,10 @@ public partial class AppDbContext : DbContext
                 .HasComment("организация, в которой произошёл инцидент (ИНН)")
                 .HasColumnType("character varying")
                 .HasColumnName("organization");
+            entity.Property(e => e.ResponsibleName).HasColumnType("character varying").HasColumnName("responsible_name");
+            entity.Property(e => e.ResponsiblePosition).HasColumnType("character varying").HasColumnName("responsible_position");
+            entity.Property(e => e.ResponsiblePhone).HasColumnType("character varying").HasColumnName("responsible_phone");
+            entity.Property(e => e.ResponsibleEmail).HasColumnType("character varying").HasColumnName("responsible_email");
 
             entity.HasOne(d => d.IncidentTypeNavigation).WithMany(p => p.Incidents)
                 .HasForeignKey(d => d.IncidentType)
@@ -480,6 +484,10 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.LastSyncedAt)
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("last_synced_at");
+            entity.Property(e => e.IncidentContactPerson).HasColumnType("character varying").HasColumnName("incident_contact_person");
+            entity.Property(e => e.IncidentContactPosition).HasColumnType("character varying").HasColumnName("incident_contact_position");
+            entity.Property(e => e.IncidentContactPhone).HasColumnType("character varying").HasColumnName("incident_contact_phone");
+            entity.Property(e => e.IncidentContactEmail).HasColumnType("character varying").HasColumnName("incident_contact_email");
 
             entity.HasOne(d => d.BusinesssectorNavigation).WithMany(p => p.Organizations)
                 .HasForeignKey(d => d.Businesssector)

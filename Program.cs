@@ -95,6 +95,13 @@ using (var scope = app.Services.CreateScope())
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         await db.Database.ExecuteSqlRawAsync("ALTER TABLE incidents ADD COLUMN IF NOT EXISTS organization varchar");
 
+        // Ответственное лицо по инциденту (sql/2026-10-21_incidents_responsible.sql в админке).
+        await db.Database.ExecuteSqlRawAsync(@"
+            ALTER TABLE incidents ADD COLUMN IF NOT EXISTS responsible_name     varchar;
+            ALTER TABLE incidents ADD COLUMN IF NOT EXISTS responsible_position varchar;
+            ALTER TABLE incidents ADD COLUMN IF NOT EXISTS responsible_phone    varchar;
+            ALTER TABLE incidents ADD COLUMN IF NOT EXISTS responsible_email    varchar;");
+
         // Реквизиты организаций, заполняемые из Минюста.
         await db.Database.ExecuteSqlRawAsync(@"
             ALTER TABLE organizations ADD COLUMN IF NOT EXISTS short_name           varchar;

@@ -75,6 +75,15 @@ public partial class Organization
     /// </summary>
     public string? Risklevel { get; set; }
 
+    /// <summary>Контакт организации по инцидентам — последний указанный ответственный (видит админка).</summary>
+    public string? IncidentContactPerson { get; set; }
+
+    public string? IncidentContactPosition { get; set; }
+
+    public string? IncidentContactPhone { get; set; }
+
+    public string? IncidentContactEmail { get; set; }
+
     public virtual OrganizationBuisnesSector? BusinesssectorNavigation { get; set; }
 
     public virtual ICollection<Inspection> Inspections { get; set; } = new List<Inspection>();
