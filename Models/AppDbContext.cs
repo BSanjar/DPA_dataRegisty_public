@@ -484,6 +484,11 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.LastSyncedAt)
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("last_synced_at");
+            entity.Property(e => e.DetailsSource).HasColumnType("character varying").HasColumnName("details_source");
+            entity.Property(e => e.DetailsUpdatedAt)
+                .HasColumnType("timestamp without time zone")
+                .HasColumnName("details_updated_at");
+            entity.Property(e => e.DetailsUpdatedBy).HasColumnType("character varying").HasColumnName("details_updated_by");
             entity.Property(e => e.IncidentContactPerson).HasColumnType("character varying").HasColumnName("incident_contact_person");
             entity.Property(e => e.IncidentContactPosition).HasColumnType("character varying").HasColumnName("incident_contact_position");
             entity.Property(e => e.IncidentContactPhone).HasColumnType("character varying").HasColumnName("incident_contact_phone");

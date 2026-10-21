@@ -1,0 +1,100 @@
+@model data_registry_public.Models.local_models.OrganizationDetailsInput
+@using data_registry_public.Models.local_models
+@*
+    Поля ручного ввода реквизитов организации (Минюст не нашёл ИНН).
+    Используется на шаге 1 регистрации инцидента (for="OrgManual") и в профиле (model="Model").
+    ViewData: OrgTin — ИНН из ЕСИ (только показ), OrgSectors — справочник сфер деятельности.
+    Маски и проверки на странице — wwwroot/js/org-details.js, на сервере — OrganizationDetailsInput.
+*@
+@{
+    var sectors = ViewData["OrgSectors"] as IReadOnlyList<data_registry_public.Services.SectorOption>
+                  ?? Array.Empty<data_registry_public.Services.SectorOption>();
+    var tin = ViewData["OrgTin"] as string;
+    var minDate = OrganizationDetailsInput.MinRegistrationDate.ToString("yyyy-MM-dd");
+    var maxDate = DateTime.Today.ToString("yyyy-MM-dd");
+}
+
+<div class="space-y-4" data-org-fields>
+    <div class="grid gap-4 sm:grid-cols-3">
+        <div class="field">
+            <label class="form-label" for="orgTinReadonly">@L["OrgForm.Tin"]</label>
+            <input id="orgTinReadonly" class="form-control font-mono" value="@tin" readonly tabindex="-1" aria-readonly="true" />
+            <div class="form-hint"><i class="bi bi-lock"></i> @L["OrgForm.TinHint"]</div>
+        </div>
+        <div class="field sm:col-span-2">
+            <label asp-for="FullName" class="form-label">@L["OrgForm.FullName"] <span class="text-rose-600">*</span></label>
+            <input asp-for="FullName" class="form-control" maxlength="500" autocomplete="off"
+                   placeholder="@L["OrgForm.FullName.PH"]" data-required="true" data-min-length="3" data-mask="org-name" />
+            <span class="field-error" asp-validation-for="FullName"></span>
+        </div>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-3">
+        <div class="field">
+            <label asp-for="ShortName" class="form-label">@L["OrgForm.ShortName"]</label>
+            <input asp-for="ShortName" class="form-control" maxlength="200" autocomplete="off"
+                   placeholder="@L["OrgForm.ShortName.PH"]" data-validate="org-text" data-mask="org-name" />
+            <span class="field-error" asp-validation-for="ShortName"></span>
+        </div>
+        <div class="field">
+            <label asp-for="LegalForm" class="form-label">@L["OrgForm.LegalForm"] <span class="text-rose-600">*</span></label>
+            <select asp-for="LegalForm" class="form-control" data-required="true">
+                <option value="">@L["Common.Choose"]</option>
+                @foreach (var form in OrganizationDetailsInput.LegalForms)
+                {
+                    <option value="@form">@form</option>
+                }
+            </select>
+            <span class="field-error" asp-validation-for="LegalForm"></span>
+        </div>
+        <div class="field">
+            <label asp-for="BusinessSector" class="form-label">@L["OrgForm.Sector"] <span class="text-rose-600">*</span></label>
+            <select asp-for="BusinessSector" class="form-control" data-required="true">
+                <option value="">@L["Common.Choose"]</option>
+                @foreach (var s in sectors)
+                {
+                    <option value="@s.Id">@s.Name</option>
+                }
+            </select>
+            <span class="field-error" asp-validation-for="BusinessSector"></span>
+        </div>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-3">
+        <div class="field">
+            <label asp-for="RegistrationNumber" class="form-label">@L["OrgForm.RegNumber"] <span class="text-rose-600">*</span></label>
+            <input asp-for="RegistrationNumber" class="form-control font-mono uppercase" maxlength="50" autocomplete="off" spellcheck="false"
+                   placeholder="@L["OrgForm.RegNumber.PH"]" data-required="true" data-validate="org-regnum" data-mask="regnum" />
+            <span class="field-error" asp-validation-for="RegistrationNumber"></span>
+            <div class="form-hint">@L["OrgForm.RegNumber.Hint"]</div>
+        </div>
+        <div class="field">
+            <label asp-for="RegistrationDate" class="form-label">@L["OrgForm.RegDate"] <span class="text-rose-600">*</span></label>
+            <input asp-for="RegistrationDate" type="date" class="form-control" min="@minDate" max="@maxDate"
+                   data-required="true" data-validate="org-date" />
+            <span class="field-error" asp-validation-for="RegistrationDate"></span>
+        </div>
+    </div>
+
+    <div class="field">
+        <label asp-for="Address" class="form-label">@L["OrgForm.Address"] <span class="text-rose-600">*</span></label>
+        <input asp-for="Address" class="form-control" maxlength="500" autocomplete="street-address"
+               placeholder="@L["OrgForm.Address.PH"]" data-required="true" data-min-length="10" data-mask="squash" />
+        <span class="field-error" asp-validation-for="Address"></span>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-2">
+        <div class="field">
+            <label asp-for="DirectorName" class="form-label">@L["OrgForm.Director"] <span class="text-rose-600">*</span></label>
+            <input asp-for="DirectorName" class="form-control" maxlength="200" autocomplete="off"
+                   placeholder="@L["OrgForm.Director.PH"]" data-required="true" data-validate="org-person" data-mask="person-name" />
+            <span class="field-error" asp-validation-for="DirectorName"></span>
+        </div>
+        <div class="field">
+            <label asp-for="DirectorPosition" class="form-label">@L["OrgForm.DirectorPosition"] <span class="text-rose-600">*</span></label>
+            <input asp-for="DirectorPosition" class="form-control" maxlength="200" autocomplete="off"
+                   placeholder="@L["OrgForm.DirectorPosition.PH"]" data-required="true" data-min-length="2" data-mask="squash" />
+            <span class="field-error" asp-validation-for="DirectorPosition"></span>
+        </div>
+    </div>
+</div>

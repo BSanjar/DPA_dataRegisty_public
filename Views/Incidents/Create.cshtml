@@ -2,6 +2,9 @@
 @{
     ViewData["Title"] = L["Create.Title"].Value;
     var org = ViewBag.CurrentOrg as data_registry_public.Integrations.MinJustOrganizationInfo;
+    var orgDetails = ViewBag.OrgDetails as data_registry_public.Services.OrganizationDetails;
+    bool orgEditable = orgDetails?.IsEditable == true && Model.OrgManual != null;
+    if (orgEditable) { ViewData["OrgTin"] = org?.Tin; }
 }
 
 <div class="mb-6 flex flex-col gap-2">
@@ -66,9 +69,20 @@
         <div class="card-header flex flex-wrap items-center justify-between gap-2">
             <div>
                 <div class="text-base font-extrabold text-dpa-800">@L["Create.Step1.Title"]</div>
-                <div class="text-xs text-dpaGray-500">@L["Create.Step1.Header.Sub"]</div>
+                <div class="text-xs text-dpaGray-500">@(orgEditable ? L["Create.Step2.Header.Sub"] : L["Create.Step1.Header.Sub"])</div>
             </div>
-            <span class="badge badge-success"><i class="bi bi-check2-circle"></i> @L["Create.Step1.Badge"]</span>
+            @if (orgDetails?.IsMissing == true)
+            {
+                <span class="badge badge-warning"><i class="bi bi-pencil-square"></i> @L["OrgForm.Badge.Missing"]</span>
+            }
+            else if (orgEditable)
+            {
+                <span class="badge badge-primary"><i class="bi bi-person-check"></i> @L["OrgForm.Badge.Manual"]</span>
+            }
+            else if (org != null)
+            {
+                <span class="badge badge-success"><i class="bi bi-check2-circle"></i> @L["Create.Step1.Badge"]</span>
+            }
         </div>
 
         @if (org == null)
@@ -78,6 +92,27 @@
                     <i class="bi bi-exclamation-circle"></i>
                     @L["Create.Org.NotFound"]
                 </div>
+            </div>
+        }
+        else if (orgEditable)
+        {
+            @* Минюст не знает ИНН из ЕСИ — реквизиты указывает представитель (сохраняются вместе с инцидентом). *@
+            <div class="card-body space-y-4">
+                @if (orgDetails!.IsMissing)
+                {
+                    <div class="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+                        <i class="bi bi-info-circle-fill mt-0.5"></i>
+                        <div>@L["OrgForm.Missing.Body", org.Tin]</div>
+                    </div>
+                }
+                else
+                {
+                    <div class="flex items-start gap-3 rounded-xl border border-dpa-200 bg-dpa-50 p-4 text-sm text-dpa-800">
+                        <i class="bi bi-info-circle mt-0.5"></i>
+                        <div>@L["OrgForm.Manual.Body", org.Tin]</div>
+                    </div>
+                }
+                <partial name="_OrganizationDetailsFields" for="OrgManual" />
             </div>
         }
         else
@@ -135,7 +170,10 @@
                 </dl>
                 }
             </div>
+        }
 
+        @if (org != null)
+        {
             @* Ответственный по инциденту: по умолчанию — вошедший пользователь, но можно указать другого. *@
             var me = ViewBag.ResponsibleMe as data_registry_public.Controllers.IncidentsController.ContactInfo;
             <div class="card-body border-t border-dpaGray-200" data-responsible
@@ -407,6 +445,10 @@
 </form>
 
 @section Scripts {
+    @if (orgEditable)
+    {
+        <script src="~/js/org-details.js" asp-append-version="true"></script>
+    }
     <script>
     (function () {
         const steps = Array.from(document.querySelectorAll('#wizSteps .step'));
@@ -462,6 +504,13 @@
         // ===== validation of a single field =====
         function validateField(el) {
             if (el.tagName === 'INPUT' && el.type === 'hidden') return true;
+            // реквизиты организации, указываемые вручную, — правила в org-details.js
+            if (window.OrgDetails && el.closest('[data-org-fields]')) {
+                const msg = window.OrgDetails.check(el);
+                if (msg) { setError(el, msg); return false; }
+                clearError(el);
+                return true;
+            }
             const required = el.dataset.required === 'true';
             const validate = el.dataset.validate;
             const minLen   = el.dataset.minLength ? Number(el.dataset.minLength) : 0;
@@ -621,11 +670,13 @@
         let submitted = false;
         form.addEventListener('submit', e => {
             if (submitted) { e.preventDefault(); return; } // защита от двойного submit
+            const ok1 = validatePane(1);
             const ok2 = validatePane(2);
             const ok3 = validatePane(3);
-            if (!ok2 || !ok3) {
+            if (!ok1 || !ok2 || !ok3) {
                 e.preventDefault();
-                if (!ok2) showStep(2);
+                if (!ok1) showStep(1);
+                else if (!ok2) showStep(2);
                 else if (!ok3) showStep(3);
                 return;
             }

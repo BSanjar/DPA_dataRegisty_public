@@ -1,7 +1,8 @@
-﻿using System.Text.Json;
+﻿using data_registry_public.Infrastructure.Hosting;
 using data_registry_public.Integrations;
 using data_registry_public.Models;
 using data_registry_public.Models.local_models;
+using data_registry_public.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,13 +24,13 @@ namespace data_registry_public.Controllers
         private const string OwnIncidentsCookie = "dp_own_incidents";
 
         private readonly AppDbContext _db;
-        private readonly IMinJustService _minJust;
+        private readonly OrganizationDetailsService _orgDetails;
         private readonly ILogger<IncidentsController> _logger;
 
-        public IncidentsController(AppDbContext db, IMinJustService minJust, ILogger<IncidentsController> logger)
+        public IncidentsController(AppDbContext db, OrganizationDetailsService orgDetails, ILogger<IncidentsController> logger)
         {
             _db = db;
-            _minJust = minJust;
+            _orgDetails = orgDetails;
             _logger = logger;
         }
 
@@ -92,7 +93,7 @@ namespace data_registry_public.Controllers
 
             var list = await query.OrderByDescending(i => i.DateCreate).ToListAsync();
 
-            ViewBag.CurrentOrg = await ResolveCurrentOrganizationAsync();
+            ViewBag.CurrentOrg = (await ResolveCurrentOrganizationAsync())?.Info;
             ViewBag.FilterQuery = q;
             ViewBag.FilterSeverity = severity;
             ViewBag.FilterPeriod = period;
@@ -144,7 +145,7 @@ namespace data_registry_public.Controllers
                 }
             }
 
-            ViewBag.CurrentOrg = await ResolveCurrentOrganizationAsync();
+            ViewBag.CurrentOrg = (await ResolveCurrentOrganizationAsync())?.Info;
             return View(incident);
         }
 
@@ -153,11 +154,9 @@ namespace data_registry_public.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            // Данные организации автоматически подтягиваем из Минюста при входе,
-            // никаких кнопок. ИНН берётся:
-            //   — после авторизации: из claims (orgPin)
-            //   — сейчас (dev): из cookie или фиксированная заглушка
-            var org = await ResolveCurrentOrganizationAsync();
+            // Реквизиты организации — из Минюста по ИНН из ЕСИ. Если Минюст ИНН не знает,
+            // представитель указывает их на шаге 1 (ИНН не меняется).
+            var details = await ResolveCurrentOrganizationAsync();
 
             var model = new IncidentCreateViewModel
             {
@@ -165,33 +164,53 @@ namespace data_registry_public.Controllers
                 DateOccurrence = DateTime.Now.AddHours(-1),
             };
             var me = await GetCurrentUserContactAsync();
-            ViewBag.ResponsibleMe = me;
             model.ResponsibleName = me.Name;
             model.ResponsiblePosition = me.Position;
             model.ResponsiblePhone = me.Phone;
             model.ResponsibleEmail = me.Email;
 
-            if (org != null)
+            if (details != null)
             {
-                model.OrganizationTin = org.Tin;
-                model.OrganizationName = org.FullName;
-                model.OrganizationShortName = org.ShortName;
-                model.OrganizationLegalForm = org.LegalForm;
-                model.OrganizationRegNumber = org.RegistrationNumber;
-                model.OrganizationRegDate = org.RegistrationDate;
-                model.OrganizationAddress = org.Address;
-                model.OrganizationDirector = org.DirectorName;
-                model.OrganizationDirectorPosition = org.DirectorPosition;
-                model.OrganizationSector = org.BusinessSector;
-                model.OrganizationSectorName = org.BusinessSectorName;
+                FillOrganizationFields(model, details.Info);
+                if (details.IsEditable)
+                {
+                    model.OrgManual = OrganizationDetailsService.ToInput(details.Info);
+                }
             }
             else
             {
-                TempData["ErrorMessage"] = "Не удалось получить данные организации из Минюста. Обратитесь к администратору.";
+                TempData["ErrorMessage"] = "К вашей учётной записи не привязана организация. Войдите через ЕСИ как представитель организации.";
             }
 
-            ViewBag.CurrentOrg = org;
+            await PrepareCreateViewAsync(details, me);
             return View(model);
+        }
+
+        /// <summary>Данные для страницы мастера: организация, справочник секторов (для ручного ввода), ответственный.</summary>
+        private async Task PrepareCreateViewAsync(OrganizationDetails? details, ContactInfo? me = null)
+        {
+            ViewBag.CurrentOrg = details?.Info;
+            ViewBag.OrgDetails = details;
+            if (details?.IsEditable == true)
+            {
+                ViewBag.OrgSectors = await _orgDetails.GetSectorsAsync();
+            }
+            ViewBag.ResponsibleMe = me ?? await GetCurrentUserContactAsync();
+        }
+
+        private static void FillOrganizationFields(IncidentCreateViewModel model, MinJustOrganizationInfo org)
+        {
+            model.OrganizationTin = org.Tin;
+            model.OrganizationName = org.FullName;
+            model.OrganizationShortName = org.ShortName;
+            model.OrganizationLegalForm = org.LegalForm;
+            model.OrganizationRegNumber = org.RegistrationNumber;
+            model.OrganizationRegDate = org.RegistrationDate;
+            model.OrganizationAddress = org.Address;
+            model.OrganizationDirector = org.DirectorName;
+            model.OrganizationDirectorPosition = org.DirectorPosition;
+            model.OrganizationSector = org.BusinessSector;
+            model.OrganizationSectorName = org.BusinessSectorName;
         }
 
         /// <summary>Контактные данные вошедшего пользователя — для блока «Ответственное лицо».</summary>
@@ -233,14 +252,15 @@ namespace data_registry_public.Controllers
                 return BadRequest();
             }
 
-            // организация всегда берётся с сервера (не из формы),
-            // чтобы её нельзя было подделать со страницы.
-            var org = await ResolveCurrentOrganizationAsync();
-            if (org == null)
+            // Организация (ИНН и реквизиты Минюста) всегда берётся с сервера, а не из формы,
+            // чтобы её нельзя было подделать со страницы. С формы — только ручные реквизиты, если Минюст ИНН не знает.
+            var details = await ResolveCurrentOrganizationAsync();
+            if (details == null)
             {
-                TempData["ErrorMessage"] = "Невозможно зарегистрировать инцидент: не удалось получить данные организации.";
+                TempData["ErrorMessage"] = "Невозможно зарегистрировать инцидент: к учётной записи не привязана организация.";
                 return RedirectToAction(nameof(Create));
             }
+            var org = details.Info;
 
             // Поля организации read-only — убираем их из ModelState, чтоб не мешали валидации
             foreach (var key in ModelState.Keys.Where(k => k.StartsWith("Organization")).ToList())
@@ -248,22 +268,30 @@ namespace data_registry_public.Controllers
                 ModelState.Remove(key);
             }
 
+            if (!details.IsEditable)
+            {
+                foreach (var key in ModelState.Keys.Where(k => k.StartsWith(nameof(IncidentCreateViewModel.OrgManual))).ToList())
+                {
+                    ModelState.Remove(key);
+                }
+                model.OrgManual = null;
+            }
+            else if (model.OrgManual == null)
+            {
+                model.OrgManual = OrganizationDetailsService.ToInput(org);
+                ModelState.AddModelError("OrgManual.FullName", "Заполните сведения об организации");
+            }
+            else if (!string.IsNullOrWhiteSpace(model.OrgManual.BusinessSector)
+                     && !await _orgDetails.SectorExistsAsync(model.OrgManual.BusinessSector.Trim()))
+            {
+                ModelState.AddModelError("OrgManual.BusinessSector", "Выберите сферу деятельности из списка");
+            }
+
             if (!ModelState.IsValid)
             {
-                ViewBag.CurrentOrg = org;
-                ViewBag.ResponsibleMe = await GetCurrentUserContactAsync();
                 // подставим данные организации, т.к. на форме они read-only и могут не прийти
-                model.OrganizationTin = org.Tin;
-                model.OrganizationName = org.FullName;
-                model.OrganizationShortName = org.ShortName;
-                model.OrganizationLegalForm = org.LegalForm;
-                model.OrganizationRegNumber = org.RegistrationNumber;
-                model.OrganizationRegDate = org.RegistrationDate;
-                model.OrganizationAddress = org.Address;
-                model.OrganizationDirector = org.DirectorName;
-                model.OrganizationDirectorPosition = org.DirectorPosition;
-                model.OrganizationSector = org.BusinessSector;
-                model.OrganizationSectorName = org.BusinessSectorName;
+                FillOrganizationFields(model, org);
+                await PrepareCreateViewAsync(details);
                 TempData["ErrorMessage"] = "Форма заполнена с ошибками. Проверьте подсвеченные поля.";
                 return View("Create", model);
             }
@@ -314,6 +342,13 @@ namespace data_registry_public.Controllers
 
             try
             {
+                // Ручные реквизиты и инцидент сохраняются вместе: либо оба, либо ничего.
+                await using var tx = await _db.Database.BeginTransactionAsync();
+                if (details.IsEditable && model.OrgManual != null)
+                {
+                    org = await _orgDetails.SaveManualAsync(org.Tin, model.OrgManual, User.FindFirst("id")?.Value);
+                }
+
                 await _db.Incidents.AddAsync(incident);
 
                 // Контакт организации по инцидентам = последний указанный ответственный (его видит админка).
@@ -327,16 +362,23 @@ namespace data_registry_public.Controllers
                 }
 
                 await _db.SaveChangesAsync();
+                await tx.CommitAsync();
                 _logger.LogInformation("Инцидент {Id} зарегистрирован: организация {Org}, тяжесть {Severity}, субъектов ~{Subjects}",
-                    incident.Id, org?.Tin ?? "-", model.IncidentSeverity ?? "-", model.EstimatedDataSubjectsCount);
+                    incident.Id, org.Tin, model.IncidentSeverity ?? "-", model.EstimatedDataSubjectsCount);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Не удалось сохранить инцидент");
+                _db.ChangeTracker.Clear();
                 TempData["ErrorMessage"] = "Не удалось сохранить инцидент. Попробуйте ещё раз.";
-                ViewBag.CurrentOrg = org;
-                ViewBag.ResponsibleMe = await GetCurrentUserContactAsync();
+                FillOrganizationFields(model, details.Info);
+                await PrepareCreateViewAsync(details);
                 return View("Create", model);
+            }
+
+            if (details.IsEditable)
+            {
+                await SessionClaims.UpdateOrgNameAsync(HttpContext, org.FullName);
             }
 
             AppendOwnIncidentId(id);
@@ -355,7 +397,7 @@ namespace data_registry_public.Controllers
         /// (public_users.organization). Никаких заглушек и cookie — иначе на проде можно было бы
         /// зарегистрировать инцидент от имени чужой (тестовой) организации.
         /// </summary>
-        private async Task<MinJustOrganizationInfo?> ResolveCurrentOrganizationAsync()
+        private async Task<OrganizationDetails?> ResolveCurrentOrganizationAsync()
         {
             var tin = GetCurrentOrgTin();
             if (string.IsNullOrWhiteSpace(tin))
@@ -372,17 +414,7 @@ namespace data_registry_public.Controllers
                 return null;
             }
 
-            var info = await _minJust.GetOrganizationByTinAsync(tin);
-            if (info != null) return info;
-
-            // Минюст недоступен / не нашёл субъект — берём реквизиты, сохранённые при последней синхронизации.
-            var org = await _db.Organizations.AsNoTracking()
-                .Include(o => o.BusinesssectorNavigation)
-                .FirstOrDefaultAsync(o => o.Id == tin);
-            if (org == null) return null;
-
-            _logger.LogWarning("Минюст не вернул данные по ИНН {Tin}; использованы реквизиты из БД (синхронизация {Synced})", tin, org.LastSyncedAt);
-            return MinJustOrganizationInfo.FromOrganization(org);
+            return await _orgDetails.GetAsync(tin.Trim());
         }
 
         /// <summary>

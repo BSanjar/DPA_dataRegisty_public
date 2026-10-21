@@ -414,4 +414,88 @@
   <data name="Create.Resp.Email" xml:space="preserve">
     <value>Эл. почта</value>
   </data>
+  <data name="OrgForm.Title" xml:space="preserve">
+    <value>Сведения об организации</value>
+  </data>
+  <data name="OrgForm.Subtitle" xml:space="preserve">
+    <value>Министерство юстиции не вернуло сведения по ИНН вашей организации — укажите их вручную. Поля, отмеченные *, обязательны.</value>
+  </data>
+  <data name="OrgForm.Tin" xml:space="preserve">
+    <value>ИНН</value>
+  </data>
+  <data name="OrgForm.TinHint" xml:space="preserve">
+    <value>Получен из ЕСИ, не изменяется</value>
+  </data>
+  <data name="OrgForm.FullName" xml:space="preserve">
+    <value>Полное наименование</value>
+  </data>
+  <data name="OrgForm.FullName.PH" xml:space="preserve">
+    <value>ОсОО «Пример»</value>
+  </data>
+  <data name="OrgForm.ShortName" xml:space="preserve">
+    <value>Краткое наименование</value>
+  </data>
+  <data name="OrgForm.ShortName.PH" xml:space="preserve">
+    <value>Пример</value>
+  </data>
+  <data name="OrgForm.LegalForm" xml:space="preserve">
+    <value>Организационно-правовая форма</value>
+  </data>
+  <data name="OrgForm.Sector" xml:space="preserve">
+    <value>Сфера деятельности</value>
+  </data>
+  <data name="OrgForm.RegNumber" xml:space="preserve">
+    <value>Регистрационный номер</value>
+  </data>
+  <data name="OrgForm.RegNumber.PH" xml:space="preserve">
+    <value>123456-3301-ООО</value>
+  </data>
+  <data name="OrgForm.RegNumber.Hint" xml:space="preserve">
+    <value>Как в свидетельстве о государственной регистрации</value>
+  </data>
+  <data name="OrgForm.RegDate" xml:space="preserve">
+    <value>Дата регистрации</value>
+  </data>
+  <data name="OrgForm.Address" xml:space="preserve">
+    <value>Юридический адрес</value>
+  </data>
+  <data name="OrgForm.Address.PH" xml:space="preserve">
+    <value>г. Бишкек, ул. Киевская, д. 96</value>
+  </data>
+  <data name="OrgForm.Director" xml:space="preserve">
+    <value>ФИО руководителя</value>
+  </data>
+  <data name="OrgForm.Director.PH" xml:space="preserve">
+    <value>Асанов Бакыт Токтогулович</value>
+  </data>
+  <data name="OrgForm.DirectorPosition" xml:space="preserve">
+    <value>Должность руководителя</value>
+  </data>
+  <data name="OrgForm.DirectorPosition.PH" xml:space="preserve">
+    <value>Директор</value>
+  </data>
+  <data name="OrgForm.Badge.Manual" xml:space="preserve">
+    <value>Указано вручную</value>
+  </data>
+  <data name="OrgForm.Badge.Missing" xml:space="preserve">
+    <value>Требуется заполнить</value>
+  </data>
+  <data name="OrgForm.Missing.Body" xml:space="preserve">
+    <value>Министерство юстиции не нашло организацию с ИНН {0}. Укажите реквизиты организации — они сохранятся в реестре и подставятся при следующей регистрации инцидента.</value>
+  </data>
+  <data name="OrgForm.Manual.Body" xml:space="preserve">
+    <value>Реквизиты указаны представителем организации, так как в Министерстве юстиции нет сведений по ИНН {0}. При необходимости исправьте их.</value>
+  </data>
+  <data name="OrgForm.Fill" xml:space="preserve">
+    <value>Заполнить сведения</value>
+  </data>
+  <data name="OrgForm.Edit" xml:space="preserve">
+    <value>Изменить сведения</value>
+  </data>
+  <data name="OrgForm.Save" xml:space="preserve">
+    <value>Сохранить</value>
+  </data>
+  <data name="Profile.Org.SubManual" xml:space="preserve">
+    <value>Сведения указаны представителем организации</value>
+  </data>
 </root>

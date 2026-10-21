@@ -1,0 +1,40 @@
+@model data_registry_public.Models.local_models.OrganizationDetailsInput
+@{
+    ViewData["Title"] = L["OrgForm.Title"].Value;
+    var orgDetails = ViewBag.OrgDetails as data_registry_public.Services.OrganizationDetails;
+    ViewData["OrgTin"] = orgDetails?.Info.Tin;
+}
+
+<div class="mb-6">
+    <a class="inline-flex items-center gap-1 text-sm text-dpaGray-500 hover:text-dpa-800" asp-action="Index">
+        <i class="bi bi-arrow-left"></i> @L["Profile.Title"]
+    </a>
+    <h1 class="mt-2 text-2xl font-extrabold text-dpa-800 sm:text-3xl">@L["OrgForm.Title"]</h1>
+    <p class="mt-1 text-sm text-dpaGray-500">@L["OrgForm.Subtitle"]</p>
+</div>
+
+<form asp-action="Organization" method="post" class="card" data-org-form novalidate>
+    @Html.AntiForgeryToken()
+    <div class="card-header flex flex-wrap items-center justify-between gap-2">
+        <div class="text-base font-extrabold text-dpa-800">@L["Profile.Section.Organization"]</div>
+        @if (orgDetails?.IsMissing == true)
+        {
+            <span class="badge badge-warning"><i class="bi bi-pencil-square"></i> @L["OrgForm.Badge.Missing"]</span>
+        }
+        else
+        {
+            <span class="badge badge-primary"><i class="bi bi-person-check"></i> @L["OrgForm.Badge.Manual"]</span>
+        }
+    </div>
+    <div class="card-body">
+        <partial name="_OrganizationDetailsFields" model="Model" />
+    </div>
+    <div class="card-body flex justify-between gap-3 border-t border-dpaGray-200">
+        <a class="btn-secondary" asp-action="Index"><i class="bi bi-x-lg"></i> @L["Common.Cancel"]</a>
+        <button type="submit" class="btn-primary"><i class="bi bi-check2-circle"></i> @L["OrgForm.Save"]</button>
+    </div>
+</form>
+
+@section Scripts {
+    <script src="~/js/org-details.js" asp-append-version="true"></script>
+}

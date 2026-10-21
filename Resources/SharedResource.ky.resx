@@ -365,4 +365,88 @@
   <data name="Create.Resp.Email" xml:space="preserve">
     <value>Электрондук почта</value>
   </data>
+  <data name="OrgForm.Title" xml:space="preserve">
+    <value>Уюм жөнүндө маалымат</value>
+  </data>
+  <data name="OrgForm.Subtitle" xml:space="preserve">
+    <value>Юстиция министрлиги уюмуңуздун ИННи боюнча маалымат берген жок — аларды кол менен көрсөтүңүз. * белгиленген талаалар милдеттүү.</value>
+  </data>
+  <data name="OrgForm.Tin" xml:space="preserve">
+    <value>ИНН</value>
+  </data>
+  <data name="OrgForm.TinHint" xml:space="preserve">
+    <value>БИСтен алынды, өзгөртүлбөйт</value>
+  </data>
+  <data name="OrgForm.FullName" xml:space="preserve">
+    <value>Толук аталышы</value>
+  </data>
+  <data name="OrgForm.FullName.PH" xml:space="preserve">
+    <value>ЖЧК «Мисал»</value>
+  </data>
+  <data name="OrgForm.ShortName" xml:space="preserve">
+    <value>Кыскача аталышы</value>
+  </data>
+  <data name="OrgForm.ShortName.PH" xml:space="preserve">
+    <value>Мисал</value>
+  </data>
+  <data name="OrgForm.LegalForm" xml:space="preserve">
+    <value>Уюштуруу-укуктук формасы</value>
+  </data>
+  <data name="OrgForm.Sector" xml:space="preserve">
+    <value>Иш чөйрөсү</value>
+  </data>
+  <data name="OrgForm.RegNumber" xml:space="preserve">
+    <value>Каттоо номери</value>
+  </data>
+  <data name="OrgForm.RegNumber.PH" xml:space="preserve">
+    <value>123456-3301-ООО</value>
+  </data>
+  <data name="OrgForm.RegNumber.Hint" xml:space="preserve">
+    <value>Мамлекеттик каттоо күбөлүгүндөгүдөй</value>
+  </data>
+  <data name="OrgForm.RegDate" xml:space="preserve">
+    <value>Каттоо датасы</value>
+  </data>
+  <data name="OrgForm.Address" xml:space="preserve">
+    <value>Юридикалык дареги</value>
+  </data>
+  <data name="OrgForm.Address.PH" xml:space="preserve">
+    <value>Бишкек ш., Киев көч., 96</value>
+  </data>
+  <data name="OrgForm.Director" xml:space="preserve">
+    <value>Жетекчинин аты-жөнү</value>
+  </data>
+  <data name="OrgForm.Director.PH" xml:space="preserve">
+    <value>Асанов Бакыт Токтогулович</value>
+  </data>
+  <data name="OrgForm.DirectorPosition" xml:space="preserve">
+    <value>Жетекчинин кызматы</value>
+  </data>
+  <data name="OrgForm.DirectorPosition.PH" xml:space="preserve">
+    <value>Директор</value>
+  </data>
+  <data name="OrgForm.Badge.Manual" xml:space="preserve">
+    <value>Кол менен көрсөтүлгөн</value>
+  </data>
+  <data name="OrgForm.Badge.Missing" xml:space="preserve">
+    <value>Толтуруу керек</value>
+  </data>
+  <data name="OrgForm.Missing.Body" xml:space="preserve">
+    <value>Юстиция министрлиги ИНН {0} боюнча уюмду тапкан жок. Уюмдун реквизиттерин көрсөтүңүз — алар реестрге сакталып, кийинки инцидентти каттоодо автоматтык түрдө толтурулат.</value>
+  </data>
+  <data name="OrgForm.Manual.Body" xml:space="preserve">
+    <value>Юстиция министрлигинде ИНН {0} боюнча маалымат жок болгондуктан, реквизиттерди уюмдун өкүлү көрсөткөн. Керек болсо оңдоңуз.</value>
+  </data>
+  <data name="OrgForm.Fill" xml:space="preserve">
+    <value>Маалыматты толтуруу</value>
+  </data>
+  <data name="OrgForm.Edit" xml:space="preserve">
+    <value>Маалыматты өзгөртүү</value>
+  </data>
+  <data name="OrgForm.Save" xml:space="preserve">
+    <value>Сактоо</value>
+  </data>
+  <data name="Profile.Org.SubManual" xml:space="preserve">
+    <value>Маалыматты уюмдун өкүлү көрсөткөн</value>
+  </data>
 </root>

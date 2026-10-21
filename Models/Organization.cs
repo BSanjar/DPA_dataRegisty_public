@@ -44,6 +44,18 @@ public partial class Organization
     public DateTime? LastSyncedAt { get; set; }
 
     /// <summary>
+    /// Откуда реквизиты: minjust — из Минюста; manual — указаны представителем организации вручную
+    /// (Минюст не нашёл ИНН, переданный ЕСИ). См. <see cref="OrganizationDetailsSources"/>.
+    /// </summary>
+    public string? DetailsSource { get; set; }
+
+    /// <summary>Когда реквизиты последний раз указаны вручную.</summary>
+    public DateTime? DetailsUpdatedAt { get; set; }
+
+    /// <summary>Кто указал реквизиты вручную (public_users.id).</summary>
+    public string? DetailsUpdatedBy { get; set; }
+
+    /// <summary>
     /// сфера деятельности субъекта:
     /// Government — государственные органы
     /// Telecommunications — телеком
@@ -91,4 +103,11 @@ public partial class Organization
     public virtual ICollection<PublicUser> PublicUsers { get; set; } = new List<PublicUser>();
 
     public virtual ICollection<Incident> Incidents { get; set; } = new List<Incident>();
+}
+
+/// <summary>Значения organizations.details_source.</summary>
+public static class OrganizationDetailsSources
+{
+    public const string MinJust = "minjust";
+    public const string Manual = "manual";
 }

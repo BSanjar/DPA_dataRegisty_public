@@ -44,6 +44,12 @@ namespace data_registry_public.Models.local_models
         [Display(Name = "Сфера деятельности (название)")]
         public string? OrganizationSectorName { get; set; }
 
+        /// <summary>
+        /// Реквизиты, которые указываются вручную, если Минюст не нашёл ИНН организации.
+        /// Для организаций из Минюста не используется (поля на шаге 1 только для просмотра).
+        /// </summary>
+        public OrganizationDetailsInput? OrgManual { get; set; }
+
         // === Шаг 1. Ответственное лицо по инциденту ===
         // По умолчанию — вошедший пользователь (данные ЕСИ), но можно указать другого сотрудника.
 

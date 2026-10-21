@@ -3,6 +3,9 @@
     ViewData["Title"] = L["Profile.Title"].Value;
     var mj = ViewBag.MinJustOrg as data_registry_public.Integrations.MinJustOrganizationInfo;
     var orgDb = ViewBag.OrganizationDb as data_registry_public.Models.Organization;
+    var orgDetails = ViewBag.OrgDetails as data_registry_public.Services.OrganizationDetails;
+    bool orgEditable = orgDetails?.IsEditable == true;
+    bool orgMissing = orgDetails?.IsMissing == true;
     int totalIncidents = (int)(ViewBag.TotalIncidents ?? 0);
 
     string dash = L["Common.Dash"].Value;
@@ -64,9 +67,20 @@
         <div class="card-header flex flex-wrap items-center justify-between gap-2">
             <div>
                 <div class="text-base font-extrabold text-dpa-800">@L["Profile.Section.Organization"]</div>
-                <div class="text-xs text-dpaGray-500">@L["Profile.Org.Sub"]</div>
+                <div class="text-xs text-dpaGray-500">@(orgEditable ? L["Profile.Org.SubManual"] : L["Profile.Org.Sub"])</div>
             </div>
-            <span class="badge badge-success"><i class="bi bi-check2-circle"></i> @(mj?.Source ?? dash)</span>
+            @if (orgMissing)
+            {
+                <span class="badge badge-warning"><i class="bi bi-pencil-square"></i> @L["OrgForm.Badge.Missing"]</span>
+            }
+            else if (orgEditable)
+            {
+                <span class="badge badge-primary"><i class="bi bi-person-check"></i> @L["OrgForm.Badge.Manual"]</span>
+            }
+            else
+            {
+                <span class="badge badge-success"><i class="bi bi-check2-circle"></i> @(mj?.Source ?? dash)</span>
+            }
         </div>
         @if (mj == null)
         {
@@ -92,6 +106,20 @@
                     </div>
                 </div>
 
+                @if (orgMissing)
+                {
+                    <div class="flex flex-col gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800 sm:flex-row sm:items-center sm:justify-between">
+                        <div class="flex items-start gap-3">
+                            <i class="bi bi-info-circle-fill mt-0.5"></i>
+                            <div>@L["OrgForm.Missing.Body", mj.Tin]</div>
+                        </div>
+                        <a class="btn-primary shrink-0" asp-action="Organization">
+                            <i class="bi bi-pencil-square"></i> @L["OrgForm.Fill"]
+                        </a>
+                    </div>
+                }
+                else
+                {
                 <dl class="grid gap-x-6 gap-y-3 text-sm sm:grid-cols-2 lg:grid-cols-3">
                     <div>
                         <dt class="form-label">@L["Create.Org.RegNumber"]</dt>
@@ -103,8 +131,7 @@
                     </div>
                     <div>
                         <dt class="form-label">@L["Create.Org.Status"]</dt>
-                        <dd>@if (string.IsNullOrEmpty(mj.Status)) { <span class="text-dpaGray-800">@dash</span> } else { <span class="badge badge-success">@mj.Status</span> }</dd>
-                    </div>
+                        <dd>@if (string.IsNullOrEmpty(mj.Status)) { <span class="text-dpaGray-800">@dash</span> } else { <span class="badge badge-success">@mj.Status</span> }</dd>                    </div>
                     <div class="sm:col-span-2 lg:col-span-3">
                         <dt class="form-label">@L["Create.Org.Address"]</dt>
                         <dd class="text-dpaGray-800">@(string.IsNullOrEmpty(mj.Address) ? dash : mj.Address)</dd>
@@ -120,6 +147,7 @@
                         </dd>
                     </div>
                 </dl>
+                }
 
                 <div class="grid gap-3 sm:grid-cols-3">
                     <div class="kpi kpi-blue">
@@ -161,6 +189,12 @@
                     <a class="btn-secondary" asp-controller="Incidents" asp-action="Index">
                         <i class="bi bi-collection"></i> @L["Nav.MyIncidents"]
                     </a>
+                    @if (orgEditable && !orgMissing)
+                    {
+                        <a class="btn-secondary" asp-action="Organization">
+                            <i class="bi bi-pencil-square"></i> @L["OrgForm.Edit"]
+                        </a>
+                    }
                 </div>
             </div>
         }

@@ -96,6 +96,7 @@ builder.Services.Configure<MinJustOptions>(builder.Configuration.GetSection("Min
 builder.Services.AddMemoryCache();
 builder.Services.AddHttpClient(MinJustService.HttpClientName);
 builder.Services.AddScoped<IMinJustService, MinJustService>();
+builder.Services.AddScoped<data_registry_public.Services.OrganizationDetailsService>();
 
 
 var app = builder.Build();
@@ -126,7 +127,12 @@ using (var scope = app.Services.CreateScope())
             ALTER TABLE organizations ADD COLUMN IF NOT EXISTS director_name        varchar;
             ALTER TABLE organizations ADD COLUMN IF NOT EXISTS director_position    varchar;
             ALTER TABLE organizations ADD COLUMN IF NOT EXISTS status               varchar;
-            ALTER TABLE organizations ADD COLUMN IF NOT EXISTS last_synced_at       timestamp without time zone;");
+            ALTER TABLE organizations ADD COLUMN IF NOT EXISTS last_synced_at       timestamp without time zone;
+            ALTER TABLE organizations ADD COLUMN IF NOT EXISTS details_source       varchar;
+            ALTER TABLE organizations ADD COLUMN IF NOT EXISTS details_updated_at   timestamp without time zone;
+            ALTER TABLE organizations ADD COLUMN IF NOT EXISTS details_updated_by   varchar;
+            -- реквизиты, полученные из Минюста до появления details_source
+            UPDATE organizations SET details_source = 'minjust' WHERE details_source IS NULL AND last_synced_at IS NOT NULL;");
 
         // Справочник секторов деятельности организаций.
         await db.Database.ExecuteSqlRawAsync(@"

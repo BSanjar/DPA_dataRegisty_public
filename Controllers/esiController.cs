@@ -22,6 +22,8 @@ namespace data_registry_public.Controllers
         private const string StateKey = "esi_state";
         private const string VerifierKey = "esi_code_verifier";
         private const string ReturnUrlKey = "esi_return_url";
+        // id_token ЕСИ хранится в свойствах cookie-сессии — для выхода из ЕСИ (id_token_hint).
+        private const string IdTokenName = "id_token";
 
         private readonly EsiClient _esi;
         private readonly ILogger<esiController> _logger;
@@ -106,33 +108,33 @@ namespace data_registry_public.Controllers
             try
             {
                 var ct = HttpContext.RequestAborted;
-                var accessToken = await _esi.ExchangeCodeAsync(code, codeVerifier, ct);
-                if (accessToken is null)
+                var tokens = await _esi.ExchangeCodeAsync(code, codeVerifier, ct);
+                if (tokens is null)
                 {
                     return Fail("Не удалось получить подтверждение от ЕСИ. Попробуйте ещё раз.");
                 }
 
-                var info = await _esi.GetUserInfoAsync(accessToken, ct);
+                var info = await _esi.GetUserInfoAsync(tokens.AccessToken, ct);
                 if (info is null || string.IsNullOrWhiteSpace(info.Pin))
                 {
-                    return Fail("ЕСИ не передала данные пользователя. Попробуйте ещё раз.");
+                    return Fail("ЕСИ не передала данные пользователя. Попробуйте ещё раз.", tokens.IdToken);
                 }
 
                 // Без организации вход невозможен: пользователя не регистрируем и не авторизуем.
-                // Повторное «Войти через ЕСИ» снова откроет форму ЕСИ (Esi:Prompt = login).
+                // Сессию ЕСИ закрываем — повторное «Войти через ЕСИ» откроет форму входа (можно войти другим профилем).
                 if (string.IsNullOrWhiteSpace(info.OrganizationTin))
                 {
                     _logger.LogWarning("ЕСИ-вход отклонён: у пользователя (ПИН {Pin}) нет организации в ЕСИ (organization_tin не передан)",
                         AppLogging.Mask(info.Pin));
                     return Fail("Вход не выполнен: к вашей учётной записи в ЕСИ не привязана организация. " +
-                                "Войдите в ЕСИ как представитель организации или обратитесь в Агентство.");
+                                "Войдите в ЕСИ как представитель организации или обратитесь в Агентство.", tokens.IdToken);
                 }
 
                 var userModel = MapUser(info);
                 var userId = await RegisterOrUpdateUserAsync(userModel);
                 if (string.IsNullOrEmpty(userId))
                 {
-                    return Fail("Не удалось зарегистрировать пользователя после ЕСИ.");
+                    return Fail("Не удалось зарегистрировать пользователя после ЕСИ.", tokens.IdToken);
                 }
                 userModel.Id = userId;
 
@@ -141,10 +143,10 @@ namespace data_registry_public.Controllers
                 if (!link.Success || string.IsNullOrEmpty(link.OrgId))
                 {
                     _logger.LogWarning("ЕСИ-вход отменён для {UserId}: {Err}", userId, link.ErrorMessage);
-                    return Fail("Вход не выполнен: " + (link.ErrorMessage ?? "не удалось получить и сохранить данные организации из Минюста."));
+                    return Fail("Вход не выполнен: " + (link.ErrorMessage ?? "не удалось получить и сохранить данные организации из Минюста."), tokens.IdToken);
                 }
 
-                await Authenticate(userModel, link.OrgId);
+                await Authenticate(userModel, link.OrgId, idToken: tokens.IdToken);
                 _logger.LogInformation("Вход через ЕСИ: пользователь {UserId} ({Name}), организация {Org}", userId, userModel.Name, link.OrgId);
                 return SafeRedirect(returnUrl);
             }
@@ -205,14 +207,25 @@ namespace data_registry_public.Controllers
             return SafeRedirect(returnUrl);
         }
 
+        /// <summary>
+        /// Выход: закрываем сессию портала и сессию ЕСИ (/connect/endsession), иначе следующий
+        /// «Войти через ЕСИ» молча вернёт того же пользователя. Тестовый вход сессии ЕСИ не имеет.
+        /// </summary>
         public async Task<IActionResult> Logout()
         {
+            string? idToken = null;
             if (User.Identity?.IsAuthenticated == true)
             {
                 _logger.LogInformation("Выход пользователя {UserId}", User.FindFirst("id")?.Value);
+                if (!User.HasClaim(TestLoginClaim, "true"))
+                {
+                    idToken = await HttpContext.GetTokenAsync(CookieAuthenticationDefaults.AuthenticationScheme, IdTokenName);
+                }
             }
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index", "Home");
+
+            var endSession = string.IsNullOrEmpty(idToken) ? null : _esi.CreateEndSessionUrl(idToken);
+            return endSession is null ? RedirectToAction("Index", "Home") : Redirect(endSession);
         }
 
         // === Вспомогательное ===============================================
@@ -230,11 +243,13 @@ namespace data_registry_public.Controllers
         /// <summary>
         /// Вход не состоялся: сообщение на главной (баннер ErrorMessage в шапке).
         /// Сессия на портале до этого момента не создаётся — авторизация только после всех проверок.
+        /// Если ЕСИ уже выдала id_token, её сессия закрывается (ЕСИ вернёт на главную, сообщение сохранится).
         /// </summary>
-        private IActionResult Fail(string message)
+        private IActionResult Fail(string message, string? esiIdToken = null)
         {
             TempData["ErrorMessage"] = message;
-            return RedirectToAction("Index", "Home");
+            var endSession = string.IsNullOrEmpty(esiIdToken) ? null : _esi.CreateEndSessionUrl(esiIdToken);
+            return endSession is null ? RedirectToAction("Index", "Home") : Redirect(endSession);
         }
 
         private static PublicUser MapUser(EsiUserInfo info) => new()
@@ -263,7 +278,7 @@ namespace data_registry_public.Controllers
         /// <summary>ПИН фиксированного тестового пользователя (сессии, выданные до появления TestLoginClaim).</summary>
         public const string TestUserPin = "01001202210023";
 
-        private async Task Authenticate(PublicUser user, string? orgId = null, bool isTestLogin = false)
+        private async Task Authenticate(PublicUser user, string? orgId = null, bool isTestLogin = false, string? idToken = null)
         {
             var claims = new List<Claim>
             {
@@ -286,7 +301,12 @@ namespace data_registry_public.Controllers
 
             var identity = new ClaimsIdentity(claims, "ApplicationCookie",
                 ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+            var properties = new AuthenticationProperties();
+            if (!string.IsNullOrEmpty(idToken))
+            {
+                properties.StoreTokens(new[] { new AuthenticationToken { Name = IdTokenName, Value = idToken } });
+            }
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity), properties);
         }
 
         /// <summary>
@@ -458,6 +478,7 @@ namespace data_registry_public.Controllers
                         Businesssector = safeSector,
                         Risklevel = "Low",
                         LastSyncedAt = now,
+                        DetailsSource = OrganizationDetailsSources.MinJust,
                     });
                 }
                 else
@@ -474,6 +495,8 @@ namespace data_registry_public.Controllers
                     // сектор обновляем только если новый код валиден (не обнуляем имеющийся)
                     if (safeSector != null) existing.Businesssector = safeSector;
                     existing.LastSyncedAt = now;
+                    // данные Минюста главнее указанных вручную
+                    existing.DetailsSource = OrganizationDetailsSources.MinJust;
                 }
 
                 // 4. Привязываем пользователя

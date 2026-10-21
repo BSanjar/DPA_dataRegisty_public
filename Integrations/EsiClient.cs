@@ -20,17 +20,24 @@ namespace data_registry_public.Integrations
         public string AuthorizeUrl { get; set; } = "";
         public string TokenUrl { get; set; } = "";
         public string UserInfoUrl { get; set; } = "";
+        /// <summary>/connect/endsession — завершение сессии в ЕСИ при выходе с портала.</summary>
+        public string EndSessionUrl { get; set; } = "";
+        /// <summary>
+        /// Куда ЕСИ вернёт после выхода (post_logout_redirect_uri) — должен быть зарегистрирован в ЕСИ для клиента.
+        /// Пусто — ЕСИ покажет свою страницу «Вы вышли».
+        /// </summary>
+        public string PostLogoutRedirectUrl { get; set; } = "";
         public string ClientId { get; set; } = "";
         public string ClientSecret { get; set; } = "";
         /// <summary>Адрес возврата — должен совпадать с зарегистрированным в ЕСИ символ в символ.</summary>
         public string RedirectUrl { get; set; } = "";
         public string Scope { get; set; } = "openid profile email phone";
         /// <summary>
-        /// prompt (OpenID Connect): login — ЕСИ каждый раз показывает форму входа, а не подхватывает
-        /// открытую сессию. Иначе после неудачного входа (нет организации) повторное нажатие
-        /// молча возвращало того же пользователя. Пусто — стандартное поведение ЕСИ.
+        /// prompt (OpenID Connect). Пусто — стандартно: открытая сессия ЕСИ подхватывается без формы входа,
+        /// а выход с портала (и отказ во входе) закрывает её через EndSessionUrl.
+        /// login на esia.tunduk.kg при открытой сессии уводит на страницу профиля ЕСИ — не использовать.
         /// </summary>
-        public string Prompt { get; set; } = "login";
+        public string Prompt { get; set; } = "";
         public int TimeoutSeconds { get; set; } = 15;
 
         public bool IsConfigured =>
@@ -38,6 +45,9 @@ namespace data_registry_public.Integrations
             && !string.IsNullOrWhiteSpace(UserInfoUrl) && !string.IsNullOrWhiteSpace(ClientId)
             && !string.IsNullOrWhiteSpace(ClientSecret) && !string.IsNullOrWhiteSpace(RedirectUrl);
     }
+
+    /// <summary>Токены из /connect/token: access_token — для userinfo, id_token — подсказка ЕСИ при выходе.</summary>
+    public sealed record EsiTokens(string AccessToken, string? IdToken);
 
     /// <summary>Параметры, которые надо сохранить между уходом в ЕСИ и возвратом (state + PKCE verifier).</summary>
     public sealed record EsiAuthorizeRequest(string Url, string State, string CodeVerifier);
@@ -83,6 +93,23 @@ namespace data_registry_public.Integrations
 
         public bool IsConfigured => _options.IsConfigured;
 
+        /// <summary>
+        /// Ссылка на /connect/endsession: ЕСИ закрывает свою сессию и возвращает на PostLogoutRedirectUrl.
+        /// null — выход в ЕСИ не настроен.
+        /// </summary>
+        public string? CreateEndSessionUrl(string? idToken)
+        {
+            if (string.IsNullOrWhiteSpace(_options.EndSessionUrl)) return null;
+            var query = new Dictionary<string, string?>();
+            // id_token_hint: без него ЕСИ спрашивает «Выйти?» и не возвращает на портал.
+            if (!string.IsNullOrWhiteSpace(idToken)) query["id_token_hint"] = idToken;
+            if (!string.IsNullOrWhiteSpace(_options.PostLogoutRedirectUrl))
+            {
+                query["post_logout_redirect_uri"] = _options.PostLogoutRedirectUrl;
+            }
+            return QueryHelpers.AddQueryString(_options.EndSessionUrl, query);
+        }
+
         /// <summary>Ссылка на /connect/authorize с новыми state и code_challenge.</summary>
         public EsiAuthorizeRequest CreateAuthorizeRequest()
         {
@@ -109,8 +136,8 @@ namespace data_registry_public.Integrations
             return new EsiAuthorizeRequest(url, state, verifier);
         }
 
-        /// <summary>Обмен кода авторизации на access_token. null — не удалось (причина в логе integration).</summary>
-        public async Task<string?> ExchangeCodeAsync(string code, string codeVerifier, CancellationToken ct = default)
+        /// <summary>Обмен кода авторизации на токены. null — не удалось (причина в логе integration).</summary>
+        public async Task<EsiTokens?> ExchangeCodeAsync(string code, string codeVerifier, CancellationToken ct = default)
         {
             using var _ = LogCategories.Push(LogCategories.Integration);
             var sw = Stopwatch.StartNew();
@@ -136,7 +163,7 @@ namespace data_registry_public.Integrations
                 if (response.IsSuccessStatusCode && !string.IsNullOrEmpty(token))
                 {
                     _logger.LogInformation("ЕСИ: токен получен (HTTP {Status}) за {Elapsed} мс", (int)response.StatusCode, sw.ElapsedMilliseconds);
-                    return token;
+                    return new EsiTokens(token, Field(json, "id_token"));
                 }
 
                 // Тело ответа целиком не пишем — только код и поля error/error_description.
