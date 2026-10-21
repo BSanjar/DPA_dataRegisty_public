@@ -90,13 +90,12 @@ docker run -d --name dpa_registry_public --restart unless-stopped \
 Секция `Esi` в `appsettings.{режим}.json`: адреса `/connect/authorize|token|userinfo`, `ClientId`, `ClientSecret`, `RedirectUrl`, `Scope`.
 Поток: Authorization Code + PKCE (S256), секрет передаётся в Basic, `state` проверяется (защита от подмены ответа).
 
-* Test и Production сейчас ходят в DEV-контур `https://dev-esia.tunduk.kg`, клиент `Record_Owners`.
+* Test и Production — боевой контур `https://esia.tunduk.kg`, Development — DEV-контур `https://dev-esia.tunduk.kg`; клиент `Record_Owners` (секреты у контуров разные).
 * `RedirectUrl` должен совпадать с адресом, зарегистрированным в ЕСИ для клиента, символ в символ (`https://<домен публичной части>/esi/auth`).
-* Боевой контур: заменить адреса на `https://esia.tunduk.kg/...`, `ClientId`/`ClientSecret` на боевые
-  (лучше переменными `Esi__ClientId`, `Esi__ClientSecret`) и `RedirectUrl`.
+* Секрет можно не хранить в файле, а передать переменной `-e Esi__ClientSecret=...` в `docker run`.
 * Если ЕСИ не передаёт `organization_tin`, добавить в `Esi:Scope` значение, которое ЕСИ согласует для данных организации (например `organizations`).
 * Ход входа виден в `/logs/registry_public/integration` (токен, userinfo, ошибки ЕСИ) и `/logs/registry_public/auth`.
-* DEV-контур ЕСИ доступен не из любой сети: с рабочей машины разработчика он отвечает 403, проверять вход нужно с сервера.
+* DEV-контур ЕСИ открыт только для разрешённых IP: из остальных сетей отвечает 403.
 
 ## SQL
 

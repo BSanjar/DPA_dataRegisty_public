@@ -12,7 +12,7 @@ namespace data_registry_public.Integrations
 {
     /// <summary>
     /// Настройки ЕСИ (секция Esi в appsettings.{режим}.json).
-    /// Тест и прод пока ходят в DEV-контур dev-esia.tunduk.kg клиентом Record_Owners;
+    /// Test и Production — боевой контур esia.tunduk.kg, Development — DEV-контур dev-esia.tunduk.kg; клиент Record_Owners.
     /// для боевого контура меняются адреса, ClientId/ClientSecret и RedirectUrl.
     /// </summary>
     public sealed class EsiOptions
